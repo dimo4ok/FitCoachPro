@@ -1,11 +1,52 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{B569C02B-9C1D-47AD-B54C-4EDB2A6E015C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitCoachHub.API", "src\backend\FitCoachHub.API\FitCoachHub.API.csproj", "{1F5A8D9B-3445-41B2-96EC-F92F623852F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitCoachPro.Domain", "src\backend\FitCoachPro.Domain\FitCoachPro.Domain.csproj", "{5D1095E3-DE70-5382-13C5-73333C7FAB8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitCoachPro.Application", "src\backend\FitCoachPro.Application\FitCoachPro.Application.csproj", "{C5517B51-75C9-268B-1A33-9BCFF6A11513}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitCoachPro.Infrastructure", "src\backend\FitCoachPro.Infrastructure\FitCoachPro.Infrastructure.csproj", "{7DB2EEBA-F5A4-EFBD-910F-44BADA9DE5A9}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F5A8D9B-3445-41B2-96EC-F92F623852F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F5A8D9B-3445-41B2-96EC-F92F623852F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F5A8D9B-3445-41B2-96EC-F92F623852F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F5A8D9B-3445-41B2-96EC-F92F623852F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D1095E3-DE70-5382-13C5-73333C7FAB8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D1095E3-DE70-5382-13C5-73333C7FAB8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D1095E3-DE70-5382-13C5-73333C7FAB8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D1095E3-DE70-5382-13C5-73333C7FAB8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5517B51-75C9-268B-1A33-9BCFF6A11513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5517B51-75C9-268B-1A33-9BCFF6A11513}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5517B51-75C9-268B-1A33-9BCFF6A11513}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5517B51-75C9-268B-1A33-9BCFF6A11513}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DB2EEBA-F5A4-EFBD-910F-44BADA9DE5A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DB2EEBA-F5A4-EFBD-910F-44BADA9DE5A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DB2EEBA-F5A4-EFBD-910F-44BADA9DE5A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DB2EEBA-F5A4-EFBD-910F-44BADA9DE5A9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B569C02B-9C1D-47AD-B54C-4EDB2A6E015C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1F5A8D9B-3445-41B2-96EC-F92F623852F9} = {B569C02B-9C1D-47AD-B54C-4EDB2A6E015C}
+		{5D1095E3-DE70-5382-13C5-73333C7FAB8E} = {B569C02B-9C1D-47AD-B54C-4EDB2A6E015C}
+		{C5517B51-75C9-268B-1A33-9BCFF6A11513} = {B569C02B-9C1D-47AD-B54C-4EDB2A6E015C}
+		{7DB2EEBA-F5A4-EFBD-910F-44BADA9DE5A9} = {B569C02B-9C1D-47AD-B54C-4EDB2A6E015C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1EF0DB5F-6076-4E32-9C9F-1AE326D74F35}
