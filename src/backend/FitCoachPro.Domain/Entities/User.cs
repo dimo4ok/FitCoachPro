@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FitCoachPro.Domain.Entities.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
@@ -14,7 +15,7 @@ namespace FitCoachPro.Domain.Entities
         public string LastName { get; set; } = null!;
         public string TelephoneNumber { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
-        public string Role { get; set; } = "User";
+        public UserRole Role { get; set; } = UserRole.User;
         public DateTime DateOfRegistration { get; set; } = DateTime.UtcNow;
         public DateTime? DateOfExpiredSubscription { get; set; }
 
