@@ -8,7 +8,7 @@ namespace FitCoachPro.Domain.Entities
 {
     public class WorkoutItem
     {
-        public Guid id {  get; set; }
+        public Guid Id {  get; set; }
         public string Description { get; set; } = null!;
 
         public Guid WorkoutPlanId { get; set; }
