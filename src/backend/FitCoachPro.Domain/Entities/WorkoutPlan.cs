@@ -2,11 +2,11 @@
 {
     public class WorkoutPlan
     {
-        public Guid Id { get; protected set; }
-        public DateTime DateOfDoing { get; private set; }
+        public Guid Id { get; set; }
+        public DateTime DateOfDoing { get; set; }
 
-        public Guid UserId { get; private set; }
-        public User User { get; private set; } = null!;
+        public Guid UserId { get; set; }
+        public User User { get; set; } = null!;
         public ICollection<WorkoutItem> WorkoutItems { get; set; } = new List<WorkoutItem>();
     }
 }
