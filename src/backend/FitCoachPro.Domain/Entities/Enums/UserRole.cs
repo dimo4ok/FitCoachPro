@@ -8,9 +8,8 @@ namespace FitCoachPro.Domain.Entities.Enums
 {
     public enum UserRole
     {
-        //Admin,
-        //User,
-        //Trainer
-        User
+        Admin,
+        Coach,
+        Client
     }
 }
