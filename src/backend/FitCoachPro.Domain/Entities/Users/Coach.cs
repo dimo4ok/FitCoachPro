@@ -1,5 +1,5 @@
 ﻿using FitCoachPro.Domain.Entities.Enums;
-using FitCoachPro.Domain.Entities.Workouts;
+using FitCoachPro.Domain.Entities.Workouts.Plans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,6 @@ namespace FitCoachPro.Domain.Entities.Users
 
         public ICollection<Client> Clients { get; set; } = new List<Client>();
 
-        public ICollection<TemplateWorkoutItem> TemplateWorkoutItems { get; set; } = new List<TemplateWorkoutItem>();
+        public ICollection<TemplateWorkoutPlan> TemplateWorkoutPlans { get; set; } = new List<TemplateWorkoutPlan>();
     }
 }

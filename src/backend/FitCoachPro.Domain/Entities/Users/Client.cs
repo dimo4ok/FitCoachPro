@@ -1,5 +1,5 @@
 ﻿using FitCoachPro.Domain.Entities.Enums;
-using FitCoachPro.Domain.Entities.Workouts;
+using FitCoachPro.Domain.Entities.Workouts.Plans;
 using System;
 using System.Collections.Generic;
 using System.Linq;
