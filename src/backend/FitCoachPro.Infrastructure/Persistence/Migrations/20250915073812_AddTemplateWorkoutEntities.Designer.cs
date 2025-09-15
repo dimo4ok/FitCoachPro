@@ -4,6 +4,7 @@ using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitCoachPro.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250915073812_AddTemplateWorkoutEntities")]
+    partial class AddTemplateWorkoutEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,44 +84,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Exercises");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("aaaaaaaa-1111-1111-1111-111111111111"),
-                            ExerciseName = "Push-ups",
-                            GifUrl = "https://example.com/gifs/pushups.gif"
-                        },
-                        new
-                        {
-                            Id = new Guid("bbbbbbbb-2222-2222-2222-222222222222"),
-                            ExerciseName = "Squats",
-                            GifUrl = "https://example.com/gifs/squats.gif"
-                        },
-                        new
-                        {
-                            Id = new Guid("cccccccc-3333-3333-3333-333333333333"),
-                            ExerciseName = "Plank",
-                            GifUrl = "https://example.com/gifs/plank.gif"
-                        },
-                        new
-                        {
-                            Id = new Guid("dddddddd-4444-4444-4444-444444444444"),
-                            ExerciseName = "Lunges",
-                            GifUrl = "https://example.com/gifs/lunges.gif"
-                        },
-                        new
-                        {
-                            Id = new Guid("eeeeeeee-5555-5555-5555-555555555555"),
-                            ExerciseName = "Pull-ups",
-                            GifUrl = "https://example.com/gifs/pullups.gif"
-                        },
-                        new
-                        {
-                            Id = new Guid("ffffffff-6666-6666-6666-666666666666"),
-                            ExerciseName = "Deadlifts",
-                            GifUrl = "https://example.com/gifs/deadlifts.gif"
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.TemplateWorkoutItem", b =>
@@ -145,36 +110,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("TemplateWorkoutPlanId");
 
                     b.ToTable("TemplateWorkoutItems");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-0000-0000-0000-000000000001"),
-                            Description = "3 sets of 15 reps",
-                            ExerciseId = new Guid("aaaaaaaa-1111-1111-1111-111111111111"),
-                            TemplateWorkoutPlanId = new Guid("aaaa0000-0000-0000-0000-000000000001")
-                        },
-                        new
-                        {
-                            Id = new Guid("11111111-0000-0000-0000-000000000002"),
-                            Description = "3 sets of 20 reps",
-                            ExerciseId = new Guid("bbbbbbbb-2222-2222-2222-222222222222"),
-                            TemplateWorkoutPlanId = new Guid("aaaa0000-0000-0000-0000-000000000001")
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-0000-0000-0000-000000000003"),
-                            Description = "Hold for 60 seconds",
-                            ExerciseId = new Guid("cccccccc-3333-3333-3333-333333333333"),
-                            TemplateWorkoutPlanId = new Guid("aaaa0000-0000-0000-0000-000000000002")
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-0000-0000-0000-000000000004"),
-                            Description = "3 sets of 10 reps per leg",
-                            ExerciseId = new Guid("dddddddd-4444-4444-4444-444444444444"),
-                            TemplateWorkoutPlanId = new Guid("aaaa0000-0000-0000-0000-000000000002")
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.TemplateWorkoutPlan", b =>
@@ -197,20 +132,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("CoachId");
 
                     b.ToTable("TemplateWorkoutPlans");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("aaaa0000-0000-0000-0000-000000000001"),
-                            CoachId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                            CreatedAt = new DateTime(2025, 9, 14, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = new Guid("aaaa0000-0000-0000-0000-000000000002"),
-                            CoachId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            CreatedAt = new DateTime(2025, 9, 14, 0, 0, 0, 0, DateTimeKind.Utc)
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.WorkoutItem", b =>
@@ -237,22 +158,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("WorkoutPlanId");
 
                     b.ToTable("WorkoutItems");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("aaaa1111-0000-0000-0000-000000000001"),
-                            Description = "3 sets of 15 reps",
-                            ExerciseId = new Guid("aaaaaaaa-1111-1111-1111-111111111111"),
-                            WorkoutPlanId = new Guid("11111111-1111-1111-1111-111111111111")
-                        },
-                        new
-                        {
-                            Id = new Guid("aaaa1111-0000-0000-0000-000000000002"),
-                            Description = "3 sets of 20 reps",
-                            ExerciseId = new Guid("bbbbbbbb-2222-2222-2222-222222222222"),
-                            WorkoutPlanId = new Guid("11111111-1111-1111-1111-111111111111")
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.WorkoutPlan", b =>
@@ -272,26 +177,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("ClientId");
 
                     b.ToTable("WorkoutPlans");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            ClientId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            DateOfDoing = new DateTime(2025, 7, 15, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            ClientId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                            DateOfDoing = new DateTime(2025, 7, 16, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            ClientId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            DateOfDoing = new DateTime(2025, 7, 17, 0, 0, 0, 0, DateTimeKind.Utc)
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Admin", b =>
@@ -299,18 +184,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasBaseType("FitCoachPro.Domain.Entities.Users.User");
 
                     b.HasDiscriminator().HasValue(0);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
-                            DateOfRegistration = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Super",
-                            LastName = "Admin",
-                            PasswordHash = "adminhash1",
-                            Role = 0,
-                            TelephoneNumber = "+000000000"
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Client", b =>
@@ -326,41 +199,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("CoachId");
 
                     b.HasDiscriminator().HasValue(2);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            DateOfRegistration = new DateTime(2025, 7, 11, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "John",
-                            LastName = "Doe",
-                            PasswordHash = "hash1",
-                            Role = 2,
-                            TelephoneNumber = "+123456789",
-                            CoachId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd")
-                        },
-                        new
-                        {
-                            Id = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                            DateOfRegistration = new DateTime(2025, 7, 10, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Anna",
-                            LastName = "Smith",
-                            PasswordHash = "hash2",
-                            Role = 2,
-                            TelephoneNumber = "+987654321",
-                            CoachId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd")
-                        },
-                        new
-                        {
-                            Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            DateOfRegistration = new DateTime(2025, 7, 9, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Mike",
-                            LastName = "Johnson",
-                            PasswordHash = "hash3",
-                            Role = 2,
-                            TelephoneNumber = "+192837465",
-                            CoachId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee")
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Coach", b =>
@@ -368,28 +206,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasBaseType("FitCoachPro.Domain.Entities.Users.User");
 
                     b.HasDiscriminator().HasValue(1);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                            DateOfRegistration = new DateTime(2025, 7, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Coach",
-                            LastName = "One",
-                            PasswordHash = "coachhash1",
-                            Role = 1,
-                            TelephoneNumber = "+111111111"
-                        },
-                        new
-                        {
-                            Id = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            DateOfRegistration = new DateTime(2025, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Coach",
-                            LastName = "Two",
-                            PasswordHash = "coachhash2",
-                            Role = 1,
-                            TelephoneNumber = "+222222222"
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.TemplateWorkoutItem", b =>
