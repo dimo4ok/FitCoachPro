@@ -18,7 +18,7 @@ namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations.UserConfig
                 .HasForeignKey(x => x.CoachId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.TemplateWorkoutItems)
+            builder.HasMany(x => x.TemplateWorkoutPlans)
                 .WithOne(x => x.Coach)
                 .HasForeignKey(x => x.CoachId)
                 .IsRequired();
