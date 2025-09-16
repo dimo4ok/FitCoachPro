@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitCoachPro.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250916102743_DataSeed")]
-    partial class DataSeed
+    [Migration("20250916113502_DbSeedWithIdentity")]
+    partial class DbSeedWithIdentity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

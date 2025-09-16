@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitCoachPro.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class DataSeed : Migration
+    public partial class DbSeedWithIdentity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
