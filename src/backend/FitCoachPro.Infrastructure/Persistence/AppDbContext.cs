@@ -3,12 +3,18 @@ using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Items;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
+using FitCoachPro.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace FitCoachPro.Infrastructure.Persistence
 {
-    public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+    public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Admin> Admins { get; set; }
@@ -30,175 +36,219 @@ namespace FitCoachPro.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-            // --- Seed Admin ---
-            modelBuilder.Entity<Admin>().HasData(
-                new Admin
-                {
-                    Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
-                    FirstName = "Super",
-                    LastName = "Admin",
-                    TelephoneNumber = "+000000000",
-                    PasswordHash = "adminhash1",
-                    DateOfRegistration = new DateTime(2025, 7, 1, 0, 0, 0, DateTimeKind.Utc)
-                }
-            );
 
-            // --- Seed Coaches ---
+            // Domain Users
+            var clientId = Guid.Parse("33333333-3333-3333-3333-333333333333");
+            var clientWithoutCoachId = Guid.Parse("33333333-3333-3333-3333-333333333334");
+            var coachId = Guid.Parse("55555555-5555-5555-5555-555555555555");
+            var coachWithoutClientId = Guid.Parse("55555555-5555-5555-5555-555555555556"); // new coach without clients
+            var adminId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+
+            // Application Users
+            var clientAppUserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+            var clientWithoutCoachAppUserId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
+            var coachAppUserId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+            var coachWithoutClientAppUserId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"); // new app user for coach without clients
+            var adminAppUserId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
+
+            // Seed DomainUser
+            // Seed all coaches first (principals) so migrations insert them before dependent clients
             modelBuilder.Entity<Coach>().HasData(
                 new Coach
                 {
-                    Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                    FirstName = "Coach",
-                    LastName = "One",
-                    TelephoneNumber = "+111111111",
-                    PasswordHash = "coachhash1",
-                    DateOfRegistration = new DateTime(2025, 7, 1, 0, 0, 0, DateTimeKind.Utc)
+                    Id = coachId,
+                    FirstName = "Jane",
+                    LastName = "Smith",
+                    CreatedAt = new DateTime(2025, 9, 1, 0, 0, 0, DateTimeKind.Utc),
                 },
                 new Coach
                 {
-                    Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                    FirstName = "Coach",
-                    LastName = "Two",
-                    TelephoneNumber = "+222222222",
-                    PasswordHash = "coachhash2",
-                    DateOfRegistration = new DateTime(2025, 7, 2, 0, 0, 0, DateTimeKind.Utc)
-                }
-            );
-
-            // --- Seed Clients ---
-            modelBuilder.Entity<Client>().HasData(
-                new Client
-                {
-                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                    FirstName = "John",
-                    LastName = "Doe",
-                    TelephoneNumber = "+123456789",
-                    PasswordHash = "hash1",
-                    DateOfRegistration = new DateTime(2025, 7, 11, 0, 0, 0, DateTimeKind.Utc),
-                    CoachId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd")
-                },
-                new Client
-                {
-                    Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                    FirstName = "Anna",
-                    LastName = "Smith",
-                    TelephoneNumber = "+987654321",
-                    PasswordHash = "hash2",
-                    DateOfRegistration = new DateTime(2025, 7, 10, 0, 0, 0, DateTimeKind.Utc),
-                    CoachId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd")
-                },
-                new Client
-                {
-                    Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
+                    Id = coachWithoutClientId,
                     FirstName = "Mike",
-                    LastName = "Johnson",
-                    TelephoneNumber = "+192837465",
-                    PasswordHash = "hash3",
-                    DateOfRegistration = new DateTime(2025, 7, 9, 0, 0, 0, DateTimeKind.Utc),
-                    CoachId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee")
+                    LastName = "SoloCoach",
+                    CreatedAt = new DateTime(2025, 9, 3, 0, 0, 0, DateTimeKind.Utc),
                 }
             );
 
-            // --- Seed Exercises ---
-            modelBuilder.Entity<Exercise>().HasData(
-                new Exercise { Id = Guid.Parse("aaaaaaaa-1111-1111-1111-111111111111"), ExerciseName = "Push-ups", GifUrl = "https://example.com/gifs/pushups.gif" },
-                new Exercise { Id = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222"), ExerciseName = "Squats", GifUrl = "https://example.com/gifs/squats.gif" },
-                new Exercise { Id = Guid.Parse("cccccccc-3333-3333-3333-333333333333"), ExerciseName = "Plank", GifUrl = "https://example.com/gifs/plank.gif" },
-                new Exercise { Id = Guid.Parse("dddddddd-4444-4444-4444-444444444444"), ExerciseName = "Lunges", GifUrl = "https://example.com/gifs/lunges.gif" },
-                new Exercise { Id = Guid.Parse("eeeeeeee-5555-5555-5555-555555555555"), ExerciseName = "Pull-ups", GifUrl = "https://example.com/gifs/pullups.gif" },
-                new Exercise { Id = Guid.Parse("ffffffff-6666-6666-6666-666666666666"), ExerciseName = "Deadlifts", GifUrl = "https://example.com/gifs/deadlifts.gif" }
+            // Seed Client that has a coach (dependent)
+            modelBuilder.Entity<Client>().HasData(new Client
+            {
+                Id = clientId,
+                FirstName = "John",
+                LastName = "Doe",
+                CreatedAt = new DateTime(2025, 9, 1, 0, 0, 0, DateTimeKind.Utc),
+                CoachId = coachId,
+                SubscriptionExpiresAt = null
+            });
+
+            // Seed Client WITHOUT a trainer (CoachId = null)
+            // (requires Client.CoachId to be nullable in the model/schema)
+            modelBuilder.Entity<Client>().HasData(new Client
+            {
+                Id = clientWithoutCoachId,
+                FirstName = "Alice",
+                LastName = "NoTrainer",
+                CreatedAt = new DateTime(2025, 9, 2, 0, 0, 0, DateTimeKind.Utc),
+                CoachId = null,
+                SubscriptionExpiresAt = null
+            });
+
+            modelBuilder.Entity<Admin>().HasData(new Admin
+            {
+                Id = adminId,
+                FirstName = "Super",
+                LastName = "Admin",
+                CreatedAt = new DateTime(2025, 9, 1, 0, 0, 0, DateTimeKind.Utc),
+            });
+
+            // Seed ApplicationUser (Identity) — use stable stamps and normalized fields
+            modelBuilder.Entity<ApplicationUser>().HasData(
+                new ApplicationUser
+                {
+                    Id = clientAppUserId,
+                    UserName = "john.doe",
+                    NormalizedUserName = "JOHN.DOE",
+                    Email = "john@example.com",
+                    NormalizedEmail = "JOHN@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    DomainUserId = clientId,
+                    PasswordHash = "AQAAAAEAACcQAAAAEDummyClientHash123==",
+                    ConcurrencyStamp = "00000000-0000-0000-0000-000000000001",
+                    SecurityStamp = "00000000-0000-0000-0000-000000000011"
+                },
+                new ApplicationUser
+                {
+                    Id = clientWithoutCoachAppUserId,
+                    UserName = "alice.notrainer",
+                    NormalizedUserName = "ALICE.NOTRAINER",
+                    Email = "alice@example.com",
+                    NormalizedEmail = "ALICE@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    DomainUserId = clientWithoutCoachId,
+                    PasswordHash = "AQAAAAEAACcQAAAAEDummyClientNoTrainerHash==",
+                    ConcurrencyStamp = "00000000-0000-0000-0000-000000000004",
+                    SecurityStamp = "00000000-0000-0000-0000-000000000014"
+                },
+                new ApplicationUser
+                {
+                    Id = coachAppUserId,
+                    UserName = "jane.smith",
+                    NormalizedUserName = "JANE.SMITH",
+                    Email = "jane@example.com",
+                    NormalizedEmail = "JANE@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    DomainUserId = coachId,
+                    PasswordHash = "AQAAAAEAACcQAAAAEDummyCoachHash123==",
+                    ConcurrencyStamp = "00000000-0000-0000-0000-000000000002",
+                    SecurityStamp = "00000000-0000-0000-0000-000000000012"
+                },
+                // new coach without any clients
+                new ApplicationUser
+                {
+                    Id = coachWithoutClientAppUserId,
+                    UserName = "mike.solo",
+                    NormalizedUserName = "MIKE.SOLO",
+                    Email = "mike@example.com",
+                    NormalizedEmail = "MIKE@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    DomainUserId = coachWithoutClientId,
+                    PasswordHash = "AQAAAAEAACcQAAAAEDummyCoachSoloHash==",
+                    ConcurrencyStamp = "00000000-0000-0000-0000-000000000005",
+                    SecurityStamp = "00000000-0000-0000-0000-000000000015"
+                },
+                new ApplicationUser
+                {
+                    Id = adminAppUserId,
+                    UserName = "super.admin",
+                    NormalizedUserName = "SUPER.ADMIN",
+                    Email = "admin@example.com",
+                    NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    DomainUserId = adminId,
+                    PasswordHash = "AQAAAAEAACcQAAAAEDummyAdminHash123==",
+                    ConcurrencyStamp = "00000000-0000-0000-0000-000000000003",
+                    SecurityStamp = "00000000-0000-0000-0000-000000000013"
+                }
             );
 
-            // --- Seed TemplateWorkoutPlans ---
+            // Seed TemplateWorkoutPlans
+            var templatePlanId1 = Guid.Parse("31000000-0000-0000-0000-000000000001");
+            var templatePlanId2 = Guid.Parse("31000000-0000-0000-0000-000000000002");
+
             modelBuilder.Entity<TemplateWorkoutPlan>().HasData(
                 new TemplateWorkoutPlan
                 {
-                    Id = Guid.Parse("aaaa0000-0000-0000-0000-000000000001"),
-                    CoachId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                    CreatedAt = new DateTime(2025, 9, 14, 0, 0, 0, DateTimeKind.Utc)
+                    Id = templatePlanId1,
+                    CoachId = coachId,
+                    CreatedAt = new DateTime(2025, 9, 5, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = null
                 },
                 new TemplateWorkoutPlan
                 {
-                    Id = Guid.Parse("aaaa0000-0000-0000-0000-000000000002"),
-                    CoachId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                    CreatedAt = new DateTime(2025, 9, 14, 0, 0, 0, DateTimeKind.Utc)
+                    Id = templatePlanId2,
+                    CoachId = coachId,
+                    CreatedAt = new DateTime(2025, 9, 6, 0, 0, 0, DateTimeKind.Utc),
+                    UpdatedAt = null
                 }
             );
 
-            // --- Seed TemplateWorkoutItems ---
+            // Seed TemplateWorkoutItems
             modelBuilder.Entity<TemplateWorkoutItem>().HasData(
                 new TemplateWorkoutItem
                 {
-                    Id = Guid.Parse("11111111-0000-0000-0000-000000000001"),
-                    TemplateWorkoutPlanId = Guid.Parse("aaaa0000-0000-0000-0000-000000000001"),
-                    ExerciseId = Guid.Parse("aaaaaaaa-1111-1111-1111-111111111111"),
-                    Description = "3 sets of 15 reps"
+                    Id = Guid.Parse("32000000-0000-0000-0000-000000000001"),
+                    TemplateWorkoutPlanId = templatePlanId1,
+                    ExerciseId = Guid.Parse("21000000-0000-0000-0000-000000000001"),
+                    Description = "3 sets of 12 push-ups"
                 },
                 new TemplateWorkoutItem
                 {
-                    Id = Guid.Parse("11111111-0000-0000-0000-000000000002"),
-                    TemplateWorkoutPlanId = Guid.Parse("aaaa0000-0000-0000-0000-000000000001"),
-                    ExerciseId = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222"),
-                    Description = "3 sets of 20 reps"
-                },
-                new TemplateWorkoutItem
-                {
-                    Id = Guid.Parse("22222222-0000-0000-0000-000000000003"),
-                    TemplateWorkoutPlanId = Guid.Parse("aaaa0000-0000-0000-0000-000000000002"),
-                    ExerciseId = Guid.Parse("cccccccc-3333-3333-3333-333333333333"),
-                    Description = "Hold for 60 seconds"
-                },
-                new TemplateWorkoutItem
-                {
-                    Id = Guid.Parse("22222222-0000-0000-0000-000000000004"),
-                    TemplateWorkoutPlanId = Guid.Parse("aaaa0000-0000-0000-0000-000000000002"),
-                    ExerciseId = Guid.Parse("dddddddd-4444-4444-4444-444444444444"),
-                    Description = "3 sets of 10 reps per leg"
+                    Id = Guid.Parse("32000000-0000-0000-0000-000000000002"),
+                    TemplateWorkoutPlanId = templatePlanId2,
+                    ExerciseId = Guid.Parse("21000000-0000-0000-0000-000000000002"),
+                    Description = "4 sets of 10 squats"
                 }
             );
 
-            // --- Seed WorkoutPlans ---
+            // Seed Exercises
+            modelBuilder.Entity<Exercise>().HasData(
+                new Exercise
+                {
+                    Id = Guid.Parse("21000000-0000-0000-0000-000000000001"),
+                    ExerciseName = "Push-up",
+                    GifUrl = "https://example.com/gifs/pushup.gif"
+                },
+                new Exercise
+                {
+                    Id = Guid.Parse("21000000-0000-0000-0000-000000000002"),
+                    ExerciseName = "Squat",
+                    GifUrl = "https://example.com/gifs/squat.gif"
+                }
+            );
+
+            // Seed WorkoutPlans
+            var workoutPlanId = Guid.Parse("41000000-0000-0000-0000-000000000001");
             modelBuilder.Entity<WorkoutPlan>().HasData(
                 new WorkoutPlan
                 {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    ClientId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                    DateOfDoing = new DateTime(2025, 7, 15, 0, 0, 0, DateTimeKind.Utc)
-                },
-                new WorkoutPlan
-                {
-                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                    ClientId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                    DateOfDoing = new DateTime(2025, 7, 16, 0, 0, 0, DateTimeKind.Utc)
-                },
-                new WorkoutPlan
-                {
-                    Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
-                    ClientId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                    DateOfDoing = new DateTime(2025, 7, 17, 0, 0, 0, DateTimeKind.Utc)
+                    Id = workoutPlanId,
+                    ClientId = clientId,
+                    DateOfDoing = new DateTime(2025, 9, 10, 8, 0, 0, DateTimeKind.Utc)
                 }
             );
 
-            // --- Seed WorkoutItems ---
+            // Seed WorkoutItems
             modelBuilder.Entity<WorkoutItem>().HasData(
                 new WorkoutItem
                 {
-                    Id = Guid.Parse("aaaa1111-0000-0000-0000-000000000001"),
-                    WorkoutPlanId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    ExerciseId = Guid.Parse("aaaaaaaa-1111-1111-1111-111111111111"),
-                    Description = "3 sets of 15 reps"
-                },
-                new WorkoutItem
-                {
-                    Id = Guid.Parse("aaaa1111-0000-0000-0000-000000000002"),
-                    WorkoutPlanId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    ExerciseId = Guid.Parse("bbbbbbbb-2222-2222-2222-222222222222"),
-                    Description = "3 sets of 20 reps"
+                    Id = Guid.Parse("51000000-0000-0000-0000-000000000001"),
+                    WorkoutPlanId = workoutPlanId,
+                    ExerciseId = Guid.Parse("21000000-0000-0000-0000-000000000001"),
+                    Description = "Morning push-up routine - 3x12"
                 }
             );
 
             base.OnModelCreating(modelBuilder);
         }
-
     }
 }
