@@ -13,7 +13,7 @@ namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations.UserConfig
     {
         public void Configure(EntityTypeBuilder<Client> builder)
         {
-            builder.Property(x => x.DateOfExpiredSubscription);
+            builder.Property(x => x.SubscriptionExpiresAt);
 
             builder.HasOne(x => x.Coach)
                 .WithMany(x => x.Clients)

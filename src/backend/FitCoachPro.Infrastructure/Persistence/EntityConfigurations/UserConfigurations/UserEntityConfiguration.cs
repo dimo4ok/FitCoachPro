@@ -24,14 +24,7 @@ namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations.UserConfig
                 .HasMaxLength(50)
                 .IsRequired();
 
-            builder.Property(x => x.TelephoneNumber)
-                .HasMaxLength(20)
-                .IsRequired();
-
-            builder.Property(x => x.PasswordHash)
-                .IsRequired();
-
-            builder.Property(x => x.DateOfRegistration)
+            builder.Property(x => x.CreatedAt)
                 .IsRequired();
 
             builder.HasDiscriminator<UserRole>("Role")
