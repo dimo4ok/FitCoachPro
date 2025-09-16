@@ -14,9 +14,7 @@ namespace FitCoachPro.Domain.Entities.Users
         public Guid Id { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
-        public string TelephoneNumber { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
-        public DateTime DateOfRegistration { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public abstract UserRole Role { get; protected set; }
     }
 }

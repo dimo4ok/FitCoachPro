@@ -11,9 +11,9 @@ namespace FitCoachPro.Domain.Entities.Users
     public class Client : User
     {
         public override UserRole Role { get; protected set; } = UserRole.Client;
-        public DateTime? DateOfExpiredSubscription { get; set; }
+        public DateTime? SubscriptionExpiresAt { get; set; }
 
-        public Guid CoachId { get; set; }
+        public Guid? CoachId { get; set; }
         public Coach? Coach { get; set; }
 
         public ICollection<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
