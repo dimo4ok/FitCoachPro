@@ -51,6 +51,11 @@ namespace FitCoachPro.Infrastructure.Persistence
             var coachWithoutClientAppUserId = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"); // new app user for coach without clients
             var adminAppUserId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
 
+            // Identity Roles (seed)
+            var adminRoleId = Guid.Parse("11111111-2222-3333-4444-555555555555");
+            var coachRoleId = Guid.Parse("22222222-3333-4444-5555-666666666666");
+            var clientRoleId = Guid.Parse("33333333-4444-5555-6666-777777777777");
+
             // Seed DomainUser
             // Seed all coaches first (principals) so migrations insert them before dependent clients
             modelBuilder.Entity<Coach>().HasData(
@@ -169,6 +174,40 @@ namespace FitCoachPro.Infrastructure.Persistence
                     ConcurrencyStamp = "00000000-0000-0000-0000-000000000003",
                     SecurityStamp = "00000000-0000-0000-0000-000000000013"
                 }
+            );
+
+            // Seed Identity Roles
+            modelBuilder.Entity<IdentityRole<Guid>>().HasData(
+                new IdentityRole<Guid>
+                {
+                    Id = adminRoleId,
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = "role-concurrency-admin-1"
+                },
+                new IdentityRole<Guid>
+                {
+                    Id = coachRoleId,
+                    Name = "Coach",
+                    NormalizedName = "COACH",
+                    ConcurrencyStamp = "role-concurrency-coach-1"
+                },
+                new IdentityRole<Guid>
+                {
+                    Id = clientRoleId,
+                    Name = "Client",
+                    NormalizedName = "CLIENT",
+                    ConcurrencyStamp = "role-concurrency-client-1"
+                }
+            );
+
+            // Seed IdentityUserRole mappings (assign users to roles)
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+                new IdentityUserRole<Guid> { UserId = adminAppUserId, RoleId = adminRoleId },
+                new IdentityUserRole<Guid> { UserId = coachAppUserId, RoleId = coachRoleId },
+                new IdentityUserRole<Guid> { UserId = coachWithoutClientAppUserId, RoleId = coachRoleId },
+                new IdentityUserRole<Guid> { UserId = clientAppUserId, RoleId = clientRoleId },
+                new IdentityUserRole<Guid> { UserId = clientWithoutCoachAppUserId, RoleId = clientRoleId }
             );
 
             // Seed TemplateWorkoutPlans
