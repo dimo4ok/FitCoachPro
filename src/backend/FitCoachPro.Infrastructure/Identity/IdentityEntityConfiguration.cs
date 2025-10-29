@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations
 {
-    public class IdentityEntityConfiguration : IEntityTypeConfiguration<ApplicationUser>
+    public class IdentityEntityConfiguration : IEntityTypeConfiguration<AppUser>
     {
-        public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+        public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.HasKey(x => x.Id);
 
@@ -34,7 +34,7 @@ namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations
 
             builder.HasOne(x => x.DomainUser)
                 .WithOne()
-                .HasForeignKey<ApplicationUser>(x => x.DomainUserId)
+                .HasForeignKey<AppUser>(x => x.DomainUserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }

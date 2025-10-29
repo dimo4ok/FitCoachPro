@@ -1,6 +1,10 @@
-﻿using FitCoachPro.Infrastructure.Identity;
+﻿using FitCoachPro.Application.Interfaces.Repository;
+using FitCoachPro.Application.Interfaces.Services;
+using FitCoachPro.Infrastructure.Identity;
 using FitCoachPro.Infrastructure.Persistence;
+using FitCoachPro.Infrastructure.Repositories;
 using FitCoachPro.Infrastructure.Security;
+using FitCoachPro.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -26,12 +30,12 @@ namespace FitCoachPro.Infrastructure
             });
 
             //Identity
-            services.AddIdentityCore<ApplicationUser>(options =>
+            services.AddIdentityCore<AppUser>(options =>
             {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
+                options.Password.RequireUppercase = true;
             })
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<AppDbContext>();
@@ -61,6 +65,11 @@ namespace FitCoachPro.Infrastructure
                         (Encoding.UTF8.GetBytes(configuration["JwtOptions:Key"]!))
                 };
             });
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAppUserService, AppUserService>();
+            services.AddScoped<IJwtService, JwtService>();
+
 
             return services;
         }

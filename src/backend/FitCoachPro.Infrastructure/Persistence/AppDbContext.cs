@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace FitCoachPro.Infrastructure.Persistence
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -107,8 +107,8 @@ namespace FitCoachPro.Infrastructure.Persistence
             });
 
             // Seed ApplicationUser (Identity) — use stable stamps and normalized fields
-            modelBuilder.Entity<ApplicationUser>().HasData(
-                new ApplicationUser
+            modelBuilder.Entity<AppUser>().HasData(
+                new AppUser
                 {
                     Id = clientAppUserId,
                     UserName = "john.doe",
@@ -121,7 +121,7 @@ namespace FitCoachPro.Infrastructure.Persistence
                     ConcurrencyStamp = "00000000-0000-0000-0000-000000000001",
                     SecurityStamp = "00000000-0000-0000-0000-000000000011"
                 },
-                new ApplicationUser
+                new AppUser
                 {
                     Id = clientWithoutCoachAppUserId,
                     UserName = "alice.notrainer",
@@ -134,7 +134,7 @@ namespace FitCoachPro.Infrastructure.Persistence
                     ConcurrencyStamp = "00000000-0000-0000-0000-000000000004",
                     SecurityStamp = "00000000-0000-0000-0000-000000000014"
                 },
-                new ApplicationUser
+                new AppUser
                 {
                     Id = coachAppUserId,
                     UserName = "jane.smith",
@@ -148,7 +148,7 @@ namespace FitCoachPro.Infrastructure.Persistence
                     SecurityStamp = "00000000-0000-0000-0000-000000000012"
                 },
                 // new coach without any clients
-                new ApplicationUser
+                new AppUser
                 {
                     Id = coachWithoutClientAppUserId,
                     UserName = "mike.solo",
@@ -161,7 +161,7 @@ namespace FitCoachPro.Infrastructure.Persistence
                     ConcurrencyStamp = "00000000-0000-0000-0000-000000000005",
                     SecurityStamp = "00000000-0000-0000-0000-000000000015"
                 },
-                new ApplicationUser
+                new AppUser
                 {
                     Id = adminAppUserId,
                     UserName = "super.admin",
