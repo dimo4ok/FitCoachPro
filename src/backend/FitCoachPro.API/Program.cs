@@ -15,11 +15,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-//temp
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAppUserService, AppUserService>();
+//temporary
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
 
 var app = builder.Build();
 
