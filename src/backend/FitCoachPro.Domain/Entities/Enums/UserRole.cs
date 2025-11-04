@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FitCoachPro.Domain.Entities.Enums
+namespace FitCoachPro.Domain.Entities.Enums;
+public enum UserRole
 {
-    public enum UserRole
-    {
-        Admin,
-        Coach,
-        Client
-    }
+    Admin,
+    Coach,
+    Client
 }

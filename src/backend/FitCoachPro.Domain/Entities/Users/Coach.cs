@@ -1,19 +1,10 @@
-﻿using FitCoachPro.Domain.Entities.Enums;
-using FitCoachPro.Domain.Entities.Workouts.Plans;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FitCoachPro.Domain.Entities.Workouts.Plans;
 
-namespace FitCoachPro.Domain.Entities.Users
+namespace FitCoachPro.Domain.Entities.Users;
+
+public class Coach : UserProfile
 {
-    public class Coach : User
-    {
-        public override UserRole Role { get; protected set; } = UserRole.Coach;
+    public ICollection<Client> Clients { get; set; } = new List<Client>();
 
-        public ICollection<Client> Clients { get; set; } = new List<Client>();
-
-        public ICollection<TemplateWorkoutPlan> TemplateWorkoutPlans { get; set; } = new List<TemplateWorkoutPlan>();
-    }
+    public ICollection<TemplateWorkoutPlan> TemplateWorkoutPlans { get; set; } = new List<TemplateWorkoutPlan>();
 }

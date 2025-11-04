@@ -1,75 +1,112 @@
-﻿using FitCoachPro.Application.Common.Models.Response;
+﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Models.Users;
+using FitCoachPro.Application.Common.Response;
+using FitCoachPro.Application.Interfaces.Repository;
 using FitCoachPro.Application.Interfaces.Services;
-using FitCoachPro.Domain.Entities.Enums;
-using FitCoachPro.Domain.Entities.Users;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using FitCoachPro.Infrastructure.Repositories;
 
-namespace FitCoachPro.Infrastructure.Services
+namespace FitCoachPro.Infrastructure.Services;
+
+public class AuthService : IAuthService
 {
-    public class AuthService : IAuthService
+    private readonly IAppUserService _appUserService;
+    private readonly IDomainUserRepository _domainUserRepository;
+    private readonly IJwtService _jwtService;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public AuthService
+        (
+        IAppUserService appUserService,
+        IDomainUserRepository domainUserRepository,
+        IJwtService jwtService,
+        IUnitOfWork unitOfWork
+        )
     {
-        private readonly IAppUserService _appUserService;
-        private readonly IJwtService _jwtService;
+        _appUserService = appUserService;
+        _domainUserRepository = domainUserRepository;
+        _jwtService = jwtService;
+        _unitOfWork = unitOfWork;
+    }
 
-        public AuthService(IAppUserService appUserService, IJwtService jwtService)
-        {
-            _appUserService = appUserService;
-            _jwtService = jwtService;
-        }
+    public async Task<Result<AuthModel>> SignUpAsync(SignUpModel model, CancellationToken cancellationToken)
+    {
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        //Error Handling
-        //Response when errors
-        //AutoMapper
-        //Mediator
-        public async Task<Result<AuthModel>> RegisterUserAsync(CreateUserModel model, CancellationToken cancellationToken)
+        try
         {
-            User domainUser = model.Role switch
+            var createAppUser = await _appUserService.CreateAsync(model);
+            if (!createAppUser.IsSuccess)
             {
-                UserRole.Admin => new Admin { FirstName = model.FirstName, LastName = model.LastName },
-                UserRole.Coach => new Coach { FirstName = model.FirstName, LastName = model.LastName },
-                UserRole.Client => new Client { FirstName = model.FirstName, LastName = model.LastName },
-                _ => throw new Exception("Ivalid role!")
+                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+                return Result<AuthModel>.FromResult(createAppUser);
+            }
+
+            var domainUserModel = new CreateDomainUserModel
+            {
+                UserId = createAppUser.Data,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Role = model.Role
             };
 
-            var userResult = await _appUserService.CreateUserAsync(domainUser, model);
-            if (!userResult.IsSuccess)
-                return Result<AuthModel>.FromResult(userResult);
+            var createDomainUserId = await _domainUserRepository.CreateAsync(domainUserModel, cancellationToken);
 
-            var authModel = GenerateTokenByData(domainUser.Id, domainUser.Role, model.UserName);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result<AuthModel>.Success(authModel, HttpType.POST);
-        }
+            await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-        public async Task<Result<AuthModel>> LoginUserAsync(LoginUserModel model, CancellationToken cancellationToken = default)
-        {
-            var userResult = await _appUserService.AuthenticateUserAsync(model, cancellationToken);
-            if (!userResult.IsSuccess)
-                return Result<AuthModel>.FromResult(userResult);
-
-            var userModel = userResult.Data;
-            var authModel = GenerateTokenByData(userModel.Id, userModel.Role, userModel.UserName);
-
-            return Result<AuthModel>.Success(authModel, HttpType.POST);
-        }
-
-        //RefreshTokenAsync
-        //RevokeTokenAsync
-
-
-        private AuthModel GenerateTokenByData(Guid id, UserRole role, string userName)
-        {
-            var token = _jwtService.GenerateJWT(new JwtUserModel { Id = id, Role = role, UserName = userName });
-
-            return new AuthModel
+            var jwtPayloadModel = new JwtPayloadModel
             {
-                Token = token,
-                Expires = DateTime.UtcNow.AddHours(1),
-                UserId = id,
-                UserName = userName,
-                Role = role
+                Id = createDomainUserId,
+                UserName = model.UserName,
+                Role = model.Role
             };
+
+            var authModel = GenerateTokenByData(jwtPayloadModel);
+
+            return Result<AuthModel>.Success(authModel);
         }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+            return Result<AuthModel>.Fail(SystemErrors.TransactionFailed);
+        }
+
+    }
+
+    public async Task<Result<AuthModel>> SignInAsync(SignInModel model, CancellationToken cancellationToken = default)
+    {
+        var authAppUser = await _appUserService.AuthenticateAsync(model);
+        if (!authAppUser.IsSuccess)
+            return Result<AuthModel>.FromResult(authAppUser);
+
+        var domainUser = await _domainUserRepository.GetByAppUserIdAndRoleAsync(authAppUser.Data!.Id, authAppUser.Data.Role, cancellationToken);
+
+        var jwtPayloadModel = new JwtPayloadModel
+        {
+            Id = domainUser!.Id,
+            UserName = authAppUser.Data.UserName,
+            Role = authAppUser.Data.Role,
+        };
+
+        var authModel = GenerateTokenByData(jwtPayloadModel);
+
+        return Result<AuthModel>.Success(authModel);
+    }
+
+    //RefreshTokenAsync???
+
+    private AuthModel GenerateTokenByData(JwtPayloadModel model)
+    {
+        var token = _jwtService.GenerateJWT(model);
+
+        return new AuthModel
+        {
+            Token = token,
+            Expires = DateTime.UtcNow.AddHours(1),
+            Id = model.Id,
+            UserName = model.UserName,
+            Role = model.Role
+        };
     }
 }

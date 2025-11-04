@@ -1,22 +1,17 @@
-using FitCoachPro.Application.Interfaces.Repository;
-using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Infrastructure;
-using FitCoachPro.Infrastructure.Identity;
-using FitCoachPro.Infrastructure.Repositories;
-using FitCoachPro.Infrastructure.Services;
+using FitCoachPro.Application;
+using FitCoachPro.API.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
-//temporary
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -32,6 +27,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapAuthEndpoints();
 
 app.Run();

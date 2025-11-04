@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations.UserConfigurations;
 
-public class CoachEntityConfiguration : IEntityTypeConfiguration<Coach>
+public class AdminEntityConfiguration : IEntityTypeConfiguration<Admin>
 {
-    public void Configure(EntityTypeBuilder<Coach> builder)
+    public void Configure(EntityTypeBuilder<Admin> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -24,16 +24,6 @@ public class CoachEntityConfiguration : IEntityTypeConfiguration<Coach>
 
         builder.HasOne<AppUser>()
             .WithOne()
-            .HasForeignKey<Coach>(x => x.UserId);
-
-        builder.HasMany(x => x.Clients)
-            .WithOne(x => x.Coach)
-            .HasForeignKey(x => x.CoachId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasMany(x => x.TemplateWorkoutPlans)
-            .WithOne(x => x.Coach)
-            .HasForeignKey(x => x.CoachId)
-            .IsRequired();
+            .HasForeignKey<Admin>(x => x.UserId);
     }
 }

@@ -1,12 +1,10 @@
-﻿using FitCoachPro.Application.Common.Models.Response;
-using FitCoachPro.Application.Common.Models.Users;
-using FitCoachPro.Domain.Entities.Users;
+﻿using FitCoachPro.Application.Common.Models.Users;
+using FitCoachPro.Application.Common.Response;
 
-namespace FitCoachPro.Application.Interfaces.Services
+namespace FitCoachPro.Application.Interfaces.Services;
+
+public interface IAppUserService
 {
-    public interface IAppUserService
-    {
-        Task<Result<bool>> CreateUserAsync(User domainUser, CreateUserModel model);
-        Task<Result<AppUserModel>> AuthenticateUserAsync(LoginUserModel model, CancellationToken cancellationToken = default);
-    }
+    Task<Result<Guid>> CreateAsync(SignUpModel model);
+    Task<Result<AuthUserModel>> AuthenticateAsync(SignInModel model);
 }

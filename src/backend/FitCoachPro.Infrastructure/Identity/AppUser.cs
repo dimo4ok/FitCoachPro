@@ -1,17 +1,6 @@
-﻿using FitCoachPro.Domain.Entities.Users;
-using FitCoachPro.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace FitCoachPro.Infrastructure.Identity
-{
-    public class AppUser : IdentityUser<Guid>
-    {
-        public Guid DomainUserId { get; set; }
-        public User DomainUser { get; set; } = null!;
-    }
-}
+
+namespace FitCoachPro.Infrastructure.Identity;
+
+public class AppUser : IdentityUser<Guid>{ }

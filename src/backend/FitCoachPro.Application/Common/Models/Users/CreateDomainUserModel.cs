@@ -2,14 +2,10 @@
 
 namespace FitCoachPro.Application.Common.Models.Users;
 
-public class AppUserModel
+public class CreateDomainUserModel
 {
-    public Guid Id { get; init; } 
+    public Guid UserId { get; set; }
     public string FirstName { get; init; } = null!;
     public string LastName { get; init; } = null!;
     public UserRole Role { get; init; }
-
-    public string Email { get; init; } = null!;
-    public string UserName { get; init; } = null!;
-    public string Password { get; set; } = null!;
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitCoachPro.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250925171552_IdentityRoleDbSeed")]
-    partial class IdentityRoleDbSeed
+    [Migration("20251031101202_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace FitCoachPro.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.User", b =>
+            modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Admin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,16 +44,83 @@ namespace FitCoachPro.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.HasDiscriminator<int>("Role");
+                    b.ToTable("Admins");
+                });
 
-                    b.UseTphMappingStrategy();
+            modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Client", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CoachId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("SubscriptionExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoachId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Coach", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Coaches");
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Exercise", b =>
@@ -75,20 +142,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Exercises");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("21000000-0000-0000-0000-000000000001"),
-                            ExerciseName = "Push-up",
-                            GifUrl = "https://example.com/gifs/pushup.gif"
-                        },
-                        new
-                        {
-                            Id = new Guid("21000000-0000-0000-0000-000000000002"),
-                            ExerciseName = "Squat",
-                            GifUrl = "https://example.com/gifs/squat.gif"
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Items.TemplateWorkoutItem", b =>
@@ -115,22 +168,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("TemplateWorkoutPlanId");
 
                     b.ToTable("TemplateWorkoutItems");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("32000000-0000-0000-0000-000000000001"),
-                            Description = "3 sets of 12 push-ups",
-                            ExerciseId = new Guid("21000000-0000-0000-0000-000000000001"),
-                            TemplateWorkoutPlanId = new Guid("31000000-0000-0000-0000-000000000001")
-                        },
-                        new
-                        {
-                            Id = new Guid("32000000-0000-0000-0000-000000000002"),
-                            Description = "4 sets of 10 squats",
-                            ExerciseId = new Guid("21000000-0000-0000-0000-000000000002"),
-                            TemplateWorkoutPlanId = new Guid("31000000-0000-0000-0000-000000000002")
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Items.WorkoutItem", b =>
@@ -157,15 +194,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("WorkoutPlanId");
 
                     b.ToTable("WorkoutItems");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("51000000-0000-0000-0000-000000000001"),
-                            Description = "Morning push-up routine - 3x12",
-                            ExerciseId = new Guid("21000000-0000-0000-0000-000000000001"),
-                            WorkoutPlanId = new Guid("41000000-0000-0000-0000-000000000001")
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Plans.TemplateWorkoutPlan", b =>
@@ -188,20 +216,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("CoachId");
 
                     b.ToTable("TemplateWorkoutPlans");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("31000000-0000-0000-0000-000000000001"),
-                            CoachId = new Guid("55555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2025, 9, 5, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = new Guid("31000000-0000-0000-0000-000000000002"),
-                            CoachId = new Guid("55555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2025, 9, 6, 0, 0, 0, 0, DateTimeKind.Utc)
-                        });
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Plans.WorkoutPlan", b =>
@@ -221,17 +235,9 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("ClientId");
 
                     b.ToTable("WorkoutPlans");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("41000000-0000-0000-0000-000000000001"),
-                            ClientId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            DateOfDoing = new DateTime(2025, 9, 10, 8, 0, 0, 0, DateTimeKind.Utc)
-                        });
                 });
 
-            modelBuilder.Entity("FitCoachPro.Infrastructure.Identity.ApplicationUser", b =>
+            modelBuilder.Entity("FitCoachPro.Infrastructure.Identity.AppUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -243,9 +249,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("DomainUserId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -292,9 +295,6 @@ namespace FitCoachPro.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DomainUserId")
-                        .IsUnique();
-
                     b.HasIndex("Email")
                         .IsUnique();
 
@@ -314,93 +314,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000001",
-                            DomainUserId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            Email = "john@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "JOHN@EXAMPLE.COM",
-                            NormalizedUserName = "JOHN.DOE",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDummyClientHash123==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "00000000-0000-0000-0000-000000000011",
-                            TwoFactorEnabled = false,
-                            UserName = "john.doe"
-                        },
-                        new
-                        {
-                            Id = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000004",
-                            DomainUserId = new Guid("33333333-3333-3333-3333-333333333334"),
-                            Email = "alice@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ALICE@EXAMPLE.COM",
-                            NormalizedUserName = "ALICE.NOTRAINER",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDummyClientNoTrainerHash==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "00000000-0000-0000-0000-000000000014",
-                            TwoFactorEnabled = false,
-                            UserName = "alice.notrainer"
-                        },
-                        new
-                        {
-                            Id = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000002",
-                            DomainUserId = new Guid("55555555-5555-5555-5555-555555555555"),
-                            Email = "jane@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "JANE@EXAMPLE.COM",
-                            NormalizedUserName = "JANE.SMITH",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDummyCoachHash123==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "00000000-0000-0000-0000-000000000012",
-                            TwoFactorEnabled = false,
-                            UserName = "jane.smith"
-                        },
-                        new
-                        {
-                            Id = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000005",
-                            DomainUserId = new Guid("55555555-5555-5555-5555-555555555556"),
-                            Email = "mike@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "MIKE@EXAMPLE.COM",
-                            NormalizedUserName = "MIKE.SOLO",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDummyCoachSoloHash==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "00000000-0000-0000-0000-000000000015",
-                            TwoFactorEnabled = false,
-                            UserName = "mike.solo"
-                        },
-                        new
-                        {
-                            Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000003",
-                            DomainUserId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Email = "admin@example.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                            NormalizedUserName = "SUPER.ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDummyAdminHash123==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "00000000-0000-0000-0000-000000000013",
-                            TwoFactorEnabled = false,
-                            UserName = "super.admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -433,22 +346,19 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("11111111-2222-3333-4444-555555555555"),
-                            ConcurrencyStamp = "role-concurrency-admin-1",
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("22222222-3333-4444-5555-666666666666"),
-                            ConcurrencyStamp = "role-concurrency-coach-1",
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             Name = "Coach",
                             NormalizedName = "COACH"
                         },
                         new
                         {
-                            Id = new Guid("33333333-4444-5555-6666-777777777777"),
-                            ConcurrencyStamp = "role-concurrency-client-1",
+                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -536,33 +446,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            RoleId = new Guid("11111111-2222-3333-4444-555555555555")
-                        },
-                        new
-                        {
-                            UserId = new Guid("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
-                            RoleId = new Guid("22222222-3333-4444-5555-666666666666")
-                        },
-                        new
-                        {
-                            UserId = new Guid("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
-                            RoleId = new Guid("22222222-3333-4444-5555-666666666666")
-                        },
-                        new
-                        {
-                            UserId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            RoleId = new Guid("33333333-4444-5555-6666-777777777777")
-                        },
-                        new
-                        {
-                            UserId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
-                            RoleId = new Guid("33333333-4444-5555-6666-777777777777")
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -586,78 +469,36 @@ namespace FitCoachPro.Infrastructure.Migrations
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Admin", b =>
                 {
-                    b.HasBaseType("FitCoachPro.Domain.Entities.Users.User");
-
-                    b.HasDiscriminator().HasValue(0);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Super",
-                            LastName = "Admin",
-                            Role = 0
-                        });
+                    b.HasOne("FitCoachPro.Infrastructure.Identity.AppUser", null)
+                        .WithOne()
+                        .HasForeignKey("FitCoachPro.Domain.Entities.Users.Admin", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Client", b =>
                 {
-                    b.HasBaseType("FitCoachPro.Domain.Entities.Users.User");
+                    b.HasOne("FitCoachPro.Domain.Entities.Users.Coach", "Coach")
+                        .WithMany("Clients")
+                        .HasForeignKey("CoachId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Property<Guid?>("CoachId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasOne("FitCoachPro.Infrastructure.Identity.AppUser", null)
+                        .WithOne()
+                        .HasForeignKey("FitCoachPro.Domain.Entities.Users.Client", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<DateTime?>("SubscriptionExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasIndex("CoachId");
-
-                    b.HasDiscriminator().HasValue(2);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CreatedAt = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "John",
-                            LastName = "Doe",
-                            Role = 2,
-                            CoachId = new Guid("55555555-5555-5555-5555-555555555555")
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333334"),
-                            CreatedAt = new DateTime(2025, 9, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Alice",
-                            LastName = "NoTrainer",
-                            Role = 2
-                        });
+                    b.Navigation("Coach");
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Coach", b =>
                 {
-                    b.HasBaseType("FitCoachPro.Domain.Entities.Users.User");
-
-                    b.HasDiscriminator().HasValue(1);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            CreatedAt = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Jane",
-                            LastName = "Smith",
-                            Role = 1
-                        },
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555556"),
-                            CreatedAt = new DateTime(2025, 9, 3, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FirstName = "Mike",
-                            LastName = "SoloCoach",
-                            Role = 1
-                        });
+                    b.HasOne("FitCoachPro.Infrastructure.Identity.AppUser", null)
+                        .WithOne()
+                        .HasForeignKey("FitCoachPro.Domain.Entities.Users.Coach", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Items.TemplateWorkoutItem", b =>
@@ -720,17 +561,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("FitCoachPro.Infrastructure.Identity.ApplicationUser", b =>
-                {
-                    b.HasOne("FitCoachPro.Domain.Entities.Users.User", "DomainUser")
-                        .WithOne()
-                        .HasForeignKey("FitCoachPro.Infrastructure.Identity.ApplicationUser", "DomainUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DomainUser");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -742,7 +572,7 @@ namespace FitCoachPro.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("FitCoachPro.Infrastructure.Identity.ApplicationUser", null)
+                    b.HasOne("FitCoachPro.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -751,7 +581,7 @@ namespace FitCoachPro.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("FitCoachPro.Infrastructure.Identity.ApplicationUser", null)
+                    b.HasOne("FitCoachPro.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -766,7 +596,7 @@ namespace FitCoachPro.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FitCoachPro.Infrastructure.Identity.ApplicationUser", null)
+                    b.HasOne("FitCoachPro.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -775,31 +605,11 @@ namespace FitCoachPro.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("FitCoachPro.Infrastructure.Identity.ApplicationUser", null)
+                    b.HasOne("FitCoachPro.Infrastructure.Identity.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Client", b =>
-                {
-                    b.HasOne("FitCoachPro.Domain.Entities.Users.Coach", "Coach")
-                        .WithMany("Clients")
-                        .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Coach");
-                });
-
-            modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Plans.TemplateWorkoutPlan", b =>
-                {
-                    b.Navigation("TemplateWorkoutItems");
-                });
-
-            modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Plans.WorkoutPlan", b =>
-                {
-                    b.Navigation("WorkoutItems");
                 });
 
             modelBuilder.Entity("FitCoachPro.Domain.Entities.Users.Client", b =>
@@ -812,6 +622,16 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.Navigation("Clients");
 
                     b.Navigation("TemplateWorkoutPlans");
+                });
+
+            modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Plans.TemplateWorkoutPlan", b =>
+                {
+                    b.Navigation("TemplateWorkoutItems");
+                });
+
+            modelBuilder.Entity("FitCoachPro.Domain.Entities.Workouts.Plans.WorkoutPlan", b =>
+                {
+                    b.Navigation("WorkoutItems");
                 });
 #pragma warning restore 612, 618
         }

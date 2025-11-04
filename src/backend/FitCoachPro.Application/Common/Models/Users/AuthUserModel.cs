@@ -2,11 +2,10 @@
 
 namespace FitCoachPro.Application.Common.Models.Users;
 
-public class AuthModel
+public class AuthUserModel
 {
-    public string Token { get; init; } = null!;
-    public DateTime Expires { get; init; }
     public Guid Id { get; init; }
+    public string Email { get; init; } = null!;
     public string UserName { get; init; } = null!;
     public UserRole Role { get; init; }
 }
