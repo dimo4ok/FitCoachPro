@@ -1,7 +1,8 @@
 ﻿using FitCoachPro.Application.Interfaces.Repository;
 using FitCoachPro.Application.Interfaces.Services;
-using FitCoachPro.Infrastructure.Identity;
+using FitCoachPro.Domain.Entities.Identity;
 using FitCoachPro.Infrastructure.Persistence;
+using FitCoachPro.Infrastructure.Persistence.EntityConfigurations.IdentityConfigurations;
 using FitCoachPro.Infrastructure.Repositories;
 using FitCoachPro.Infrastructure.Security;
 using FitCoachPro.Infrastructure.Services;
@@ -26,7 +27,7 @@ public static class InfrastructureExtensions
         });
 
         //Identity
-        services.AddIdentityCore<AppUser>(options =>
+        services.AddIdentityCore<User>(options =>
         {
             options.Password.RequiredLength = 6;
             options.Password.RequireDigit = false;
@@ -62,7 +63,6 @@ public static class InfrastructureExtensions
         });
 
         services.AddScoped<IDomainUserRepository, DomainUserRepository>();
-        services.AddScoped<IAppUserService, AppUserService>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

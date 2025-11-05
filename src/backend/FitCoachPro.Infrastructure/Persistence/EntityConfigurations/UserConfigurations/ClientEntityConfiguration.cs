@@ -1,5 +1,5 @@
-﻿using FitCoachPro.Domain.Entities.Users;
-using FitCoachPro.Infrastructure.Identity;
+﻿using FitCoachPro.Domain.Entities.Identity;
+using FitCoachPro.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,9 +24,10 @@ public class ClientEntityConfiguration : IEntityTypeConfiguration<Client>
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
-        builder.HasOne<AppUser>()
+        builder.HasOne(x => x.User)
             .WithOne()
-            .HasForeignKey<Client>(x => x.UserId);
+            .HasForeignKey<Client>(x => x.UserId)
+            .IsRequired();
 
         builder.HasOne(x => x.Coach)
             .WithMany(x => x.Clients)

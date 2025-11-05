@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Common.Models.Users;
+﻿using FitCoachPro.Application.Common.Models;
 using FitCoachPro.Application.Interfaces.Repository;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Users;
@@ -16,13 +16,13 @@ public class DomainUserRepository : IDomainUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<UserProfile?> GetByAppUserIdAndRoleAsync(Guid appUserId, UserRole role, CancellationToken cancellationToken = default)
+    public async Task<UserProfile?> GetByAppUserIdAndRoleAsync(Guid userId, UserRole role, CancellationToken cancellationToken = default)
     {
         return role switch
         {
-            UserRole.Admin => await _dbContext.Admins.FirstOrDefaultAsync(x => x.UserId == appUserId, cancellationToken),
-            UserRole.Coach => await _dbContext.Coaches.FirstOrDefaultAsync(x => x.UserId == appUserId, cancellationToken),
-            UserRole.Client => await _dbContext.Clients.FirstOrDefaultAsync(x => x.UserId == appUserId, cancellationToken),
+            UserRole.Admin => await _dbContext.Admins.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken),
+            UserRole.Coach => await _dbContext.Coaches.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken),
+            UserRole.Client => await _dbContext.Clients.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken),
             _ => null
         };
     }

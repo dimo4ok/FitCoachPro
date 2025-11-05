@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FitCoachPro.Infrastructure.Identity;
+namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations.IdentityConfigurations;
 
 public class IdentityRoleConfiguration : IEntityTypeConfiguration<IdentityRole<Guid>>
 {

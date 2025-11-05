@@ -1,4 +1,4 @@
-﻿namespace FitCoachPro.Application.Common.Models.Users;
+﻿namespace FitCoachPro.Application.Common.Models;
 
 public class SignInModel
 {

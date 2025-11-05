@@ -1,13 +1,13 @@
-﻿using FitCoachPro.Domain.Entities.Users;
-using FitCoachPro.Infrastructure.Identity;
+﻿using FitCoachPro.Domain.Entities.Identity;
+using FitCoachPro.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations;
+namespace FitCoachPro.Infrastructure.Persistence.EntityConfigurations.IdentityConfigurations;
 
-public class IdentityEntityConfiguration : IEntityTypeConfiguration<AppUser>
+public class IdentityEntityConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<AppUser> builder)
+    public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -29,17 +29,17 @@ public class IdentityEntityConfiguration : IEntityTypeConfiguration<AppUser>
             .IsRequired();
 
         builder.HasOne<Coach>()
-           .WithOne()
+           .WithOne(x => x.User)
            .HasForeignKey<Coach>(x => x.UserId)
            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne<Client>()
-            .WithOne()
+            .WithOne(x => x.User)
             .HasForeignKey<Client>(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne<Admin>()
-            .WithOne()
+            .WithOne(x => x.User)
             .HasForeignKey<Admin>(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }

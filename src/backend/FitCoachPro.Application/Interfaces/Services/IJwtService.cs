@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Common.Models.Users;
+﻿using FitCoachPro.Application.Common.Models;
 
 namespace FitCoachPro.Application.Interfaces.Services;
 

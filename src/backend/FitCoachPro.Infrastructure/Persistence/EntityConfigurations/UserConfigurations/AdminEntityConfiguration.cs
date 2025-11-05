@@ -1,5 +1,5 @@
-﻿using FitCoachPro.Domain.Entities.Users;
-using FitCoachPro.Infrastructure.Identity;
+﻿using FitCoachPro.Domain.Entities.Identity;
+using FitCoachPro.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,8 +22,9 @@ public class AdminEntityConfiguration : IEntityTypeConfiguration<Admin>
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
-        builder.HasOne<AppUser>()
+        builder.HasOne(x => x.User)
             .WithOne()
-            .HasForeignKey<Admin>(x => x.UserId);
+            .HasForeignKey<Admin>(x => x.UserId)
+            .IsRequired();
     }
 }

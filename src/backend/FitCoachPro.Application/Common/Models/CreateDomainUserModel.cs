@@ -1,6 +1,6 @@
 ﻿using FitCoachPro.Domain.Entities.Enums;
 
-namespace FitCoachPro.Application.Common.Models.Users;
+namespace FitCoachPro.Application.Common.Models;
 
 public class CreateDomainUserModel
 {

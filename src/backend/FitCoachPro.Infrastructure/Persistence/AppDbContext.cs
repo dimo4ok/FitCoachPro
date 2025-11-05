@@ -1,4 +1,5 @@
-﻿using FitCoachPro.Domain.Entities.Users;
+﻿using FitCoachPro.Domain.Entities.Identity;
+using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Items;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Infrastructure.Persistence;
 
-public class AppDbContext : IdentityDbContext<Identity.AppUser, IdentityRole<Guid>, Guid>
+public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

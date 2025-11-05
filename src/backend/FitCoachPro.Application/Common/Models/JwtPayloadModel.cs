@@ -1,11 +1,10 @@
 ﻿using FitCoachPro.Domain.Entities.Enums;
 
-namespace FitCoachPro.Application.Common.Models.Users;
+namespace FitCoachPro.Application.Common.Models;
 
-public class AuthUserModel
+public class JwtPayloadModel
 {
     public Guid Id { get; init; }
-    public string Email { get; init; } = null!;
     public string UserName { get; init; } = null!;
     public UserRole Role { get; init; }
 }
