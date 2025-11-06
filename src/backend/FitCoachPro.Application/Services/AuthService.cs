@@ -14,7 +14,7 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private readonly IDomainUserRepository _domainUserRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IJwtService _jwtService;
     private readonly IUnitOfWork _unitOfWork;
 
@@ -22,21 +22,21 @@ public class AuthService : IAuthService
         (
         UserManager<User> userManager,
         RoleManager<IdentityRole<Guid>> roleManager,
-        IDomainUserRepository domainUserRepository,
+        IUserRepository domainUserRepository,
         IJwtService jwtService,
         IUnitOfWork unitOfWork
         )
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _domainUserRepository = domainUserRepository;
+        _userRepository = domainUserRepository;
         _jwtService = jwtService;
         _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<AuthModel>> SignUpAsync(SignUpModel model, CancellationToken cancellationToken)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
         {
@@ -57,18 +57,18 @@ public class AuthService : IAuthService
             var roleExists = await _roleManager.RoleExistsAsync(model.Role.ToString());
             if (!roleExists)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+                await transaction.RollbackAsync(cancellationToken);
                 return Result<AuthModel>.Fail(UserErrors.RoleNotFound, 400);
             }
 
             var addRoleResult = await _userManager.AddToRoleAsync(user, model.Role.ToString());
             if (!addRoleResult.Succeeded)
             {
-                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+                await transaction.RollbackAsync(cancellationToken);
                 return Result<AuthModel>.Fail(MapErrors(addRoleResult.Errors), 400);
             }
 
-            var domainUserModel = new CreateDomainUserModel
+            var domainUserModel = new CreateUserModel
             {
                 UserId = user.Id,
                 FirstName = model.FirstName,
@@ -76,10 +76,10 @@ public class AuthService : IAuthService
                 Role = model.Role
             };
 
-            var createDomainUserId = await _domainUserRepository.CreateAsync(domainUserModel, cancellationToken);
+            var createDomainUserId = await _userRepository.CreateAsync(domainUserModel, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
 
             var jwtPayloadModel = new JwtPayloadModel
             {
@@ -94,7 +94,7 @@ public class AuthService : IAuthService
         }
         catch
         {
-            await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+            await transaction.RollbackAsync(cancellationToken);
             return Result<AuthModel>.Fail(SystemErrors.TransactionFailed);
         }
     }
@@ -116,7 +116,7 @@ public class AuthService : IAuthService
         if (!Enum.TryParse<UserRole>(roleString, true, out var userRole))
             return Result<AuthModel>.Fail(UserErrors.InvalidRole);
 
-        var domainUser = await _domainUserRepository.GetByAppUserIdAndRoleAsync(user.Id, userRole, cancellationToken);
+        var domainUser = await _userRepository.GetByAppUserIdAndRoleAsync(user.Id, userRole, cancellationToken);
         if (domainUser == null)
             return Result<AuthModel>.Fail(UserErrors.NotFound);
 
@@ -148,10 +148,8 @@ public class AuthService : IAuthService
         };
     }
 
-    private List<Error> MapErrors(IEnumerable<IdentityError> identityErrors)
-    {
-        return identityErrors
-            .Select(x => new Error(x.Code, x.Description))
-            .ToList();
-    }
+    private List<Error> MapErrors(IEnumerable<IdentityError> identityErrors) 
+        => identityErrors
+        .Select(x => new Error(x.Code, x.Description))
+        .ToList();
 }

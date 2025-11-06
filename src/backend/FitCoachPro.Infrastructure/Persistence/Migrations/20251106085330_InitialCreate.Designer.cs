@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitCoachPro.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251105213253_InitialCreate")]
+    [Migration("20251106085330_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -306,7 +306,7 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.Property<Guid>("ClientId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DateOfDoing")
+                    b.Property<DateTime>("WorkoutDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

@@ -4,8 +4,8 @@ using FitCoachPro.Domain.Entities.Users;
 
 namespace FitCoachPro.Application.Interfaces.Repository;
 
-public interface IDomainUserRepository
+public interface IUserRepository
 {
     Task<UserProfile?> GetByAppUserIdAndRoleAsync(Guid userId, UserRole role, CancellationToken cancellationToken = default);
-    Task<Guid> CreateAsync(CreateDomainUserModel model, CancellationToken cancellationToken = default);
+    Task<Guid> CreateAsync(CreateUserModel model, CancellationToken cancellationToken = default);
 }

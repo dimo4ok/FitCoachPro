@@ -10,7 +10,7 @@ public class WorkoutPlanEntityConfiguration : IEntityTypeConfiguration<WorkoutPl
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.DateOfDoing)
+        builder.Property(x => x.WorkoutDate)
             .IsRequired();
 
         builder.HasOne(x => x.Client)

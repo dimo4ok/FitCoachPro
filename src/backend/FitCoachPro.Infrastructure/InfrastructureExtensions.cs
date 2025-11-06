@@ -62,7 +62,7 @@ public static class InfrastructureExtensions
             };
         });
 
-        services.AddScoped<IDomainUserRepository, DomainUserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -5,7 +5,7 @@ namespace FitCoachPro.Domain.Entities.Workouts.Plans;
 
 public class WorkoutPlan : BaseWorkoutPlan
 {
-    public DateTime DateOfDoing { get; set; }
+    public DateTime WorkoutDate { get; set; }
 
     public Guid ClientId { get; set; }
     public Client Client { get; set; } = null!;

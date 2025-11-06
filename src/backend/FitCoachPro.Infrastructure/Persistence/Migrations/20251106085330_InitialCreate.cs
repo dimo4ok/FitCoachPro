@@ -267,7 +267,7 @@ namespace FitCoachPro.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateOfDoing = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    WorkoutDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>

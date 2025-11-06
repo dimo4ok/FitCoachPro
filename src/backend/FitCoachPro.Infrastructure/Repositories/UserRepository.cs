@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Infrastructure.Repositories;
 
-public class DomainUserRepository : IDomainUserRepository
+public class UserRepository : IUserRepository
 {
     private readonly AppDbContext _dbContext;
 
-    public DomainUserRepository(AppDbContext dbContext)
+    public UserRepository(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -27,7 +27,7 @@ public class DomainUserRepository : IDomainUserRepository
         };
     }
 
-    public async Task<Guid> CreateAsync(CreateDomainUserModel model, CancellationToken cancellationToken = default)
+    public async Task<Guid> CreateAsync(CreateUserModel model, CancellationToken cancellationToken = default)
     {
         Guid domainUserId;
 
