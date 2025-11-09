@@ -60,14 +60,4 @@ public class Result<T>
            StatusCode = statusCode,
            Errors = new List<Error> { error }
        };
-
-    public static Result<T> FromResult<U>(Result<U> result)
-        => result.IsSuccess
-            ? Result<T>.Success(default!)
-            : Result<T>.Fail(result.Errors!, result.StatusCode);
-
-    public static Result<T> FromResult<U>(Result<U> result, T data)
-        => result.IsSuccess
-            ? Result<T>.Success(data)
-            : Result<T>.Fail(result.Errors!, result.StatusCode);
 }

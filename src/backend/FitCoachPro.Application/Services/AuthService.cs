@@ -1,5 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Errors;
-using FitCoachPro.Application.Common.Models;
+using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Repository;
 using FitCoachPro.Application.Interfaces.Services;
@@ -131,8 +131,6 @@ public class AuthService : IAuthService
 
         return Result<AuthModel>.Success(authModel);
     }
-
-    //RefreshTokenAsync???
 
     private AuthModel GenerateTokenByData(JwtPayloadModel model)
     {

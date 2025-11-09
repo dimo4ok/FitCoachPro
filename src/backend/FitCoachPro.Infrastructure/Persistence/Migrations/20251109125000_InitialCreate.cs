@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace FitCoachPro.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -331,16 +329,6 @@ namespace FitCoachPro.Infrastructure.Migrations
                         principalTable: "WorkoutPlans",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { new Guid("11111111-1111-1111-1111-111111111111"), null, "Admin", "ADMIN" },
-                    { new Guid("22222222-2222-2222-2222-222222222222"), null, "Coach", "COACH" },
-                    { new Guid("33333333-3333-3333-3333-333333333333"), null, "Client", "CLIENT" }
                 });
 
             migrationBuilder.CreateIndex(

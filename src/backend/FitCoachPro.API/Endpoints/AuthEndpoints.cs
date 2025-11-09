@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Common.Models;
+﻿using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Infrastructure.Services;
 
 namespace FitCoachPro.API.Endpoints;
@@ -18,5 +18,5 @@ public static class AuthEndpoints
             var response = await authService.SignInAsync(model, cancellationToken);
             return Results.Json(response, statusCode: response.StatusCode);
         });
-    } 
+    }
 }

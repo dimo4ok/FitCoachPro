@@ -3,6 +3,7 @@ using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Items;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
+using FitCoachPro.Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

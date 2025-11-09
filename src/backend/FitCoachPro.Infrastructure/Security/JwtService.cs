@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Common.Models;
+﻿using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Infrastructure.Security;
 using Microsoft.Extensions.Options;
