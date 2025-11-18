@@ -9,6 +9,34 @@ namespace FitCoachPro.Application.Common.Extensions;
 
 public static class WorkoutExtensions
 {
+    public static WorkoutPlan ToEntity(this CreateWorkoutPlanModel model)
+    {
+        return new WorkoutPlan
+        {
+            WorkoutDate = model.WorkoutDate,
+            ClientId = model.ClientId,
+            WorkoutItems = model.WorkoutItems.Select(x => x.ToEntity()).ToList()
+        };
+    }
+
+    public static WorkoutItem ToEntity(this CreateWorkoutItemModel model)
+    {
+        return new WorkoutItem
+        {
+            Description = model.Description,
+            ExerciseId = model.ExerciseId
+        };
+    }
+
+    public static WorkoutItem ToEntity(this UpdateWorkoutItemModel model)
+    {
+        return new WorkoutItem
+        {
+            Description = model.Description,
+            ExerciseId = model.ExerciseId,
+        };
+    }
+
     public static WorkoutPlanModel ToModel(this WorkoutPlan workoutPlan)
     {
         return new WorkoutPlanModel(
@@ -16,6 +44,11 @@ public static class WorkoutExtensions
                 workoutPlan.WorkoutDate,
                 workoutPlan.WorkoutItems.Select(x => x.ToModel())
                 );
+    }
+
+    public static IReadOnlyList<WorkoutPlanModel> ToModel(this IReadOnlyList<WorkoutPlan> workoutPlans)
+    {
+        return workoutPlans.Select(x => x.ToModel()).ToList();
     }
 
     public static WorkoutItemModel ToModel(this WorkoutItem workoutItem)
