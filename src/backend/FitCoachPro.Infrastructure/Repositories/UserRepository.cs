@@ -55,7 +55,7 @@ public class UserRepository : IUserRepository
         return domainUserId;
     }
 
-    public async Task<bool> CoachOwnsClientAsync(Guid coachId, Guid clientId, CancellationToken cancellationToken = default)
+    public async Task<bool> CanCoachAccessClientAsync(Guid coachId, Guid clientId, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Clients.AnyAsync(x => x.Id == clientId && x.CoachId == coachId, cancellationToken);
     }
