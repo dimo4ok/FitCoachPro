@@ -2,4 +2,4 @@
 
 namespace FitCoachPro.Application.Common.Models.WorkoutPlan;
 
-public record WorkoutPlanModel(Guid id, DateTime WorkoutDate, IEnumerable<WorkoutItemModel> WorkoutItems);
+public record WorkoutPlanModel(Guid Id, DateTime WorkoutDate, IEnumerable<WorkoutItemModel> WorkoutItems);

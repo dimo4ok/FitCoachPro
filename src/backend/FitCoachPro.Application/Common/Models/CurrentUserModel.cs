@@ -2,4 +2,4 @@
 
 namespace FitCoachPro.Application.Common.Models;
 
-public record CurrentUserModel(Guid userId, UserRole role);
+public record CurrentUserModel(Guid UserId, UserRole Role);
