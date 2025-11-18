@@ -95,7 +95,7 @@ public class AuthService : IAuthService
         catch
         {
             await transaction.RollbackAsync(cancellationToken);
-            return Result<AuthModel>.Fail(SystemErrors.TransactionFailed);
+            return Result<AuthModel>.Fail(SystemErrors.TransactionFailed, 500);
         }
     }
 
@@ -107,14 +107,14 @@ public class AuthService : IAuthService
 
         var validPassword = await _userManager.CheckPasswordAsync(user, model.Password);
         if (!validPassword)
-            return Result<AuthModel>.Fail(UserErrors.WrongPassword);
+            return Result<AuthModel>.Fail(UserErrors.WrongPassword, 401);
 
         var roleString = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
         if (string.IsNullOrEmpty(roleString))
-            return Result<AuthModel>.Fail(UserErrors.RoleNotFound);
+            return Result<AuthModel>.Fail(UserErrors.RoleNotFound, 500);
 
         if (!Enum.TryParse<UserRole>(roleString, true, out var userRole))
-            return Result<AuthModel>.Fail(UserErrors.InvalidRole);
+            return Result<AuthModel>.Fail(UserErrors.InvalidRole, 500);
 
         var domainUser = await _userRepository.GetByAppUserIdAndRoleAsync(user.Id, userRole, cancellationToken);
         if (domainUser == null)
