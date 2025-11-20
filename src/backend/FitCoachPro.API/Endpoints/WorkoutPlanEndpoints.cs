@@ -67,7 +67,7 @@ public static class WorkoutPlanEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<CreateWorkoutPlanModel>>()
-            .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Coach}" });
+            .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Coach}, {UserRole.Admin}" });
 
         app.MapPut(ApiRoutes.WorkoutPlan.Update,
             async (
@@ -88,7 +88,7 @@ public static class WorkoutPlanEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<UpdateWorkoutPlanModel>>()
-            .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Coach}" });
+            .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Coach}, {UserRole.Admin}" });
 
         app.MapDelete(ApiRoutes.WorkoutPlan.Delete,
             async (

@@ -34,8 +34,7 @@ public class WorkoutPlanService : IWorkoutPlanService
         if (workoutPlan == null)
             return Result<WorkoutPlanModel>.Fail(WorkoutPlanErrors.NotFound);
 
-        if (userModel.Role == UserRole.Client && workoutPlan.ClientId != userModel.UserId
-            || userModel.Role == UserRole.Coach && !await _userRepository.CanCoachAccessClientAsync(userModel.UserId, workoutPlan.ClientId, cancellationToken))
+        if(!await HasUserAccessToWorkoutPlanAsync(userModel, workoutPlan.ClientId, cancellationToken))
             return Result<WorkoutPlanModel>.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         return Result<WorkoutPlanModel>.Success(workoutPlan.ToModel());
@@ -54,7 +53,7 @@ public class WorkoutPlanService : IWorkoutPlanService
     //For Coaches/Admins
     public async Task<Result<IReadOnlyList<WorkoutPlanModel>>> GetClientWorkoutPlansAsync(Guid clientId, CurrentUserModel userModel, CancellationToken cancellationToken = default)
     {
-        if (userModel.Role == UserRole.Coach && !await _userRepository.CanCoachAccessClientAsync(userModel.UserId, clientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(userModel, clientId, cancellationToken))
             return Result<IReadOnlyList<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         var workoutPlans = await _workoutPlanRepository.GetAllByUserIdAsync(clientId, cancellationToken);
@@ -66,7 +65,7 @@ public class WorkoutPlanService : IWorkoutPlanService
 
     public async Task<Result> CreateAsync(CreateWorkoutPlanModel model, CurrentUserModel userModel, CancellationToken cancellationToken = default)
     {
-        if (userModel.Role == UserRole.Coach && !await _userRepository.CanCoachAccessClientAsync(userModel.UserId, model.ClientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(userModel, model.ClientId, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken))
@@ -86,7 +85,7 @@ public class WorkoutPlanService : IWorkoutPlanService
 
     public async Task<Result> UpdateAsync(Guid workoutPlanId, UpdateWorkoutPlanModel model, CurrentUserModel userModel, CancellationToken cancellationToken = default)
     {
-        if (userModel.Role == UserRole.Coach && !await _userRepository.CanCoachAccessClientAsync(userModel.UserId, model.ClientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(userModel, model.ClientId, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         var workoutPlan = await _workoutPlanRepository.GetByIdTrackedAsync(workoutPlanId, cancellationToken);
@@ -96,17 +95,21 @@ public class WorkoutPlanService : IWorkoutPlanService
         if(workoutPlan.ClientId != model.ClientId)
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
+        if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken)
+            && model.WorkoutDate != workoutPlan.WorkoutDate)
+            return Result.Fail(WorkoutPlanErrors.AlreadyExists, 409);
+
+        workoutPlan.WorkoutDate = model.WorkoutDate;
+
         var exercises = await _exerciseRepository.GetAllAsync(cancellationToken);
         if(!exercises.Any())
             return Result.Fail(ExerciseErrors.NotFound);
 
-        var (validateItemsSuccess, validateItemsError) = ValidateItems(workoutPlan.WorkoutItems, model.WorkoutItems, exercises);
+        var (validateItemsSuccess, validateItemsError) = ValidateUpdateItems(workoutPlan.WorkoutItems, model.WorkoutItems, exercises);
         if (validateItemsSuccess == false)
             return Result.Fail(validateItemsError!, 400);
 
         SyncItems(workoutPlan.WorkoutItems, model.WorkoutItems);
-
-        workoutPlan.WorkoutDate = model.WorkoutDate;
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -119,17 +122,17 @@ public class WorkoutPlanService : IWorkoutPlanService
         if (workoutPlan == null)
             return Result.Fail(WorkoutPlanErrors.NotFound);
 
-        if (userModel.Role == UserRole.Coach && !await _userRepository.CanCoachAccessClientAsync(userModel.UserId, workoutPlan.ClientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(userModel, workoutPlan.ClientId, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         await _workoutPlanRepository.DeleteAsync(workoutPlan, cancellationToken);
         return Result.Success(204);
     }
 
-    private (bool, Error?) ExercisesExist(IEnumerable<CreateWorkoutItemModel> items, IReadOnlyList<Exercise> exercises)
+    private (bool, Error?) ExercisesExist(IEnumerable<CreateWorkoutItemModel> newItems, IReadOnlyList<Exercise> exercises)
     {
         var exercisIdsSet = exercises.Select(exercise => exercise.Id).ToHashSet();
-        foreach (var ni in items)
+        foreach (var ni in newItems)
         {
             if (!exercisIdsSet.Contains(ni.ExerciseId))
                 return (false, ExerciseErrors.InvalidExerciseId);
@@ -138,7 +141,7 @@ public class WorkoutPlanService : IWorkoutPlanService
         return (true, null);
     }
 
-    private (bool, Error?) ValidateItems(ICollection<WorkoutItem> currentItems, IEnumerable<UpdateWorkoutItemModel> newItems, IReadOnlyList<Exercise> exercises)
+    private (bool, Error?) ValidateUpdateItems(ICollection<WorkoutItem> currentItems, IEnumerable<UpdateWorkoutItemModel> newItems, IReadOnlyList<Exercise> exercises)
     {
         var exercisIdsSet = exercises.Select(exercise => exercise.Id).ToHashSet();
 
@@ -156,7 +159,7 @@ public class WorkoutPlanService : IWorkoutPlanService
 
     private void SyncItems(ICollection<WorkoutItem> currentItems, IEnumerable<UpdateWorkoutItemModel> newItems)
     {
-        var itemsToRemove = currentItems.Where(ci => newItems.All(ni => ni.Id != ci.Id)).ToArray();
+        var itemsToRemove = currentItems.Where(ci => newItems.All(ni => ni.Id != ci.Id)).ToList();
 
         foreach (var i in itemsToRemove)
             currentItems.Remove(i);
@@ -177,5 +180,16 @@ public class WorkoutPlanService : IWorkoutPlanService
                 continue;
             }
         }
+    }
+
+    private async Task<bool> HasUserAccessToWorkoutPlanAsync(CurrentUserModel userModel, Guid clientId, CancellationToken cancellationToken)
+    {
+        return userModel.Role switch
+        {
+            UserRole.Client => clientId == userModel.UserId,
+            UserRole.Coach => await _userRepository.CanCoachAccessClientAsync(userModel.UserId, clientId, cancellationToken),
+            UserRole.Admin => true,
+            _ => false
+        };
     }
 }
