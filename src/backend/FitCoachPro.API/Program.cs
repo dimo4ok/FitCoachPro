@@ -1,4 +1,5 @@
 using FitCoachPro.API.Endpoints;
+using FitCoachPro.API.Exceptions;
 using FitCoachPro.Application;
 using FitCoachPro.Infrastructure;
 using FitCoachPro.Infrastructure.Persistence;
@@ -67,6 +68,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseAuthentication();
 app.UseAuthorization();

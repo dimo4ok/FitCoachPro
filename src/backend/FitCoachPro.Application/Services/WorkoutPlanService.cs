@@ -72,6 +72,14 @@ public class WorkoutPlanService : IWorkoutPlanService
         if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.AlreadyExists, 409);
 
+        var exercises = await _exerciseRepository.GetAllAsync(cancellationToken);
+        if (!exercises.Any())
+            return Result.Fail(ExerciseErrors.NotFound);
+
+        var (exercsieExistSuccess, exercsieExistError) = ExercisesExist(model.WorkoutItems, exercises);
+        if(!exercsieExistSuccess)
+            return Result.Fail(exercsieExistError!, 400);
+
         await _workoutPlanRepository.CreateAsync(model.ToEntity(), cancellationToken);
         return Result.Success(201);
     }
@@ -84,6 +92,9 @@ public class WorkoutPlanService : IWorkoutPlanService
         var workoutPlan = await _workoutPlanRepository.GetByIdTrackedAsync(workoutPlanId, cancellationToken);
         if (workoutPlan == null)
             return Result.Fail(WorkoutPlanErrors.NotFound);
+
+        if(workoutPlan.ClientId != model.ClientId)
+            return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         var exercises = await _exerciseRepository.GetAllAsync(cancellationToken);
         if(!exercises.Any())
@@ -115,7 +126,19 @@ public class WorkoutPlanService : IWorkoutPlanService
         return Result.Success(204);
     }
 
-    private (bool, Error?) ValidateItems(ICollection<WorkoutItem> currentItems, IReadOnlyCollection<UpdateWorkoutItemModel> newItems, IReadOnlyList<Exercise> exercises)
+    private (bool, Error?) ExercisesExist(IEnumerable<CreateWorkoutItemModel> items, IReadOnlyList<Exercise> exercises)
+    {
+        var exercisIdsSet = exercises.Select(exercise => exercise.Id).ToHashSet();
+        foreach (var ni in items)
+        {
+            if (!exercisIdsSet.Contains(ni.ExerciseId))
+                return (false, ExerciseErrors.InvalidExerciseId);
+        }
+
+        return (true, null);
+    }
+
+    private (bool, Error?) ValidateItems(ICollection<WorkoutItem> currentItems, IEnumerable<UpdateWorkoutItemModel> newItems, IReadOnlyList<Exercise> exercises)
     {
         var exercisIdsSet = exercises.Select(exercise => exercise.Id).ToHashSet();
 
@@ -131,9 +154,9 @@ public class WorkoutPlanService : IWorkoutPlanService
         return (true, null);
     }
 
-    private void SyncItems(ICollection<WorkoutItem> currentItems, IReadOnlyCollection<UpdateWorkoutItemModel> newItems)
+    private void SyncItems(ICollection<WorkoutItem> currentItems, IEnumerable<UpdateWorkoutItemModel> newItems)
     {
-        var itemsToRemove = currentItems.Where(ci => newItems.All(ni => ni.Id != ci.Id)).ToList();
+        var itemsToRemove = currentItems.Where(ci => newItems.All(ni => ni.Id != ci.Id)).ToArray();
 
         foreach (var i in itemsToRemove)
             currentItems.Remove(i);
