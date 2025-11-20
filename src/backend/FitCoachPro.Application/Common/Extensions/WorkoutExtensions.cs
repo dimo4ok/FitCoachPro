@@ -42,13 +42,13 @@ public static class WorkoutExtensions
         return new WorkoutPlanModel(
                 workoutPlan.Id,
                 workoutPlan.WorkoutDate,
-                workoutPlan.WorkoutItems.Select(x => x.ToModel())
+                workoutPlan.WorkoutItems.Select(x => x.ToModel()).ToList().AsReadOnly()
                 );
     }
 
     public static IReadOnlyList<WorkoutPlanModel> ToModel(this IReadOnlyList<WorkoutPlan> workoutPlans)
     {
-        return workoutPlans.Select(x => x.ToModel()).ToList();
+        return workoutPlans.Select(x => x.ToModel()).ToList().AsReadOnly();
     }
 
     public static WorkoutItemModel ToModel(this WorkoutItem workoutItem)
