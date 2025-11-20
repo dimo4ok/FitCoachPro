@@ -49,7 +49,7 @@ public class UserRepository : IUserRepository
                 domainUserId = client.Id;
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(model.Role), "Unknown user role");
+                throw new ArgumentOutOfRangeException(nameof(model), "Unknown user role");
         }
 
         return domainUserId;
