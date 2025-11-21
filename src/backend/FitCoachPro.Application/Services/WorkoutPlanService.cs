@@ -9,41 +9,39 @@ using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Items;
-using FitCoachPro.Infrastructure.Repositories;
 
 namespace FitCoachPro.Application.Services;
 
-public class WorkoutPlanService : IWorkoutPlanService
+public class WorkoutPlanService(
+    IUserContextService userContext,
+    IWorkoutPlanRepository workoutPlanRepository, 
+    IUserRepository userRepository, 
+    IExerciseRepository exerciseRepository, 
+    IUnitOfWork unitOfWork
+        ) : IWorkoutPlanService
 {
-    private readonly IWorkoutPlanRepository _workoutPlanRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly IExerciseRepository _exerciseRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserContextService _userContext = userContext;
+    private readonly IWorkoutPlanRepository _workoutPlanRepository = workoutPlanRepository;
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IExerciseRepository _exerciseRepository = exerciseRepository;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public WorkoutPlanService(IWorkoutPlanRepository workoutPlanRepository, IUserRepository userRepository, IExerciseRepository exerciseRepository, IUnitOfWork unitOfWork)
-    {
-        _workoutPlanRepository = workoutPlanRepository;
-        _userRepository = userRepository;
-        _exerciseRepository = exerciseRepository;
-        _unitOfWork = unitOfWork;
-    }
-
-    public async Task<Result<WorkoutPlanModel>> GetByIdAsync(Guid id, CurrentUserModel userModel, CancellationToken cancellationToken = default)
+    public async Task<Result<WorkoutPlanModel>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var workoutPlan = await _workoutPlanRepository.GetByIdAsync(id, cancellationToken);
         if (workoutPlan == null)
             return Result<WorkoutPlanModel>.Fail(WorkoutPlanErrors.NotFound);
 
-        if(!await HasUserAccessToWorkoutPlanAsync(userModel, workoutPlan.ClientId, cancellationToken))
+        if(!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, workoutPlan.ClientId, cancellationToken))
             return Result<WorkoutPlanModel>.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         return Result<WorkoutPlanModel>.Success(workoutPlan.ToModel());
     }
 
     //For Clients
-    public async Task<Result<IReadOnlyList<WorkoutPlanModel>>> GetMyWorkoutPlansAsync(CurrentUserModel userModel, CancellationToken cancellationToken = default)
+    public async Task<Result<IReadOnlyList<WorkoutPlanModel>>> GetMyWorkoutPlansAsync(CancellationToken cancellationToken = default)
     {
-        var workoutPlans = await _workoutPlanRepository.GetAllByUserIdAsync(userModel.UserId, cancellationToken);
+        var workoutPlans = await _workoutPlanRepository.GetAllByUserIdAsync(_userContext.Current.UserId, cancellationToken);
         if (!workoutPlans.Any())
             return Result<IReadOnlyList<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.NotFound);
 
@@ -51,9 +49,9 @@ public class WorkoutPlanService : IWorkoutPlanService
     }
 
     //For Coaches/Admins
-    public async Task<Result<IReadOnlyList<WorkoutPlanModel>>> GetClientWorkoutPlansAsync(Guid clientId, CurrentUserModel userModel, CancellationToken cancellationToken = default)
+    public async Task<Result<IReadOnlyList<WorkoutPlanModel>>> GetClientWorkoutPlansAsync(Guid clientId, CancellationToken cancellationToken = default)
     {
-        if (!await HasUserAccessToWorkoutPlanAsync(userModel, clientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, clientId, cancellationToken))
             return Result<IReadOnlyList<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         var workoutPlans = await _workoutPlanRepository.GetAllByUserIdAsync(clientId, cancellationToken);
@@ -63,9 +61,9 @@ public class WorkoutPlanService : IWorkoutPlanService
         return Result<IReadOnlyList<WorkoutPlanModel>>.Success(workoutPlans.ToModel());
     }
 
-    public async Task<Result> CreateAsync(CreateWorkoutPlanModel model, CurrentUserModel userModel, CancellationToken cancellationToken = default)
+    public async Task<Result> CreateAsync(CreateWorkoutPlanModel model, CancellationToken cancellationToken = default)
     {
-        if (!await HasUserAccessToWorkoutPlanAsync(userModel, model.ClientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, model.ClientId, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken))
@@ -80,12 +78,14 @@ public class WorkoutPlanService : IWorkoutPlanService
             return Result.Fail(exercsieExistError!, 400);
 
         await _workoutPlanRepository.CreateAsync(model.ToEntity(), cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
         return Result.Success(201);
     }
 
-    public async Task<Result> UpdateAsync(Guid workoutPlanId, UpdateWorkoutPlanModel model, CurrentUserModel userModel, CancellationToken cancellationToken = default)
+    public async Task<Result> UpdateAsync(Guid workoutPlanId, UpdateWorkoutPlanModel model, CancellationToken cancellationToken = default)
     {
-        if (!await HasUserAccessToWorkoutPlanAsync(userModel, model.ClientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, model.ClientId, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         var workoutPlan = await _workoutPlanRepository.GetByIdTrackedAsync(workoutPlanId, cancellationToken);
@@ -116,16 +116,18 @@ public class WorkoutPlanService : IWorkoutPlanService
         return Result.Success();
     }
 
-    public async Task<Result> DeleteByIdAsync(Guid id, CurrentUserModel userModel, CancellationToken cancellationToken = default)
+    public async Task<Result> DeleteByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var workoutPlan = await _workoutPlanRepository.GetByIdTrackedAsync(id, cancellationToken);
         if (workoutPlan == null)
             return Result.Fail(WorkoutPlanErrors.NotFound);
 
-        if (!await HasUserAccessToWorkoutPlanAsync(userModel, workoutPlan.ClientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, workoutPlan.ClientId, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         await _workoutPlanRepository.DeleteAsync(workoutPlan, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
         return Result.Success(204);
     }
 
@@ -182,12 +184,12 @@ public class WorkoutPlanService : IWorkoutPlanService
         }
     }
 
-    private async Task<bool> HasUserAccessToWorkoutPlanAsync(CurrentUserModel userModel, Guid clientId, CancellationToken cancellationToken)
+    private async Task<bool> HasUserAccessToWorkoutPlanAsync(UserContext currentUser, Guid clientId, CancellationToken cancellationToken)
     {
-        return userModel.Role switch
+        return currentUser.Role switch
         {
-            UserRole.Client => clientId == userModel.UserId,
-            UserRole.Coach => await _userRepository.CanCoachAccessClientAsync(userModel.UserId, clientId, cancellationToken),
+            UserRole.Client => clientId == currentUser.UserId,
+            UserRole.Coach => await _userRepository.CanCoachAccessClientAsync(currentUser.UserId, clientId, cancellationToken),
             UserRole.Admin => true,
             _ => false
         };

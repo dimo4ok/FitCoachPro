@@ -6,9 +6,9 @@ namespace FitCoachPro.Application.Common.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static CurrentUserModel ToCurrentUser(this ClaimsPrincipal user)
+    public static UserContext ToUserContext(this ClaimsPrincipal user)
     {
-        return new CurrentUserModel(
+        return new UserContext(
             Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)!),
             Enum.Parse<UserRole>(user.FindFirstValue(ClaimTypes.Role)!)
             );

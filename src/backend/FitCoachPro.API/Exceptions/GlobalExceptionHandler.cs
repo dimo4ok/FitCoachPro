@@ -6,14 +6,9 @@ using System.Text.Json;
 
 namespace FitCoachPro.API.Exceptions;
 
-internal sealed class GlobalExceptionHandler
+internal sealed class GlobalExceptionHandler(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public GlobalExceptionHandler(RequestDelegate next)
-    {
-        _next = next;
-    }
+    private readonly RequestDelegate _next = next;
 
     public async Task InvokeAsync(HttpContext context)
     {

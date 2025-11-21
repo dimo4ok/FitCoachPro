@@ -5,14 +5,9 @@ using FluentValidation;
 
 namespace FitCoachPro.API.Filters;
 
-public class ValidationFilter<T> : IEndpointFilter where T : class
+public class ValidationFilter<T>(IServiceProvider serviceProvider) : IEndpointFilter where T : class
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public ValidationFilter(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
+    private readonly IServiceProvider _serviceProvider = serviceProvider;
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {

@@ -1,13 +1,12 @@
 ﻿using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Interfaces.Services;
-using FitCoachPro.Infrastructure.Security;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace FitCoachPro.Infrastructure.Services;
+namespace FitCoachPro.Infrastructure.Security;
 
 public class JwtService(IOptions<JwtOptions> jwtOptions) : IJwtService
 {

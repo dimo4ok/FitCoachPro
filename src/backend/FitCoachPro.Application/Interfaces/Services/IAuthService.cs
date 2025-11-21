@@ -1,7 +1,7 @@
 ﻿using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Common.Response;
 
-namespace FitCoachPro.Infrastructure.Services;
+namespace FitCoachPro.Application.Interfaces.Services;
 
 public interface IAuthService
 {

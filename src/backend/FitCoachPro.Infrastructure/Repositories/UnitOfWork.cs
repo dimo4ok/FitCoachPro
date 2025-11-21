@@ -1,16 +1,12 @@
-﻿using FitCoachPro.Infrastructure.Persistence;
+﻿using FitCoachPro.Application.Interfaces.Repository;
+using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace FitCoachPro.Infrastructure.Repositories;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(AppDbContext dbContext) : IUnitOfWork
 {
-    private readonly AppDbContext _dbContext;
-
-    public UnitOfWork(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
 
     public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default) 
         => await _dbContext.Database.BeginTransactionAsync(cancellationToken);

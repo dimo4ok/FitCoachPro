@@ -7,25 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
-    private readonly AppDbContext _dbContext;
-
-    public UserRepository(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
 
     public async Task<UserProfile?> GetByAppUserIdAndRoleAsync(Guid userId, UserRole role, CancellationToken cancellationToken = default)
-    {
-        return role switch
+        => role switch
         {
             UserRole.Admin => await _dbContext.Admins.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken),
             UserRole.Coach => await _dbContext.Coaches.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken),
             UserRole.Client => await _dbContext.Clients.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken),
             _ => null
         };
-    }
 
     public async Task<Guid> CreateAsync(CreateUserModel model, CancellationToken cancellationToken = default)
     {
@@ -56,7 +49,9 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<bool> CanCoachAccessClientAsync(Guid coachId, Guid clientId, CancellationToken cancellationToken = default)
-    {
-        return await _dbContext.Clients.AnyAsync(x => x.Id == clientId && x.CoachId == coachId, cancellationToken);
-    }
+        => await _dbContext.Clients.AnyAsync(
+            x => x.Id == clientId
+            && x.CoachId == coachId,
+            cancellationToken);
+
 }

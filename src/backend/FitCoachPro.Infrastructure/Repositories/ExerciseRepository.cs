@@ -5,14 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Infrastructure.Repositories;
 
-public class ExerciseRepository : IExerciseRepository
+public class ExerciseRepository(AppDbContext context) : IExerciseRepository
 {
-    private readonly AppDbContext _context;
-
-    public ExerciseRepository(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly AppDbContext _context = context;
 
     public async Task<IReadOnlyList<Exercise>> GetAllAsync(CancellationToken cancellationToken = default)
     {

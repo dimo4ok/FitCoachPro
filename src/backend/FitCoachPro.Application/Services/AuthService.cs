@@ -1,38 +1,28 @@
 ﻿using FitCoachPro.Application.Common.Errors;
+using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Repository;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Identity;
-using FitCoachPro.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 
-namespace FitCoachPro.Infrastructure.Services;
+namespace FitCoachPro.Application.Services;
 
-public class AuthService : IAuthService
+public class AuthService(
+    UserManager<User> userManager,
+    RoleManager<IdentityRole<Guid>> roleManager,
+    IUserRepository domainUserRepository,
+    IJwtService jwtService,
+    IUnitOfWork unitOfWork
+        ) : IAuthService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
-    private readonly IUserRepository _userRepository;
-    private readonly IJwtService _jwtService;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public AuthService
-        (
-        UserManager<User> userManager,
-        RoleManager<IdentityRole<Guid>> roleManager,
-        IUserRepository domainUserRepository,
-        IJwtService jwtService,
-        IUnitOfWork unitOfWork
-        )
-    {
-        _userManager = userManager;
-        _roleManager = roleManager;
-        _userRepository = domainUserRepository;
-        _jwtService = jwtService;
-        _unitOfWork = unitOfWork;
-    }
+    private readonly UserManager<User> _userManager = userManager;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager = roleManager;
+    private readonly IUserRepository _userRepository = domainUserRepository;
+    private readonly IJwtService _jwtService = jwtService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<Result<AuthModel>> SignUpAsync(SignUpModel model, CancellationToken cancellationToken)
     {
@@ -52,7 +42,7 @@ public class AuthService : IAuthService
 
             var createUserResult = await _userManager.CreateAsync(user, model.Password);
             if (!createUserResult.Succeeded)
-                return Result<AuthModel>.Fail(MapErrors(createUserResult.Errors), 400);
+                return Result<AuthModel>.Fail(createUserResult.Errors.ToErrorList(), 400);
 
             var roleExists = await _roleManager.RoleExistsAsync(model.Role.ToString());
             if (!roleExists)
@@ -65,7 +55,7 @@ public class AuthService : IAuthService
             if (!addRoleResult.Succeeded)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                return Result<AuthModel>.Fail(MapErrors(addRoleResult.Errors), 400);
+                return Result<AuthModel>.Fail(addRoleResult.Errors.ToErrorList(), 400);
             }
 
             var domainUserModel = new CreateUserModel
@@ -107,7 +97,7 @@ public class AuthService : IAuthService
 
         var validPassword = await _userManager.CheckPasswordAsync(user, model.Password);
         if (!validPassword)
-            return Result<AuthModel>.Fail(UserErrors.WrongPassword, 401);
+            return Result<AuthModel>.Fail(UserErrors.InvalidCredentials, 401);
 
         var roleString = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
         if (string.IsNullOrEmpty(roleString))
@@ -145,9 +135,4 @@ public class AuthService : IAuthService
             Role = model.Role
         };
     }
-
-    private List<Error> MapErrors(IEnumerable<IdentityError> identityErrors) 
-        => identityErrors
-        .Select(x => new Error(x.Code, x.Description))
-        .ToList();
 }

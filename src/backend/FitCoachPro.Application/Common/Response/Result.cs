@@ -7,14 +7,14 @@ public class Result
     public List<Error>? Errors { get; init; }
 
     public static Result Success(int statusCode = 200)
-        => new Result
+        => new()
         {
             IsSuccess = true,
             StatusCode = statusCode
         };
 
     public static Result Fail(List<Error> errors, int statusCode = 404)
-        => new Result
+        => new()
         {
             IsSuccess = false,
             StatusCode = statusCode,
@@ -22,7 +22,7 @@ public class Result
         };
 
     public static Result Fail(Error error, int statusCode = 404)
-        => new Result
+        => new()
         {
             IsSuccess = false,
             StatusCode = statusCode,
@@ -38,7 +38,7 @@ public class Result<T>
     public List<Error>? Errors { get; init; }
 
     public static Result<T> Success(T data, int statusCode = 200)
-        => new Result<T>
+        => new()
         {
             IsSuccess = true,
             StatusCode = statusCode,
@@ -46,7 +46,7 @@ public class Result<T>
         };
 
     public static Result<T> Fail(List<Error> errors, int statusCode = 404)
-        => new Result<T>
+        => new()
         {
             IsSuccess = false,
             StatusCode = statusCode,
@@ -54,7 +54,7 @@ public class Result<T>
         };
 
     public static Result<T> Fail(Error error, int statusCode = 404)
-       => new Result<T>
+       => new()
        {
            IsSuccess = false,
            StatusCode = statusCode,

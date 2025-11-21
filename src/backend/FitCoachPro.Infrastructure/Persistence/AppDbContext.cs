@@ -3,17 +3,14 @@ using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Items;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
-using FitCoachPro.Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Infrastructure.Persistence;
 
-public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
     public DbSet<Admin> Admins { get; set; }
     public DbSet<Coach> Coaches { get; set; }
     public DbSet<Client> Clients { get; set; }

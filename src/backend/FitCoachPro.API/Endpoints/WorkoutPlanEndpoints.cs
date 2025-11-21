@@ -20,8 +20,7 @@ public static class WorkoutPlanEndpoints
                 CancellationToken canceletionToken = default
             ) =>
             {
-                var currentUserModel = context.User.ToCurrentUser();
-                var response = await service.GetByIdAsync(id, currentUserModel, canceletionToken);
+                var response = await service.GetByIdAsync(id, canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization();
@@ -33,8 +32,7 @@ public static class WorkoutPlanEndpoints
                 CancellationToken canceletionToken = default
             ) =>
             {
-                var currentUserModel = context.User.ToCurrentUser();
-                var response = await service.GetMyWorkoutPlansAsync(currentUserModel, canceletionToken);
+                var response = await service.GetMyWorkoutPlansAsync(canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Client}" });
@@ -47,8 +45,7 @@ public static class WorkoutPlanEndpoints
                 CancellationToken canceletionToken = default
             ) =>
             {
-                var currentUserModel = context.User.ToCurrentUser();
-                var response = await service.GetClientWorkoutPlansAsync(clientId, currentUserModel, canceletionToken);
+                var response = await service.GetClientWorkoutPlansAsync(clientId, canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Coach}, {UserRole.Admin}" });
@@ -61,8 +58,7 @@ public static class WorkoutPlanEndpoints
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var currentUserModel = context.User.ToCurrentUser();
-                var response = await service.CreateAsync(model, currentUserModel, cancellationToken);
+                var response = await service.CreateAsync(model, cancellationToken);
 
                 return Results.Json(response, statusCode: response.StatusCode);
             })
@@ -83,8 +79,7 @@ public static class WorkoutPlanEndpoints
                 if (!result.IsValid)
                     return Results.BadRequest(result.ToDictionary());
 
-                var currentUserModel = context.User.ToCurrentUser();
-                var response = await service.UpdateAsync(id, model, currentUserModel, cancellationToken);
+                var response = await service.UpdateAsync(id, model, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<UpdateWorkoutPlanModel>>()
@@ -98,8 +93,7 @@ public static class WorkoutPlanEndpoints
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var currentUserModel = context.User.ToCurrentUser();
-                var response = await service.DeleteByIdAsync(id, currentUserModel, cancellationToken);
+                var response = await service.DeleteByIdAsync(id, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Coach}, {UserRole.Admin}" });

@@ -1,6 +1,6 @@
 ﻿using FitCoachPro.API.Filters;
 using FitCoachPro.Application.Common.Models.Auth;
-using FitCoachPro.Infrastructure.Services;
+using FitCoachPro.Application.Interfaces.Services;
 
 namespace FitCoachPro.API.Endpoints;
 
