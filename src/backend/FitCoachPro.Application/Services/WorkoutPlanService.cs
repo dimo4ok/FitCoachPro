@@ -1,6 +1,7 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Models;
+using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Models.WorkoutItem;
 using FitCoachPro.Application.Common.Models.WorkoutPlan;
 using FitCoachPro.Application.Common.Response;
@@ -48,6 +49,17 @@ public class WorkoutPlanService(
         return Result<IReadOnlyList<WorkoutPlanModel>>.Success(workoutPlans.ToModel());
     }
 
+    public async Task<Result<PaginatedModel<WorkoutPlanModel>>> GetMyWorkoutPlansWithPaginationAsync(PaginationParams paginationParams, CancellationToken cancellationToken = default)
+    {
+        var query = _workoutPlanRepository.GetAllByUserIdAsQuery(_userContext.Current.UserId);
+        if (!query.Any())
+            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.NotFound);
+
+        var paginated = await query.PaginateAsync(paginationParams.PageNumber, paginationParams.PageSize, cancellationToken);
+
+        return Result<PaginatedModel<WorkoutPlanModel>>.Success(paginated.ToModel());
+    }
+
     //For Coaches/Admins
     public async Task<Result<IReadOnlyList<WorkoutPlanModel>>> GetClientWorkoutPlansAsync(Guid clientId, CancellationToken cancellationToken = default)
     {
@@ -59,6 +71,20 @@ public class WorkoutPlanService(
             return Result<IReadOnlyList<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.NotFound);
 
         return Result<IReadOnlyList<WorkoutPlanModel>>.Success(workoutPlans.ToModel());
+    }
+
+    public async Task<Result<PaginatedModel<WorkoutPlanModel>>> GetClientWorkoutPlansWithPaginationAsync(Guid clientId, PaginationParams paginationParams, CancellationToken cancellationToken = default)
+    {
+        if (!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, clientId, cancellationToken))
+            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.Forbidden, 403);
+
+        var query = _workoutPlanRepository.GetAllByUserIdAsQuery(clientId);
+        if (!query.Any())
+            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.NotFound);
+
+        var paginated = await query.PaginateAsync(paginationParams.PageNumber, paginationParams.PageSize, cancellationToken);
+
+        return Result<PaginatedModel<WorkoutPlanModel>>.Success(paginated.ToModel());
     }
 
     public async Task<Result> CreateAsync(CreateWorkoutPlanModel model, CancellationToken cancellationToken = default)

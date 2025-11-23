@@ -1,10 +1,13 @@
 ﻿using FitCoachPro.API.Filters;
 using FitCoachPro.Application.Common.Extensions;
+using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Models.WorkoutPlan;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace FitCoachPro.API.Endpoints;
 
@@ -37,6 +40,19 @@ public static class WorkoutPlanEndpoints
             })
             .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Client}" });
 
+        app.MapGet(ApiRoutes.WorkoutPlan.GetMyPlansPaged,
+            async (
+                [AsParameters] PaginationParams paginationParams,
+                IWorkoutPlanService service,
+                HttpContext context,
+                CancellationToken cancellation
+            ) =>
+            {
+                var response = await service.GetMyWorkoutPlansWithPaginationAsync(paginationParams, cancellation);
+                return Results.Json(response, statusCode: response.StatusCode);
+            })
+            .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Client}" });
+
         app.MapGet(ApiRoutes.WorkoutPlan.GetPlansByClient,
             async (
                 Guid clientId,
@@ -46,6 +62,20 @@ public static class WorkoutPlanEndpoints
             ) =>
             {
                 var response = await service.GetClientWorkoutPlansAsync(clientId, canceletionToken);
+                return Results.Json(response, statusCode: response.StatusCode);
+            })
+            .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Coach}, {UserRole.Admin}" });
+
+        app.MapGet(ApiRoutes.WorkoutPlan.GetPlansByClientPaged,
+            async (
+                Guid clientId,
+                [AsParameters] PaginationParams paginationParams,
+                IWorkoutPlanService service,
+                HttpContext context,
+                CancellationToken canceletionToken
+            ) =>
+            {
+                var response = await service.GetClientWorkoutPlansWithPaginationAsync(clientId, paginationParams, canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(new AuthorizeAttribute { Roles = $"{UserRole.Coach}, {UserRole.Admin}" });

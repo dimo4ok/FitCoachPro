@@ -1,4 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Models.Exercise;
+using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Models.WorkoutItem;
 using FitCoachPro.Application.Common.Models.WorkoutPlan;
 using FitCoachPro.Domain.Entities.Workouts;
@@ -42,13 +43,22 @@ public static class WorkoutExtensions
         return new WorkoutPlanModel(
                 workoutPlan.Id,
                 workoutPlan.WorkoutDate,
-                workoutPlan.WorkoutItems.Select(x => x.ToModel()).ToList().AsReadOnly()
-                );
+                workoutPlan.WorkoutItems.Select(x => x.ToModel()).ToList().AsReadOnly());
     }
 
     public static IReadOnlyList<WorkoutPlanModel> ToModel(this IReadOnlyList<WorkoutPlan> workoutPlans)
     {
         return workoutPlans.Select(x => x.ToModel()).ToList().AsReadOnly();
+    }
+
+    public static PaginatedModel<WorkoutPlanModel> ToModel(this PaginatedModel<WorkoutPlan> paginated)
+    {
+        return new PaginatedModel<WorkoutPlanModel>(
+            paginated.Page, 
+            paginated.TotalPages, 
+            paginated.PageSize, 
+            paginated.TotalItems, 
+            paginated.Items.ToModel());
     }
 
     public static WorkoutItemModel ToModel(this WorkoutItem workoutItem)
@@ -57,8 +67,7 @@ public static class WorkoutExtensions
                 workoutItem.Id,
                 workoutItem.Description,
                 workoutItem.ExerciseId,
-                workoutItem.Exercise.ToModel()
-                );
+                workoutItem.Exercise.ToModel());
     }
 
     public static ExerciseModel ToModel(this Exercise exercise)
@@ -66,7 +75,6 @@ public static class WorkoutExtensions
         return new ExerciseModel(
                 exercise.Id,
                 exercise.ExerciseName,
-                exercise.GifUrl
-                );
+                exercise.GifUrl);
     }
 }

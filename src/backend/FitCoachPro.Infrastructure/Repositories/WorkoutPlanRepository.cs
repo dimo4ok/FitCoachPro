@@ -21,6 +21,15 @@ public class WorkoutPlanRepository(AppDbContext dbContext) : IWorkoutPlanReposit
         return workoutPlanList.AsReadOnly();
     }
 
+    public IQueryable<WorkoutPlan> GetAllByUserIdAsQuery(Guid UserId)
+    {
+        return _dbContext.WorkoutPlans
+            .AsNoTracking()
+            .Where(x => x.ClientId == UserId)
+            .Include(x => x.WorkoutItems)
+            .ThenInclude(x => x.Exercise);
+    }
+
     public async Task<WorkoutPlan?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => await _dbContext.WorkoutPlans
             .AsNoTracking()

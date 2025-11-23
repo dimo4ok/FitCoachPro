@@ -19,6 +19,9 @@ public static class ApiRoutes
         public const string GetMyPlans = $"{Base}/my";
         public const string GetPlansByClient = $"{Base}/client/{{clientId:guid}}";
 
+        public const string GetMyPlansPaged = $"{Base}/my/paged";
+        public const string GetPlansByClientPaged = $"{Base}/client/paged/{{clientId:guid}}";
+
         public const string Create = Base;
         public const string Update = $"{Base}/{{id:guid}}";
         public const string Delete = $"{Base}/{{id:guid}}";
