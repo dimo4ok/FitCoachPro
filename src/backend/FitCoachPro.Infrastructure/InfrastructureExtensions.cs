@@ -2,7 +2,6 @@
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Identity;
 using FitCoachPro.Infrastructure.Persistence;
-using FitCoachPro.Infrastructure.Persistence.EntityConfigurations.IdentityConfigurations;
 using FitCoachPro.Infrastructure.Repositories;
 using FitCoachPro.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

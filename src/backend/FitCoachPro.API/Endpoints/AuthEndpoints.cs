@@ -18,7 +18,8 @@ public static class AuthEndpoints
                 var response = await authService.SignUpAsync(model, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .AddEndpointFilter<ValidationFilter<SignUpModel>>();
+            .AddEndpointFilter<ValidationFilter<SignUpModel>>()
+            .WithTags("Authentication");
 
         app.MapPost(ApiRoutes.Auth.SignIn,
             async (
@@ -30,6 +31,7 @@ public static class AuthEndpoints
                 var response = await authService.SignInAsync(model, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .AddEndpointFilter<ValidationFilter<SignInModel>>();
+            .AddEndpointFilter<ValidationFilter<SignInModel>>()
+            .WithTags("Authentication");
     }
 }

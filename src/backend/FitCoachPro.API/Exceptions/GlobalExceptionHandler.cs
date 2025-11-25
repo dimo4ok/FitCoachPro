@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace FitCoachPro.API.Exceptions;
 
-internal sealed class GlobalExceptionHandler(RequestDelegate next)
+internal sealed class GlobalExceptionHandler(RequestDelegate next) : IExceptionHandler
 {
     private readonly RequestDelegate _next = next;
 
