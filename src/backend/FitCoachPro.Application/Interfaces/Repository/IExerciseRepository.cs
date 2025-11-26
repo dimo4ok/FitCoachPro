@@ -4,5 +4,13 @@ namespace FitCoachPro.Application.Interfaces.Repository;
 
 public interface IExerciseRepository
 {
-    Task<IReadOnlyList<Exercise>> GetAllAsync(CancellationToken cancellationToken = default);
+    IQueryable<Exercise> GetAllAsQuery();
+
+    Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Exercise?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task CreateAsync(Exercise exercise, CancellationToken cancellationToken = default);
+    void Delete(Exercise exercise);
+
+    Task<bool> ExistsAsync(string exerciseName, CancellationToken cancellationToken = default);
 }

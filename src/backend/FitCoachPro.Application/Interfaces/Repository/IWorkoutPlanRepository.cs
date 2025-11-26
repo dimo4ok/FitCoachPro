@@ -10,7 +10,7 @@ public interface IWorkoutPlanRepository
     Task<WorkoutPlan?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task CreateAsync(WorkoutPlan workoutPlan, CancellationToken cancellationToken = default);
-    Task DeleteAsync(WorkoutPlan workoutPlan, CancellationToken cancellationToken = default);
+    void Delete(WorkoutPlan workoutPlan);
 
     Task<bool> ExistsByClientAndDateAsync(Guid clientId, DateTime workoutDate, CancellationToken cancellationToken = default);
 }

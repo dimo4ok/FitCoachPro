@@ -77,8 +77,8 @@ public class WorkoutPlanService(
         if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.AlreadyExists, 409);
 
-        var exercises = await _exerciseRepository.GetAllAsync(cancellationToken);
-        if (!exercises.Any())
+        var exercises = _exerciseRepository.GetAllAsQuery().ToList().AsReadOnly();
+        if (exercises.Count == 0)
             return Result.Fail(ExerciseErrors.NotFound);
 
         var (exercsieExistSuccess, exercsieExistError) = ExercisesExist(model.WorkoutItems, exercises);
@@ -109,8 +109,8 @@ public class WorkoutPlanService(
 
         workoutPlan.WorkoutDate = model.WorkoutDate;
 
-        var exercises = await _exerciseRepository.GetAllAsync(cancellationToken);
-        if(!exercises.Any())
+        var exercises = _exerciseRepository.GetAllAsQuery().ToList().AsReadOnly();
+        if(exercises.Count == 0)
             return Result.Fail(ExerciseErrors.NotFound);
 
         var (validateItemsSuccess, validateItemsError) = ValidateUpdateItems(workoutPlan.WorkoutItems, model.WorkoutItems, exercises);
@@ -132,7 +132,7 @@ public class WorkoutPlanService(
         if (!await HasCoachAccessToWorkoutPlan(_userContext.Current, workoutPlan.ClientId, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
-        await _workoutPlanRepository.DeleteAsync(workoutPlan, cancellationToken);
+        _workoutPlanRepository.Delete(workoutPlan);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(204);

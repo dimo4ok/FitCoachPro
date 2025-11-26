@@ -5,16 +5,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Infrastructure.Repositories;
 
-public class ExerciseRepository(AppDbContext context) : IExerciseRepository
+public class ExerciseRepository(AppDbContext dbContext) : IExerciseRepository
 {
-    private readonly AppDbContext _context = context;
+    private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task<IReadOnlyList<Exercise>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        var exerciseList = await _context.Exercises
+    public IQueryable<Exercise> GetAllAsQuery() =>
+        _dbContext.Exercises
             .AsNoTracking()
-            .ToListAsync(cancellationToken);
+            .OrderBy(x => x.ExerciseName);
 
-        return exerciseList.AsReadOnly();
-    }
+    public async Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
+        await _dbContext.Exercises
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+    public async Task<Exercise?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken = default) =>
+        await _dbContext.Exercises.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+    public async Task CreateAsync(Exercise exercise, CancellationToken cancellationToken = default) =>
+        await _dbContext.Exercises.AddAsync(exercise, cancellationToken);
+
+    public void Delete(Exercise exercise) =>
+        _dbContext.Exercises.Remove(exercise);
+
+    public async Task<bool> ExistsAsync(string exerciseName, CancellationToken cancellationToken = default) =>
+        await _dbContext.Exercises.AnyAsync(
+            x => x.ExerciseName.ToLower().Trim() == exerciseName.ToLower().Trim(),
+            cancellationToken);
 }
