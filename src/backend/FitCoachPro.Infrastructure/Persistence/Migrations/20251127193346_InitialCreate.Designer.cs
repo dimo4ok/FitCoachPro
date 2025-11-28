@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitCoachPro.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251112180410_InitialCreate")]
+    [Migration("20251127193346_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -218,7 +218,16 @@ namespace FitCoachPro.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ExerciseName")
+                        .IsUnique();
 
                     b.ToTable("Exercises");
                 });

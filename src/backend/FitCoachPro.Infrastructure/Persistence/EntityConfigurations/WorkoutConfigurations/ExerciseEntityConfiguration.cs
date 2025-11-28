@@ -14,8 +14,14 @@ public class ExerciseEntityConfiguration : IEntityTypeConfiguration<Exercise>
             .HasMaxLength(50)
             .IsRequired();
 
+        builder.HasIndex(x => x.ExerciseName)
+              .IsUnique();
+
         builder.Property(x => x.GifUrl)
             .HasMaxLength(100)
             .IsRequired();
+
+        builder.Property(x => x.RowVersion)
+            .IsRowVersion();
     }
 }

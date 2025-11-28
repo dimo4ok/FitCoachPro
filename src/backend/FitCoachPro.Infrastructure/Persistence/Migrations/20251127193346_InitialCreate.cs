@@ -56,7 +56,8 @@ namespace FitCoachPro.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ExerciseName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    GifUrl = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    GifUrl = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -410,6 +411,12 @@ namespace FitCoachPro.Infrastructure.Migrations
                 name: "IX_Coaches_UserId",
                 table: "Coaches",
                 column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Exercises_ExerciseName",
+                table: "Exercises",
+                column: "ExerciseName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
