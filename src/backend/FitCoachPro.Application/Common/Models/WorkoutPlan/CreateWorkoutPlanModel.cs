@@ -1,9 +1,4 @@
 ﻿using FitCoachPro.Application.Common.Models.WorkoutItem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FitCoachPro.Application.Common.Models.WorkoutPlan;
 
