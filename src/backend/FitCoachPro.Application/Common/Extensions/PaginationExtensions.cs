@@ -21,4 +21,17 @@ public static class PaginationExtensions
 
         return new PaginatedModel<T>(page, totalPages, pageSize, totalItems, items);
     }
+
+    public static PaginatedModel<TOut> ToModel<TIn, TOut>(
+        this PaginatedModel<TIn> paginated,
+        Func<TIn, TOut> mapFunc) =>
+        new(
+            paginated.Page,
+            paginated.TotalPages,
+            paginated.PageSize,
+            paginated.TotalItems,
+            paginated.Items
+                .Select(mapFunc)
+                .ToList()
+                .AsReadOnly());
 }
