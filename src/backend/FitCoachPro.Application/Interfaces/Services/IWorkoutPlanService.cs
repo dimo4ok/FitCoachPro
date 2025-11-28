@@ -14,6 +14,6 @@ namespace FitCoachPro.Application.Interfaces.Services
 
         Task<Result> CreateAsync(CreateWorkoutPlanModel model, CancellationToken cancellationToken = default);
         Task<Result> UpdateAsync(Guid workoutPlanId, UpdateWorkoutPlanModel model, CancellationToken cancellationToken = default);
-        Task<Result> DeleteByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

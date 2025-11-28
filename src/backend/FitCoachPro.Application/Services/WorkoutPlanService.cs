@@ -10,6 +10,7 @@ using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Items;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Application.Services;
 
@@ -45,12 +46,12 @@ public class WorkoutPlanService(
             return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         var query = _workoutPlanRepository.GetAllByUserIdAsQuery(_userContext.Current.UserId);
-        if (!query.Any())
+        if (!await query.AnyAsync(cancellationToken))
             return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.NotFound);
 
         var paginated = await query.PaginateAsync(paginationParams.PageNumber, paginationParams.PageSize, cancellationToken);
 
-        return Result<PaginatedModel<WorkoutPlanModel>>.Success(paginated.ToModel());
+        return Result<PaginatedModel<WorkoutPlanModel>>.Success(paginated.ToModel(x => x.ToModel()));
     }
 
     public async Task<Result<PaginatedModel<WorkoutPlanModel>>> GetClientWorkoutPlansAsync(Guid clientId, PaginationParams paginationParams, CancellationToken cancellationToken = default)
@@ -61,12 +62,12 @@ public class WorkoutPlanService(
             return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         var query = _workoutPlanRepository.GetAllByUserIdAsQuery(clientId);
-        if (!query.Any())
+        if (!await query.AnyAsync(cancellationToken))
             return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.NotFound);
 
         var paginated = await query.PaginateAsync(paginationParams.PageNumber, paginationParams.PageSize, cancellationToken);
 
-        return Result<PaginatedModel<WorkoutPlanModel>>.Success(paginated.ToModel());
+        return Result<PaginatedModel<WorkoutPlanModel>>.Success(paginated.ToModel(x => x.ToModel()));
     }
 
     public async Task<Result> CreateAsync(CreateWorkoutPlanModel model, CancellationToken cancellationToken = default)
@@ -123,7 +124,7 @@ public class WorkoutPlanService(
         return Result.Success();
     }
 
-    public async Task<Result> DeleteByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var workoutPlan = await _workoutPlanRepository.GetByIdTrackedAsync(id, cancellationToken);
         if (workoutPlan == null)
