@@ -9,9 +9,13 @@ public class CreateWorkoutItemModelValidator : AbstractValidator<CreateWorkoutIt
     public CreateWorkoutItemModelValidator()
     {
         RuleFor(x => x.Description)
-           .Length(3, 200).WithMessage(WorkoutItemErrors.DescriptionInvalidLength.Message);
+            .Length(3, 200)
+                .WithErrorCode(WorkoutItemErrors.DescriptionInvalidLength.Code)
+                .WithMessage(WorkoutItemErrors.DescriptionInvalidLength.Message);
 
         RuleFor(x => x.ExerciseId)
-            .NotEmpty().WithMessage(WorkoutItemErrors.ExerciseIdRequired.Message);
+            .NotEmpty()
+                .WithErrorCode(WorkoutItemErrors.ExerciseIdRequired.Code)
+                .WithMessage(WorkoutItemErrors.ExerciseIdRequired.Message);
     }
 }

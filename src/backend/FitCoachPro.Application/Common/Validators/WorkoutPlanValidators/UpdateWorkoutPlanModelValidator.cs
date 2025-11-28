@@ -10,23 +10,35 @@ public class UpdateWorkoutPlanModelValidator : AbstractValidator<UpdateWorkoutPl
     public UpdateWorkoutPlanModelValidator()
     {
         RuleFor(x => x.WorkoutDate)
-            .NotEmpty().WithMessage(WorkoutPlanErrors.WorkoutDataRequired.Message)
-            .Must(date => date >= DateTime.UtcNow).WithMessage(WorkoutPlanErrors.DateCannotBeInPast.Message);
+            .NotEmpty()
+                .WithErrorCode(WorkoutPlanErrors.WorkoutDataRequired.Code)
+                .WithMessage(WorkoutPlanErrors.WorkoutDataRequired.Message)
+            .Must(date => date.Date >= DateTime.UtcNow.Date)
+                .WithErrorCode(WorkoutPlanErrors.DateCannotBeInPast.Code)
+                .WithMessage(WorkoutPlanErrors.DateCannotBeInPast.Message);
 
         RuleFor(x => x.ClientId)
-               .NotEmpty().WithMessage(WorkoutPlanErrors.EmptyClientId.Message);
+            .NotEmpty()
+                .WithErrorCode(WorkoutPlanErrors.EmptyClientId.Code)
+                .WithMessage(WorkoutPlanErrors.EmptyClientId.Message);
 
         RuleFor(x => x.WorkoutItems)
-               .NotEmpty().WithMessage(WorkoutPlanErrors.NotEnoughItems.Message)
-               .Must(items => items.Count() <= 10).WithMessage(WorkoutPlanErrors.TooManyItems.Message);
+            .NotEmpty()
+                .WithErrorCode(WorkoutPlanErrors.NotEnoughItems.Code)
+                .WithMessage(WorkoutPlanErrors.NotEnoughItems.Message)
+            .Must(items => items.Count() <= 10)
+                .WithErrorCode(WorkoutPlanErrors.TooManyItems.Code)
+                .WithMessage(WorkoutPlanErrors.TooManyItems.Message);
 
         RuleFor(x => x.WorkoutItems)
             .Must(items => items.Where(i => i.Id.HasValue).Select(i => i.Id!.Value).Distinct().Count() == items.Count(i => i.Id.HasValue))
-            .WithMessage(WorkoutPlanErrors.DuplicateWorkoutItemId.Message);
+                .WithErrorCode(WorkoutPlanErrors.DuplicateExerciseId.Code)
+                .WithMessage(WorkoutPlanErrors.DuplicateExerciseId.Message);
 
         RuleFor(x => x.WorkoutItems)
             .Must(items => items.Select(i => i.ExerciseId).Distinct().Count() == items.Count())
-            .WithMessage(WorkoutPlanErrors.DuplicateExerciseId.Message);
+                .WithErrorCode(WorkoutPlanErrors.DuplicateExerciseId.Code)
+                .WithMessage(WorkoutPlanErrors.DuplicateExerciseId.Message);
 
         RuleForEach(x => x.WorkoutItems).SetValidator(new UpdateWorkoutItemModelValidator());
     }

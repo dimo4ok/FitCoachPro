@@ -9,20 +9,34 @@ public class SignUpModelValidator : AbstractValidator<SignUpModel>
     public SignUpModelValidator()
     {
         RuleFor(x => x.FirstName)
-            .MinimumLength(2).WithMessage(UserErrors.FirstNameRequired.Message);
+            .MinimumLength(2)
+                .WithErrorCode(UserErrors.FirstNameRequired.Code)
+                .WithMessage(UserErrors.FirstNameRequired.Message);
 
         RuleFor(x => x.LastName)
-            .NotEmpty().WithMessage(UserErrors.LastNameRequired.Message)
-            .MinimumLength(2).WithMessage(UserErrors.LastNameRequired.Message);
+            .NotEmpty()
+                .WithErrorCode(UserErrors.LastNameRequired.Code)
+                .WithMessage(UserErrors.LastNameRequired.Message)
+            .MinimumLength(2)
+                .WithErrorCode(UserErrors.LastNameRequired.Code)
+                .WithMessage(UserErrors.LastNameRequired.Message);
 
         RuleFor(x => x.Email)
-            .EmailAddress().WithMessage(UserErrors.EmailInvalid.Message);
+            .EmailAddress()
+                .WithErrorCode(UserErrors.EmailInvalid.Code)
+                .WithMessage(UserErrors.EmailInvalid.Message);
 
         RuleFor(x => x.UserName)
-            .MinimumLength(3).WithMessage(UserErrors.UserNameInvalidLength.Message)
-            .MaximumLength(20).WithMessage(UserErrors.UserNameInvalidLength.Message);
+            .MinimumLength(3)
+                .WithErrorCode(UserErrors.UserNameInvalidLength.Code)
+                .WithMessage(UserErrors.UserNameInvalidLength.Message)
+            .MaximumLength(20)
+                .WithErrorCode(UserErrors.UserNameInvalidLength.Code)
+                .WithMessage(UserErrors.UserNameInvalidLength.Message);
 
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage(UserErrors.PasswordRequired.Message);
+            .NotEmpty()
+                .WithErrorCode(UserErrors.PasswordRequired.Code)
+                .WithMessage(UserErrors.PasswordRequired.Message);
     }
 }

@@ -9,9 +9,13 @@ public class PaginationParamsValidation : AbstractValidator<PaginationParams>
     public PaginationParamsValidation()
     {
         RuleFor(x => x.PageNumber)
-            .GreaterThanOrEqualTo(1).WithMessage(PaginationErrors.InvalidPageNumber.Message);
+            .GreaterThanOrEqualTo(1)
+                .WithErrorCode(PaginationErrors.InvalidPageNumber.Code)
+                .WithMessage(PaginationErrors.InvalidPageNumber.Message);
 
         RuleFor(x => x.PageSize)
-            .GreaterThanOrEqualTo(1).LessThanOrEqualTo(100).WithMessage(PaginationErrors.InvalidPageSize.Message);
+            .InclusiveBetween(1, 100)
+                .WithErrorCode(PaginationErrors.InvalidPageSize.Code)
+                .WithMessage(PaginationErrors.InvalidPageSize.Message);
     }
 }
