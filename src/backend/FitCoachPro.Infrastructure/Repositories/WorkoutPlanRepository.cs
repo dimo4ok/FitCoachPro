@@ -35,8 +35,9 @@ public class WorkoutPlanRepository(AppDbContext dbContext) : IWorkoutPlanReposit
         _dbContext.WorkoutPlans.Remove(workoutPlan);
 
     public async Task<bool> ExistsByClientAndDateAsync(Guid clientId, DateTime workoutDate, CancellationToken cancellationToken = default) =>
-        await _dbContext.WorkoutPlans.AnyAsync(
-            x => x.ClientId == clientId &&
-            x.WorkoutDate.Date == workoutDate.Date,
-            cancellationToken);
+        await _dbContext.WorkoutPlans
+            .AnyAsync(x => 
+                x.ClientId == clientId &&
+                x.WorkoutDate.Date == workoutDate.Date,
+                cancellationToken);
 }
