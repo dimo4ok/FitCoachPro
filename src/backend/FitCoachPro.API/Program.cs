@@ -48,5 +48,6 @@ app.UseAuthorization();
 
 app.MapAuthEndpoints();
 app.MapWorkoutPlanEndpoints();
+app.MapExerciseEndpoints();
 
 app.Run();

@@ -1,4 +1,5 @@
-﻿using FitCoachPro.API.Filters;
+﻿using FitCoachPro.API.Endpoints.ApiRoutes;
+using FitCoachPro.API.Filters;
 using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Interfaces.Services;
 
@@ -8,7 +9,7 @@ public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost(ApiRoutes.Auth.SignUp,
+        app.MapPost(AuthRoutes.SignUp,
             async (
                 SignUpModel model,
                 IAuthService authService,
@@ -19,9 +20,9 @@ public static class AuthEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<SignUpModel>>()
-            .WithTags("Authentication");
+            .WithTags("1.Authentication");
 
-        app.MapPost(ApiRoutes.Auth.SignIn,
+        app.MapPost(AuthRoutes.SignIn,
             async (
                 SignInModel model,
                 IAuthService authService,
@@ -32,6 +33,6 @@ public static class AuthEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<SignInModel>>()
-            .WithTags("Authentication");
+            .WithTags("1.Authentication");
     }
 }
