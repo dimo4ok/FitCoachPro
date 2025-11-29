@@ -81,14 +81,7 @@ public class ExerciseService(
 
         _exerciseRepository.Update(exercise);
 
-        try
-        {
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return Result.Fail(ExerciseErrors.ConcurrencyConflict, 409);
-        }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
@@ -109,14 +102,7 @@ public class ExerciseService(
 
         _exerciseRepository.Delete(exercise);
 
-        try
-        {
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return Result.Fail(ExerciseErrors.ConcurrencyConflict, 409);
-        }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(204);
     }

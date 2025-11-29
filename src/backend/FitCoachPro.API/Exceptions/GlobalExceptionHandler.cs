@@ -1,7 +1,7 @@
-﻿using FitCoachPro.Application.Common.Extensions;
+﻿using FitCoachPro.Application.Common.Errors;
+using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Response;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace FitCoachPro.API.Exceptions;
@@ -24,7 +24,12 @@ internal sealed class GlobalExceptionHandler(RequestDelegate next) : IExceptionH
 
     private async Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
-        var result = Result.Fail(ex.ToError(), 500);
+        Result result;
+
+        if (ex is DbUpdateConcurrencyException)
+            result = Result.Fail(SystemErrors.ConcurrencyConflict, 409);
+        else
+            result = Result.Fail(ex.ToError(), 500);
 
         context.Response.StatusCode = result.StatusCode;
 
