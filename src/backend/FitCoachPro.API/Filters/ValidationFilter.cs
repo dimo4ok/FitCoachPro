@@ -1,5 +1,4 @@
-﻿
-using FitCoachPro.Application.Common.Extensions;
+﻿using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Response;
 using FluentValidation;
 
@@ -21,7 +20,7 @@ public class ValidationFilter<T>(IServiceProvider serviceProvider) : IEndpointFi
 
         var validatorResult = await validator.ValidateAsync(model);
         if (!validatorResult.IsValid)
-            return Result.Fail(validatorResult.Errors.ToErrorList(), 400);
+            return Results.BadRequest(Result.Fail(validatorResult.Errors.ToErrorList(), 400));
 
         return await next(context);
     }
