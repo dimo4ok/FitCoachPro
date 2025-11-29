@@ -7,6 +7,8 @@ namespace FitCoachPro.API.Endpoints;
 
 public static class AuthEndpoints
 {
+    private const string Auth = "1.Authentication";
+
     public static void MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost(AuthRoutes.SignUp,
@@ -20,7 +22,7 @@ public static class AuthEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<SignUpModel>>()
-            .WithTags("1.Authentication");
+            .WithTags(Auth);
 
         app.MapPost(AuthRoutes.SignIn,
             async (
@@ -33,6 +35,6 @@ public static class AuthEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<SignInModel>>()
-            .WithTags("1.Authentication");
+            .WithTags(Auth);
     }
 }

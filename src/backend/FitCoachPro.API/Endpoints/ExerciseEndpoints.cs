@@ -10,6 +10,9 @@ namespace FitCoachPro.API.Endpoints;
 
 public static class ExerciseEndpoints
 {
+    public const string AdminExercise = "Admin - Exercise";
+    public const string CoachExercise = "Coach - Exercise";
+    
     public static void MapExerciseEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet(ExerciseRoutes.Admin.GetById,
@@ -23,7 +26,7 @@ public static class ExerciseEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(UserRole.Admin.ToString())
-            .WithTags("Admin - Exercise");
+            .WithTags(AdminExercise);
 
         app.MapGet(ExerciseRoutes.Coach.GetById,
           async (
@@ -36,7 +39,7 @@ public static class ExerciseEndpoints
               return Results.Json(response, statusCode: response.StatusCode);
           })
           .RequireAuthorization(UserRole.Coach.ToString())
-          .WithTags("Coach - Exercise");
+          .WithTags(CoachExercise);
 
         app.MapGet(ExerciseRoutes.Admin.GetAll,
            async (
@@ -50,7 +53,7 @@ public static class ExerciseEndpoints
            })
            .RequireAuthorization(UserRole.Admin.ToString())
            .AddEndpointFilter<ValidationFilter<PaginationParams>>()
-           .WithTags("Admin - Exercise");
+           .WithTags(AdminExercise);
 
         app.MapGet(ExerciseRoutes.Coach.GetAll,
             async (
@@ -64,7 +67,7 @@ public static class ExerciseEndpoints
             })
             .RequireAuthorization(UserRole.Coach.ToString())
             .AddEndpointFilter<ValidationFilter<PaginationParams>>()
-            .WithTags("Coach - Exercise");
+            .WithTags(CoachExercise);
 
         app.MapPost(ExerciseRoutes.Admin.Create,
            async (
@@ -78,7 +81,7 @@ public static class ExerciseEndpoints
            })
            .RequireAuthorization(UserRole.Admin.ToString())
            .AddEndpointFilter<ValidationFilter<CreateExerciseModel>>()
-           .WithTags("Admin - Exercise");
+           .WithTags(AdminExercise);
 
         app.MapPost(ExerciseRoutes.Coach.Create,
            async (
@@ -92,7 +95,7 @@ public static class ExerciseEndpoints
            })
            .RequireAuthorization(UserRole.Coach.ToString())
            .AddEndpointFilter<ValidationFilter<CreateExerciseModel>>()
-           .WithTags("Coach - Exercise");
+           .WithTags(CoachExercise);
 
         app.MapPut(ExerciseRoutes.Admin.Update,
            async (
@@ -107,7 +110,7 @@ public static class ExerciseEndpoints
            })
            .RequireAuthorization(UserRole.Admin.ToString())
            .AddEndpointFilter<ValidationFilter<UpdateExerciseModel>>()
-           .WithTags("Admin - Exercise");
+           .WithTags(AdminExercise);
 
         app.MapPut(ExerciseRoutes.Coach.Update,
             async (
@@ -122,7 +125,7 @@ public static class ExerciseEndpoints
             })
             .RequireAuthorization(UserRole.Coach.ToString())
             .AddEndpointFilter<ValidationFilter<UpdateExerciseModel>>()
-            .WithTags("Coach - Exercise");
+            .WithTags(CoachExercise);
 
         app.MapDelete(ExerciseRoutes.Admin.Delete,
             async (
@@ -137,7 +140,7 @@ public static class ExerciseEndpoints
             })
             .RequireAuthorization(UserRole.Admin.ToString())
             .AddEndpointFilter<ValidationFilter<DeleteExerciseModel>>()
-            .WithTags("Admin - Exercise");
+            .WithTags(AdminExercise);
 
         app.MapDelete(ExerciseRoutes.Coach.Delete,
             async (
@@ -152,6 +155,6 @@ public static class ExerciseEndpoints
             })
             .RequireAuthorization(UserRole.Coach.ToString())
             .AddEndpointFilter<ValidationFilter<DeleteExerciseModel>>()
-            .WithTags("Coach - Exercise");
+            .WithTags(CoachExercise);
     }
 }

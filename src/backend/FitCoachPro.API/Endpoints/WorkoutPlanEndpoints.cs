@@ -9,6 +9,10 @@ namespace FitCoachPro.API.Endpoints;
 
 public static class WorkoutPlanEndpoints
 {
+    public const string AdminWorkoutPLan = "Admin - Workout Plan";
+    public const string CoachWorkoutPLan = "Coach - Workout Plan";
+    public const string ClientWorkoutPLan = "Client - Workout Plan";
+
     public static void MapWorkoutPlanEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet(WorkoutPlanRoutes.Admin.GetById,
@@ -22,7 +26,7 @@ public static class WorkoutPlanEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(UserRole.Admin.ToString())
-            .WithTags("Admin - Workout Plans");
+            .WithTags(AdminWorkoutPLan);
 
         app.MapGet(WorkoutPlanRoutes.Coach.GetById,
             async (
@@ -35,7 +39,7 @@ public static class WorkoutPlanEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(UserRole.Coach.ToString())
-            .WithTags("Coach - Workout Plans");
+            .WithTags(CoachWorkoutPLan);
 
         app.MapGet(WorkoutPlanRoutes.Client.GetById,
             async (
@@ -48,37 +52,37 @@ public static class WorkoutPlanEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(UserRole.Client.ToString())
-            .WithTags("Client - Workout Plans");
+            .WithTags(ClientWorkoutPLan);
 
         app.MapGet(WorkoutPlanRoutes.Admin.GetAll,
-           async (
-               Guid clientId,
-               [AsParameters] PaginationParams paginationParams,
-               IWorkoutPlanService service,
-               CancellationToken canceletionToken
-           ) =>
-           {
-               var response = await service.GetClientWorkoutPlansAsync(clientId, paginationParams, canceletionToken);
-               return Results.Json(response, statusCode: response.StatusCode);
-           })
+            async (
+                Guid clientId,
+                [AsParameters] PaginationParams paginationParams,
+                IWorkoutPlanService service,
+                CancellationToken canceletionToken
+            ) =>
+            {
+                var response = await service.GetClientWorkoutPlansAsync(clientId, paginationParams, canceletionToken);
+                return Results.Json(response, statusCode: response.StatusCode);
+            })
            .RequireAuthorization(UserRole.Admin.ToString())
            .AddEndpointFilter<ValidationFilter<PaginationParams>>()
-           .WithTags("Admin - Workout Plans");
+           .WithTags(AdminWorkoutPLan);
 
         app.MapGet(WorkoutPlanRoutes.Coach.GetAll,
-           async (
-               Guid clientId,
-               [AsParameters] PaginationParams paginationParams,
-               IWorkoutPlanService service,
-               CancellationToken canceletionToken
-           ) =>
-           {
-               var response = await service.GetClientWorkoutPlansAsync(clientId, paginationParams, canceletionToken);
-               return Results.Json(response, statusCode: response.StatusCode);
-           })
+            async (
+                Guid clientId,
+                [AsParameters] PaginationParams paginationParams,
+                IWorkoutPlanService service,
+                CancellationToken canceletionToken
+            ) =>
+            {
+                var response = await service.GetClientWorkoutPlansAsync(clientId, paginationParams, canceletionToken);
+                return Results.Json(response, statusCode: response.StatusCode);
+            })
            .RequireAuthorization(UserRole.Coach.ToString())
            .AddEndpointFilter<ValidationFilter<PaginationParams>>()
-           .WithTags("Coach - Workout Plans");
+           .WithTags(CoachWorkoutPLan);
 
         app.MapGet(WorkoutPlanRoutes.Client.GetAll,
             async (
@@ -92,7 +96,7 @@ public static class WorkoutPlanEndpoints
             })
             .RequireAuthorization(UserRole.Client.ToString())
             .AddEndpointFilter<ValidationFilter<PaginationParams>>()
-            .WithTags("Client - Workout Plans");
+            .WithTags(ClientWorkoutPLan);
 
         app.MapPost(WorkoutPlanRoutes.Coach.Create,
             async (
@@ -106,7 +110,7 @@ public static class WorkoutPlanEndpoints
             })
             .AddEndpointFilter<ValidationFilter<CreateWorkoutPlanModel>>()
             .RequireAuthorization(UserRole.Coach.ToString())
-            .WithTags("Coach - Workout Plans");
+            .WithTags(CoachWorkoutPLan);
 
         app.MapPut(WorkoutPlanRoutes.Coach.Update,
             async (
@@ -121,7 +125,7 @@ public static class WorkoutPlanEndpoints
             })
             .AddEndpointFilter<ValidationFilter<UpdateWorkoutPlanModel>>()
             .RequireAuthorization(UserRole.Coach.ToString())
-            .WithTags("Coach - Workout Plans");
+            .WithTags(CoachWorkoutPLan);
 
         app.MapDelete(WorkoutPlanRoutes.Coach.Delete,
             async (
@@ -134,6 +138,6 @@ public static class WorkoutPlanEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(UserRole.Coach.ToString())
-            .WithTags("Coach - Workout Plans");
+            .WithTags(CoachWorkoutPLan);
     }
 }
