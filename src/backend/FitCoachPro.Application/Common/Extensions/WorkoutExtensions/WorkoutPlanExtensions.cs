@@ -1,7 +1,7 @@
 ﻿using FitCoachPro.Application.Common.Models.WorkoutPlan;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
 
-namespace FitCoachPro.Application.Common.Extensions;
+namespace FitCoachPro.Application.Common.Extensions.WorkoutExtensions;
 
 public static class WorkoutPlanExtensions
 {

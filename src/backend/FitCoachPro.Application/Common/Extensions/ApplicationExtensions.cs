@@ -16,6 +16,7 @@ public static class ApplicationExtensions
 
         services.AddScoped<IUserContextService, UserContextService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ITemplateWorkoutPlanService, TemplateWorkoutPlanService>();
         services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
         services.AddScoped<IExerciseService, ExerciseService>();
 
