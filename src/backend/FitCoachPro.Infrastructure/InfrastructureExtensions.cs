@@ -63,6 +63,7 @@ public static class InfrastructureExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<ITemplateWorkoutPlanRepository, TemplateWorkoutPlanRepository>();
         services.AddScoped<IWorkoutPlanRepository, WorkoutPlanRepository>();
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
 

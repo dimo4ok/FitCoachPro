@@ -19,9 +19,6 @@ public class ExerciseRepository(AppDbContext dbContext) : IExerciseRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-    public async Task<Exercise?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await _dbContext.Exercises.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-
     public async Task CreateAsync(Exercise exercise, CancellationToken cancellationToken = default) =>
         await _dbContext.Exercises.AddAsync(exercise, cancellationToken);
 
@@ -30,9 +27,6 @@ public class ExerciseRepository(AppDbContext dbContext) : IExerciseRepository
 
     public void Delete(Exercise exercise) =>
         _dbContext.Entry(exercise).State = EntityState.Deleted;
-
-    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await _dbContext.Exercises.AnyAsync(x => x.Id == id, cancellationToken);
 
     public async Task<bool> ExistsByExerciseNameAsync(string normalizedExerciseName, CancellationToken cancellationToken = default) =>
         await _dbContext.Exercises
