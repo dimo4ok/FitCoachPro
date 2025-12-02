@@ -5,6 +5,7 @@ namespace FitCoachPro.Domain.Entities.Workouts.Plans;
 
 public class TemplateWorkoutPlan : BaseWorkoutPlan
 {
+    public string TemplateName { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
 

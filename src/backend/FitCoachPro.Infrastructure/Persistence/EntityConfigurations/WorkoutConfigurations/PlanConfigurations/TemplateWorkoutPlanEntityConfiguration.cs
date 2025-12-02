@@ -10,6 +10,12 @@ public class TemplateWorkoutPlanEntityConfiguration : IEntityTypeConfiguration<T
     {
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.TemplateName)
+            .IsRequired();
+
+        builder.HasIndex(x => new {x.CoachId, x.TemplateName})
+            .IsUnique();
+
         builder.Property(x => x.CreatedAt)
            .IsRequired();
 

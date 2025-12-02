@@ -246,6 +246,7 @@ namespace FitCoachPro.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TemplateName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
@@ -430,9 +431,10 @@ namespace FitCoachPro.Infrastructure.Migrations
                 column: "TemplateWorkoutPlanId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TemplateWorkoutPlans_CoachId",
+                name: "IX_TemplateWorkoutPlans_CoachId_TemplateName",
                 table: "TemplateWorkoutPlans",
-                column: "CoachId");
+                columns: new[] { "CoachId", "TemplateName" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkoutItems_ExerciseId",
@@ -445,9 +447,10 @@ namespace FitCoachPro.Infrastructure.Migrations
                 column: "WorkoutPlanId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkoutPlans_ClientId",
+                name: "IX_WorkoutPlans_ClientId_WorkoutDate",
                 table: "WorkoutPlans",
-                column: "ClientId");
+                columns: new[] { "ClientId", "WorkoutDate" },
+                unique: true);
         }
 
         /// <inheritdoc />

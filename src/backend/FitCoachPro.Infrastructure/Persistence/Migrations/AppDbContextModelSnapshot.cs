@@ -293,12 +293,17 @@ namespace FitCoachPro.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TemplateName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CoachId");
+                    b.HasIndex("CoachId", "TemplateName")
+                        .IsUnique();
 
                     b.ToTable("TemplateWorkoutPlans");
                 });
@@ -317,7 +322,8 @@ namespace FitCoachPro.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientId", "WorkoutDate")
+                        .IsUnique();
 
                     b.ToTable("WorkoutPlans");
                 });

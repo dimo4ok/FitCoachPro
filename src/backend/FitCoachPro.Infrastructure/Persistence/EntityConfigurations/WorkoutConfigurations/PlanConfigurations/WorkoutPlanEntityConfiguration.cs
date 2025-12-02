@@ -13,6 +13,9 @@ public class WorkoutPlanEntityConfiguration : IEntityTypeConfiguration<WorkoutPl
         builder.Property(x => x.WorkoutDate)
             .IsRequired();
 
+        builder.HasIndex(x => new {x.ClientId, x.WorkoutDate})
+           .IsUnique();
+
         builder.HasOne(x => x.Client)
             .WithMany(x => x.WorkoutPlans)
             .HasForeignKey(x => x.ClientId)
