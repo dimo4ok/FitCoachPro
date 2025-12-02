@@ -30,6 +30,8 @@ using (var scope = app.Services.CreateScope())
     ExerciseSeed.Seed(context);
     WorkoutPlanSeed.Seed(context);
     WorkoutItemSeed.Seed(context);
+    TemplateWorkoutPlanSeed.Seed(context);
+    TemplateWorkoutItemSeed.Seed(context);
 }
 
 // Configure the HTTP request pipeline.
@@ -47,6 +49,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthEndpoints();
+app.MapTempalteWorkoutPlanEndpoints();
 app.MapWorkoutPlanEndpoints();
 app.MapExerciseEndpoints();
 
