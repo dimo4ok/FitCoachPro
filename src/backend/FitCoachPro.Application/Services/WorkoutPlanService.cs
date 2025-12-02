@@ -1,5 +1,6 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Extensions;
+using FitCoachPro.Application.Common.Extensions.WorkoutExtensions;
 using FitCoachPro.Application.Common.Models;
 using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Models.WorkoutItem;
@@ -16,9 +17,9 @@ namespace FitCoachPro.Application.Services;
 
 public class WorkoutPlanService(
     IUserContextService userContext,
-    IWorkoutPlanRepository workoutPlanRepository, 
-    IUserRepository userRepository, 
-    IExerciseRepository exerciseRepository, 
+    IWorkoutPlanRepository workoutPlanRepository,
+    IUserRepository userRepository,
+    IExerciseRepository exerciseRepository,
     IUnitOfWork unitOfWork
         ) : IWorkoutPlanService
 {
@@ -34,7 +35,7 @@ public class WorkoutPlanService(
         if (workoutPlan == null)
             return Result<WorkoutPlanModel>.Fail(WorkoutPlanErrors.NotFound);
 
-        if(!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, workoutPlan.ClientId, cancellationToken))
+        if (!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, workoutPlan.ClientId, cancellationToken))
             return Result<WorkoutPlanModel>.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         return Result<WorkoutPlanModel>.Success(workoutPlan.ToModel());
@@ -83,7 +84,7 @@ public class WorkoutPlanService(
             return Result.Fail(ExerciseErrors.NotFound);
 
         var (exercsieExistSuccess, exercsieExistError) = ExercisesExist(model.WorkoutItems, exercises);
-        if(!exercsieExistSuccess)
+        if (!exercsieExistSuccess)
             return Result.Fail(exercsieExistError!, 400);
 
         await _workoutPlanRepository.CreateAsync(model.ToEntity(), cancellationToken);
@@ -101,7 +102,7 @@ public class WorkoutPlanService(
         if (workoutPlan == null)
             return Result.Fail(WorkoutPlanErrors.NotFound);
 
-        if(workoutPlan.ClientId != model.ClientId)
+        if (workoutPlan.ClientId != model.ClientId)
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
         if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken)
@@ -111,7 +112,7 @@ public class WorkoutPlanService(
         workoutPlan.WorkoutDate = model.WorkoutDate;
 
         var exercises = _exerciseRepository.GetAllAsQuery().ToList().AsReadOnly();
-        if(exercises.Count == 0)
+        if (exercises.Count == 0)
             return Result.Fail(ExerciseErrors.NotFound);
 
         var (validateItemsSuccess, validateItemsError) = ValidateUpdateItems(workoutPlan.WorkoutItems, model.WorkoutItems, exercises);
@@ -183,7 +184,7 @@ public class WorkoutPlanService(
             }
 
             var currentItemForUpdate = currentItems.FirstOrDefault(ci => ci.Id == ni.Id);
-            if(currentItemForUpdate != null)
+            if (currentItemForUpdate != null)
             {
                 currentItemForUpdate.Description = ni.Description;
                 currentItemForUpdate.ExerciseId = ni.ExerciseId;
@@ -192,23 +193,19 @@ public class WorkoutPlanService(
         }
     }
 
-    private async Task<bool> HasUserAccessToWorkoutPlanAsync(UserContext currentUser, Guid clientId, CancellationToken cancellationToken)
-    {
-        return currentUser.Role switch
+    private async Task<bool> HasUserAccessToWorkoutPlanAsync(UserContext currentUser, Guid clientId, CancellationToken cancellationToken) =>
+        currentUser.Role switch
         {
             UserRole.Client => clientId == currentUser.UserId,
             UserRole.Coach => await _userRepository.CanCoachAccessClientAsync(currentUser.UserId, clientId, cancellationToken),
             UserRole.Admin => true,
             _ => false
         };
-    }
 
-    private async Task<bool> HasCoachAccessToWorkoutPlan(UserContext currentUser, Guid clientId, CancellationToken cancellationToken)
-    {
-        return currentUser.Role switch
+    private async Task<bool> HasCoachAccessToWorkoutPlan(UserContext currentUser, Guid clientId, CancellationToken cancellationToken) =>
+        currentUser.Role switch
         {
             UserRole.Coach => await _userRepository.CanCoachAccessClientAsync(currentUser.UserId, clientId, cancellationToken),
             _ => false
         };
-    }
 }

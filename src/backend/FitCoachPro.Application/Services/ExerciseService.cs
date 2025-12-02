@@ -1,5 +1,6 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Extensions;
+using FitCoachPro.Application.Common.Extensions.WorkoutExtensions;
 using FitCoachPro.Application.Common.Models.Exercise;
 using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Response;
