@@ -10,6 +10,6 @@ public class WorkoutItemErrors
     public static Error DescriptionRequired => new("WorkoutItem.DescriptionRequired", "Description must be provided and be at least 3 characters long.");
     public static Error DescriptionInvalidLength => new("WorkoutItem.DescriptionInvalidLength", "Description must be between 3 and 200 characters long.");
 
-    public static Error ExerciseIdRequired => new("Exercise.ExerciseIdRequired", "Exercise ID must be provided.");
+    public static Error ExerciseIdRequired => new("WorkoutItem.ExerciseIdRequired", "Exercise ID must be provided.");
 }
 
