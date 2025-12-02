@@ -32,9 +32,9 @@ public class CreateWorkoutPlanModelValidator : AbstractValidator<CreateWorkoutPl
                 .WithMessage(WorkoutPlanErrors.TooManyItems.Message);
 
         RuleFor(x => x.WorkoutItems)
-            .Must(items => items.Select(i => i.ExerciseId).Distinct().Count() == items.Count())
-                .WithErrorCode(WorkoutPlanErrors.DuplicateExerciseId.Code)
-                .WithMessage(WorkoutPlanErrors.DuplicateExerciseId.Message);
+           .Must(items => items.Select(i => i.ExerciseId).Distinct().Count() == items.Count())
+               .WithErrorCode(WorkoutPlanErrors.DuplicateExerciseId.Code)
+               .WithMessage(WorkoutPlanErrors.DuplicateExerciseId.Message);
 
         RuleForEach(x => x.WorkoutItems).SetValidator(new CreateWorkoutItemModelValidator());
     }

@@ -32,8 +32,8 @@ public class UpdateWorkoutPlanModelValidator : AbstractValidator<UpdateWorkoutPl
 
         RuleFor(x => x.WorkoutItems)
             .Must(items => items.Where(i => i.Id.HasValue).Select(i => i.Id!.Value).Distinct().Count() == items.Count(i => i.Id.HasValue))
-                .WithErrorCode(WorkoutPlanErrors.DuplicateExerciseId.Code)
-                .WithMessage(WorkoutPlanErrors.DuplicateExerciseId.Message);
+                .WithErrorCode(WorkoutPlanErrors.DuplicateWorkoutItemId.Code)
+                .WithMessage(WorkoutPlanErrors.DuplicateWorkoutItemId.Message);
 
         RuleFor(x => x.WorkoutItems)
             .Must(items => items.Select(i => i.ExerciseId).Distinct().Count() == items.Count())

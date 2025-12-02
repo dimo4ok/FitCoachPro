@@ -80,8 +80,8 @@ public static class TemplateWorkoutPlanEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(UserRole.Coach.ToString())
-            .WithTags(CoachTemplateWorkoutPLan);
-            //.AddEndpointFilter<ValidationFilter<CreateWorkoutPlanModel>>()
+            .WithTags(CoachTemplateWorkoutPLan)
+            .AddEndpointFilter<ValidationFilter<CreateTemplateWorkoutPlanModel>>();
 
         app.MapPut(TemplateWorkoutPlanRoutes.Coach.Update,
             async (
@@ -95,8 +95,8 @@ public static class TemplateWorkoutPlanEndpoints
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(UserRole.Coach.ToString())
-            .WithTags(CoachTemplateWorkoutPLan);
-            //.AddEndpointFilter<ValidationFilter<UpdateWorkoutPlanModel>>()
+            .WithTags(CoachTemplateWorkoutPLan)
+            .AddEndpointFilter<ValidationFilter<UpdateTemplateWorkoutPlanModel>>();
 
         app.MapDelete(TemplateWorkoutPlanRoutes.Coach.Delete,
             async (
