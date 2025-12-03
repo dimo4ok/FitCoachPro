@@ -20,6 +20,12 @@ public static class ExerciseExtensions
            exercise.GifUrl,
            exercise.RowVersion);
 
+    public static ExerciseNestedModel ToNestedModel(this Exercise exercise) =>
+        new(
+            exercise.Id,
+            exercise.ExerciseName,
+            exercise.GifUrl);
+
     public static IReadOnlyList<ExerciseModel> ToModel(this IReadOnlyList<Exercise> exercise) =>
         exercise
             .Select(x => x.ToModel())

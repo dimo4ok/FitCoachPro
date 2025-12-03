@@ -24,7 +24,7 @@ public class UpdateExerciseModelValidatior : AbstractValidator<UpdateExerciseMod
                 .WithErrorCode(ExerciseErrors.GifUrlInvalid.Code)
                 .WithMessage(ExerciseErrors.GifUrlInvalid.Message);
 
-        RuleFor(x => x.rowVersion)
+        RuleFor(x => x.RowVersion)
             .NotNull()
                 .WithErrorCode(ExerciseErrors.RowVersionMissing.Code)
                 .WithMessage(ExerciseErrors.RowVersionMissing.Message);

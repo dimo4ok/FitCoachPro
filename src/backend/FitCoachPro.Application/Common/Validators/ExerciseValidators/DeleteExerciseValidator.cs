@@ -8,7 +8,7 @@ public class DeleteExerciseValidator : AbstractValidator<DeleteExerciseModel>
 {
     public DeleteExerciseValidator()
     {
-        RuleFor(x => x.rowVersion)
+        RuleFor(x => x.RowVersion)
             .NotEmpty()
                 .WithErrorCode(ExerciseErrors.RowVersionMissing.Code)
                 .WithMessage(ExerciseErrors.RowVersionMissing.Message);

@@ -1,4 +1,4 @@
 ﻿namespace FitCoachPro.Application.Common.Models.Exercise;
 
-public record DeleteExerciseModel(byte[] rowVersion);
+public record DeleteExerciseModel(byte[] RowVersion);
 

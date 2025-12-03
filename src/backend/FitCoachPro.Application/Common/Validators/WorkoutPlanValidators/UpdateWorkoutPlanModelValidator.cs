@@ -17,11 +17,6 @@ public class UpdateWorkoutPlanModelValidator : AbstractValidator<UpdateWorkoutPl
                 .WithErrorCode(WorkoutPlanErrors.DateCannotBeInPast.Code)
                 .WithMessage(WorkoutPlanErrors.DateCannotBeInPast.Message);
 
-        RuleFor(x => x.ClientId)
-            .NotEmpty()
-                .WithErrorCode(WorkoutPlanErrors.EmptyClientId.Code)
-                .WithMessage(WorkoutPlanErrors.EmptyClientId.Message);
-
         RuleFor(x => x.WorkoutItems)
             .NotEmpty()
                 .WithErrorCode(WorkoutPlanErrors.NotEnoughItems.Code)

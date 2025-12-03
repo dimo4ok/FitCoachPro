@@ -24,5 +24,5 @@ public static class WorkoutItemExtension
          workoutItem.Id,
          workoutItem.Description,
          workoutItem.ExerciseId,
-         workoutItem.Exercise.ToModel());
+         workoutItem.Exercise.ToNestedModel());
 }
