@@ -1,5 +1,3 @@
-﻿using FitCoachPro.Application.Common.Models.Exercise;
+﻿namespace FitCoachPro.Application.Common.Models.TemplateWorkoutItem;
 
-namespace FitCoachPro.Application.Common.Models.TemplateWorkoutItem;
-
-public record UpdateTemplateWorkoutItemModel(Guid? Id, string Description, Guid ExerciseId);
+public record UpdateTemplateWorkoutItemModel(Guid? Id, int? Reps, int? Sets, string Description, Guid ExerciseId);

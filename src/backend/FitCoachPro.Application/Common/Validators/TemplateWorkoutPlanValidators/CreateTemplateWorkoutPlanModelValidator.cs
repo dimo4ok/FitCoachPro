@@ -1,7 +1,6 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Models.TemplateWorkoutPlan;
 using FitCoachPro.Application.Common.Validators.TemplateWorkoutItemValidators;
-using FitCoachPro.Application.Common.Validators.WorkoutItemValidators;
 using FluentValidation;
 
 namespace FitCoachPro.Application.Common.Validators.TemplateWorkoutPlanValidators;

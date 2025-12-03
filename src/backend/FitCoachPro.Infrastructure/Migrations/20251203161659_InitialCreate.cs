@@ -287,6 +287,8 @@ namespace FitCoachPro.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TemplateWorkoutPlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Reps = table.Column<int>(type: "int", nullable: true),
+                    Sets = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     ExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -313,6 +315,8 @@ namespace FitCoachPro.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WorkoutPlanId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Reps = table.Column<int>(type: "int", nullable: true),
+                    Sets = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     ExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },

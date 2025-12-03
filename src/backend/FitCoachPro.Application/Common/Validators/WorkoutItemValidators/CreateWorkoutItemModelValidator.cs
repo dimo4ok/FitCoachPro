@@ -8,6 +8,18 @@ public class CreateWorkoutItemModelValidator : AbstractValidator<CreateWorkoutIt
 {
     public CreateWorkoutItemModelValidator()
     {
+        RuleFor(x => x.Reps)
+           .InclusiveBetween(0, 100)
+           .When(x => x.Reps.HasValue)
+           .WithErrorCode(WorkoutItemErrors.RepsInvalid.Code)
+           .WithMessage(WorkoutItemErrors.RepsInvalid.Message);
+
+        RuleFor(x => x.Sets)
+            .InclusiveBetween(0, 50)
+            .When(x => x.Sets.HasValue)
+            .WithErrorCode(WorkoutItemErrors.SetsInvalid.Code)
+            .WithMessage(WorkoutItemErrors.SetsInvalid.Message);
+
         RuleFor(x => x.Description)
             .Length(3, 200)
                 .WithErrorCode(WorkoutItemErrors.DescriptionInvalidLength.Code)

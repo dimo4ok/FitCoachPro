@@ -10,18 +10,23 @@ public class TemplateWorkoutItemEntityConfiguration : IEntityTypeConfiguration<T
     {
         builder.HasKey(x => x.Id);
 
+        //builder.Property(x => x.Reps)
+        //    .HasDefaultValue(null);
+        //builder.Property(x => x.Sets)
+        //    .HasDefaultValue(null);
+
         builder.Property(x => x.Description)
             .HasMaxLength(200)
             .IsRequired();
 
         builder.HasOne(x => x.TemplateWorkoutPlan)
-               .WithMany(c => c.TemplateWorkoutItems)
-               .HasForeignKey(x => x.TemplateWorkoutPlanId)
-               .IsRequired();
+            .WithMany(c => c.TemplateWorkoutItems)
+            .HasForeignKey(x => x.TemplateWorkoutPlanId)
+            .IsRequired();
 
         builder.HasOne(x => x.Exercise)
-               .WithMany()
-               .HasForeignKey(x => x.ExerciseId)
-               .IsRequired();
+            .WithMany()
+            .HasForeignKey(x => x.ExerciseId)
+            .IsRequired();
     }
 }

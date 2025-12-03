@@ -8,6 +8,8 @@ public static class TemplateWorkoutItemExtensions
     public static TemplateWorkoutItemModel ToModel(this TemplateWorkoutItem templateItem) =>
         new(
             templateItem.Id,
+            templateItem.Reps,
+            templateItem.Sets,
             templateItem.Description,
             templateItem.ExerciseId,
             templateItem.Exercise.ToNestedModel());
@@ -15,6 +17,8 @@ public static class TemplateWorkoutItemExtensions
     public static TemplateWorkoutItem ToEntity(this CreateTemplateWorkoutItemModel model) =>
         new()
         {
+            Reps = model.Reps,
+            Sets = model.Sets,
             Description = model.Description,
             ExerciseId = model.ExerciseId
         };
@@ -22,6 +26,8 @@ public static class TemplateWorkoutItemExtensions
     public static TemplateWorkoutItem ToEntity(this UpdateTemplateWorkoutItemModel model) =>
         new()
         {
+            Reps = model.Reps,
+            Sets = model.Sets,
             Description = model.Description,
             ExerciseId = model.ExerciseId
         };

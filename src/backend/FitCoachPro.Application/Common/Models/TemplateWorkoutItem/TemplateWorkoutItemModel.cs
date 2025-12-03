@@ -2,4 +2,4 @@
 
 namespace FitCoachPro.Application.Common.Models.TemplateWorkoutItem;
 
-public record class TemplateWorkoutItemModel(Guid Id, string Description, Guid ExercsieId, ExerciseNestedModel Exercise);
+public record class TemplateWorkoutItemModel(Guid Id, int? Reps, int? Sets, string Description, Guid ExercsieId, ExerciseNestedModel Exercise);

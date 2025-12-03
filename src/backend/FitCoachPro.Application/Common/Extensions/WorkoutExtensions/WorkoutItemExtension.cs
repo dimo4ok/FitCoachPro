@@ -8,6 +8,8 @@ public static class WorkoutItemExtension
     public static WorkoutItem ToEntity(this CreateWorkoutItemModel model) =>
        new()
        {
+           Reps = model.Reps,
+           Sets = model.Sets,
            Description = model.Description,
            ExerciseId = model.ExerciseId
        };
@@ -15,6 +17,8 @@ public static class WorkoutItemExtension
     public static WorkoutItem ToEntity(this UpdateWorkoutItemModel model) =>
         new()
         {
+            Reps = model.Reps,
+            Sets = model.Sets,
             Description = model.Description,
             ExerciseId = model.ExerciseId,
         };
@@ -22,6 +26,8 @@ public static class WorkoutItemExtension
     public static WorkoutItemModel ToModel(this WorkoutItem workoutItem) =>
      new(
          workoutItem.Id,
+         workoutItem.Reps,
+         workoutItem.Sets,
          workoutItem.Description,
          workoutItem.ExerciseId,
          workoutItem.Exercise.ToNestedModel());

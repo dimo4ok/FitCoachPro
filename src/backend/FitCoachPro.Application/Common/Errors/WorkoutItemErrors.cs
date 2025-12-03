@@ -11,5 +11,8 @@ public class WorkoutItemErrors
     public static Error DescriptionInvalidLength => new("WorkoutItem.DescriptionInvalidLength", "Description must be between 3 and 200 characters long.");
 
     public static Error ExerciseIdRequired => new("WorkoutItem.ExerciseIdRequired", "Exercise ID must be provided.");
+
+    public static Error RepsInvalid => new("WorkoutItem.RepsInvalid", "Reps must be between 0 and 100.");
+    public static Error SetsInvalid => new("WorkoutItem.SetsInvalid", "Sets must be between 0 and 50.");
 }
 
