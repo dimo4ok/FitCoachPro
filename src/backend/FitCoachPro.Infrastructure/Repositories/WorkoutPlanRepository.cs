@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Interfaces.Repository;
+﻿using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
 using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -15,19 +15,18 @@ public class WorkoutPlanRepository(AppDbContext dbContext) : IWorkoutPlanReposit
             .Where(x => x.ClientId == UserId)
             .OrderBy(x => x.WorkoutDate).Reverse();
 
-    public async Task<WorkoutPlan?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await _dbContext.WorkoutPlans
-            .AsNoTracking()
+    public async Task<WorkoutPlan?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool track = false)
+    {
+        var query = track 
+            ? _dbContext.WorkoutPlans 
+            : _dbContext.WorkoutPlans.AsNoTracking();
+
+        return await query
             .Include(x => x.WorkoutItems)
             .ThenInclude(x => x.Exercise)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-
-    public async Task<WorkoutPlan?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await _dbContext.WorkoutPlans
-            .Include(x => x.WorkoutItems)
-            .ThenInclude(x => x.Exercise)
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-
+    }
+        
     public async Task CreateAsync(WorkoutPlan workoutPlan, CancellationToken cancellationToken = default) =>
         await _dbContext.WorkoutPlans.AddAsync(workoutPlan, cancellationToken);
 

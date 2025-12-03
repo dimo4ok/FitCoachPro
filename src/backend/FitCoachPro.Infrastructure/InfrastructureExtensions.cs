@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Interfaces.Repository;
+﻿using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Identity;
 using FitCoachPro.Infrastructure.Persistence;

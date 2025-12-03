@@ -1,17 +1,14 @@
 ﻿using FitCoachPro.Domain.Entities.Workouts.Plans;
 
-namespace FitCoachPro.Application.Interfaces.Repository;
+namespace FitCoachPro.Application.Interfaces.Repositories;
 
 public interface ITemplateWorkoutPlanRepository
 {
     IQueryable<TemplateWorkoutPlan> GetAllAsQuery(Guid id);
-
-    Task<TemplateWorkoutPlan?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<TemplateWorkoutPlan?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<TemplateWorkoutPlan?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool track = false);
 
     Task CreateAsync(TemplateWorkoutPlan plan, CancellationToken cancellationToken = default);
     void Delete(TemplateWorkoutPlan plan);
 
-    Task<bool> ExistsByIdAndCoachIdAsync(Guid templateId, Guid coachId, CancellationToken cancellationToken = default);
     Task<bool> ExistsByNameAndCoachIdAsync(string templateName, Guid coachId, CancellationToken cancellationToken = default);
 }

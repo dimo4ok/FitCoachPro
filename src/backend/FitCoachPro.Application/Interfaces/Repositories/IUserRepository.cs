@@ -2,7 +2,7 @@
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Users;
 
-namespace FitCoachPro.Application.Interfaces.Repository;
+namespace FitCoachPro.Application.Interfaces.Repositories;
 
 public interface IUserRepository
 {

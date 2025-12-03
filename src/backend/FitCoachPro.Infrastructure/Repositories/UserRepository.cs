@@ -1,9 +1,10 @@
 ﻿using FitCoachPro.Application.Common.Models.Auth;
-using FitCoachPro.Application.Interfaces.Repository;
+using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace FitCoachPro.Infrastructure.Repositories;
 
@@ -53,5 +54,4 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             x => x.Id == clientId
             && x.CoachId == coachId,
             cancellationToken);
-
 }

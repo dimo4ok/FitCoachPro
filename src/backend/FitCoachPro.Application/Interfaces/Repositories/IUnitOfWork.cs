@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 
-namespace FitCoachPro.Application.Interfaces.Repository;
+namespace FitCoachPro.Application.Interfaces.Repositories;
 
 public interface IUnitOfWork
 {

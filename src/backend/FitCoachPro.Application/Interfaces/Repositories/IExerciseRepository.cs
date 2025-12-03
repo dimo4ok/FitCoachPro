@@ -1,6 +1,6 @@
 ﻿using FitCoachPro.Domain.Entities.Workouts;
 
-namespace FitCoachPro.Application.Interfaces.Repository;
+namespace FitCoachPro.Application.Interfaces.Repositories;
 
 public interface IExerciseRepository
 {

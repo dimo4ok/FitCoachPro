@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Interfaces.Repository;
+﻿using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

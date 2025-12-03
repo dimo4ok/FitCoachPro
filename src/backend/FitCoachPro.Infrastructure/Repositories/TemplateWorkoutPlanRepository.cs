@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Interfaces.Repository;
+﻿using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
 using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -15,28 +15,23 @@ public class TemplateWorkoutPlanRepository(AppDbContext dbContext) : ITemplateWo
             .Where(x => x.CoachId == id)
             .OrderBy(x => x.UpdatedAt);
 
-    public async Task<TemplateWorkoutPlan?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await _dbContext.TemplateWorkoutPlans
-            .AsNoTracking()
-            .Include(x => x.TemplateWorkoutItems)
-            .ThenInclude(x => x.Exercise)
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    public async Task<TemplateWorkoutPlan?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool track = false)
+    {
+        var query = track
+            ? _dbContext.TemplateWorkoutPlans
+            : _dbContext.TemplateWorkoutPlans.AsNoTracking();
 
-    public async Task<TemplateWorkoutPlan?> GetByIdTrackedAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await _dbContext.TemplateWorkoutPlans
+        return await query
             .Include(x => x.TemplateWorkoutItems)
             .ThenInclude(x => x.Exercise)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
 
     public async Task CreateAsync(TemplateWorkoutPlan templatePlan, CancellationToken cancellationToken = default) =>
         await _dbContext.TemplateWorkoutPlans.AddAsync(templatePlan, cancellationToken);
 
     public void Delete(TemplateWorkoutPlan templatePlan) =>
         _dbContext.TemplateWorkoutPlans.Remove(templatePlan);
-
-    public async Task<bool> ExistsByIdAndCoachIdAsync(Guid templateId, Guid coachId, CancellationToken cancellationToken = default) =>
-        await _dbContext.TemplateWorkoutPlans
-            .AnyAsync(x => x.Id == templateId && x.CoachId == coachId, cancellationToken);
 
     public async Task<bool> ExistsByNameAndCoachIdAsync(string templateName, Guid coachId, CancellationToken cancellationToken = default) =>
         await _dbContext.TemplateWorkoutPlans
