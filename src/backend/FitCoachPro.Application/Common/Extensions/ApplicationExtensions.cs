@@ -1,4 +1,6 @@
 ﻿using FitCoachPro.Application.Common.Validators.WorkoutPlanValidators;
+using FitCoachPro.Application.Helpers;
+using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Application.Services;
 using FluentValidation;
@@ -14,10 +16,15 @@ public static class ApplicationExtensions
 
         services.AddHttpContextAccessor();
 
-        services.AddScoped<IUserContextService, UserContextService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserContextService, UserContextService>();
+
         services.AddScoped<ITemplateWorkoutPlanService, TemplateWorkoutPlanService>();
+        services.AddScoped<ITemplateWorkoutPlanHelper, TemplateWorkoutPlanHelper>();
+
         services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
+        services.AddScoped<IWorkoutPlanHelper, WorkoutPlanHelper>();
+
         services.AddScoped<IExerciseService, ExerciseService>();
 
         return services;

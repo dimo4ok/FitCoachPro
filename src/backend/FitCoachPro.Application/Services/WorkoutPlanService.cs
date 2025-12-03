@@ -3,14 +3,12 @@ using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Extensions.WorkoutExtensions;
 using FitCoachPro.Application.Common.Models;
 using FitCoachPro.Application.Common.Models.Pagination;
-using FitCoachPro.Application.Common.Models.WorkoutItem;
 using FitCoachPro.Application.Common.Models.WorkoutPlan;
 using FitCoachPro.Application.Common.Response;
-using FitCoachPro.Application.Interfaces.Repository;
+using FitCoachPro.Application.Interfaces.Helpers;
+using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
-using FitCoachPro.Domain.Entities.Workouts;
-using FitCoachPro.Domain.Entities.Workouts.Items;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Application.Services;
@@ -20,7 +18,8 @@ public class WorkoutPlanService(
     IWorkoutPlanRepository workoutPlanRepository,
     IUserRepository userRepository,
     IExerciseRepository exerciseRepository,
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    IWorkoutPlanHelper workoutPlanHelper
         ) : IWorkoutPlanService
 {
     private readonly IUserContextService _userContext = userContext;
@@ -28,6 +27,7 @@ public class WorkoutPlanService(
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IExerciseRepository _exerciseRepository = exerciseRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IWorkoutPlanHelper _workoutPlanHelper = workoutPlanHelper;
 
     public async Task<Result<WorkoutPlanModel>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -79,11 +79,14 @@ public class WorkoutPlanService(
         if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.AlreadyExists, 409);
 
-        var exercises = _exerciseRepository.GetAllAsQuery().ToList().AsReadOnly();
-        if (exercises.Count == 0)
+        var exerciseIdsSet = _exerciseRepository
+           .GetAllAsQuery()
+           .Select(exercise => exercise.Id)
+           .ToHashSet();
+        if (exerciseIdsSet.Count == 0)
             return Result.Fail(ExerciseErrors.NotFound);
 
-        var (exercsieExistSuccess, exercsieExistError) = ExercisesExist(model.WorkoutItems, exercises);
+        var (exercsieExistSuccess, exercsieExistError) = _workoutPlanHelper.ExercisesExist(model.WorkoutItems, exerciseIdsSet);
         if (!exercsieExistSuccess)
             return Result.Fail(exercsieExistError!, 400);
 
@@ -95,31 +98,31 @@ public class WorkoutPlanService(
 
     public async Task<Result> UpdateAsync(Guid workoutPlanId, UpdateWorkoutPlanModel model, CancellationToken cancellationToken = default)
     {
-        if (!await HasCoachAccessToWorkoutPlan(_userContext.Current, model.ClientId, cancellationToken))
-            return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
-
-        var workoutPlan = await _workoutPlanRepository.GetByIdTrackedAsync(workoutPlanId, cancellationToken);
+        var workoutPlan = await _workoutPlanRepository.GetByIdAsync(workoutPlanId, cancellationToken, track: true);
         if (workoutPlan == null)
             return Result.Fail(WorkoutPlanErrors.NotFound);
 
-        if (workoutPlan.ClientId != model.ClientId)
+        if (!await HasCoachAccessToWorkoutPlan(_userContext.Current, workoutPlan.ClientId, cancellationToken))
             return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
 
-        if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken)
+        if (await _workoutPlanRepository.ExistsByClientAndDateAsync(workoutPlan.ClientId, model.WorkoutDate, cancellationToken)
             && model.WorkoutDate != workoutPlan.WorkoutDate)
             return Result.Fail(WorkoutPlanErrors.AlreadyExists, 409);
 
         workoutPlan.WorkoutDate = model.WorkoutDate;
 
-        var exercises = _exerciseRepository.GetAllAsQuery().ToList().AsReadOnly();
-        if (exercises.Count == 0)
+        var exerciseIdsSet = _exerciseRepository
+           .GetAllAsQuery()
+           .Select(exercise => exercise.Id)
+           .ToHashSet();
+        if (exerciseIdsSet.Count == 0)
             return Result.Fail(ExerciseErrors.NotFound);
 
-        var (validateItemsSuccess, validateItemsError) = ValidateUpdateItems(workoutPlan.WorkoutItems, model.WorkoutItems, exercises);
+        var (validateItemsSuccess, validateItemsError) = _workoutPlanHelper.ValidateUpdateItems(workoutPlan.WorkoutItems, model.WorkoutItems, exerciseIdsSet);
         if (validateItemsSuccess == false)
             return Result.Fail(validateItemsError!, 400);
 
-        SyncItems(workoutPlan.WorkoutItems, model.WorkoutItems);
+        _workoutPlanHelper.SyncItems(workoutPlan.WorkoutItems, model.WorkoutItems);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
@@ -127,7 +130,7 @@ public class WorkoutPlanService(
 
     public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var workoutPlan = await _workoutPlanRepository.GetByIdTrackedAsync(id, cancellationToken);
+        var workoutPlan = await _workoutPlanRepository.GetByIdAsync(id, cancellationToken, track: true);
         if (workoutPlan == null)
             return Result.Fail(WorkoutPlanErrors.NotFound);
 
@@ -138,59 +141,6 @@ public class WorkoutPlanService(
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(204);
-    }
-
-    private (bool, Error?) ExercisesExist(IEnumerable<CreateWorkoutItemModel> newItems, IReadOnlyList<Exercise> exercises)
-    {
-        var exercisIdsSet = exercises.Select(exercise => exercise.Id).ToHashSet();
-        foreach (var ni in newItems)
-        {
-            if (!exercisIdsSet.Contains(ni.ExerciseId))
-                return (false, ExerciseErrors.InvalidExerciseId);
-        }
-
-        return (true, null);
-    }
-
-    private (bool, Error?) ValidateUpdateItems(ICollection<WorkoutItem> currentItems, IEnumerable<UpdateWorkoutItemModel> newItems, IReadOnlyList<Exercise> exercises)
-    {
-        var exercisIdsSet = exercises.Select(exercise => exercise.Id).ToHashSet();
-
-        foreach (var ni in newItems)
-        {
-            if (!exercisIdsSet.Contains(ni.ExerciseId))
-                return (false, ExerciseErrors.InvalidExerciseId);
-
-            if (ni.Id.HasValue && currentItems.All(ci => ci.Id != ni.Id))
-                return (false, WorkoutItemErrors.InvalidWorkoutItemId);
-        }
-
-        return (true, null);
-    }
-
-    private void SyncItems(ICollection<WorkoutItem> currentItems, IEnumerable<UpdateWorkoutItemModel> newItems)
-    {
-        var itemsToRemove = currentItems.Where(ci => newItems.All(ni => ni.Id != ci.Id)).ToList();
-
-        foreach (var i in itemsToRemove)
-            currentItems.Remove(i);
-
-        foreach (var ni in newItems)
-        {
-            if (!ni.Id.HasValue)
-            {
-                currentItems.Add(ni.ToEntity());
-                continue;
-            }
-
-            var currentItemForUpdate = currentItems.FirstOrDefault(ci => ci.Id == ni.Id);
-            if (currentItemForUpdate != null)
-            {
-                currentItemForUpdate.Description = ni.Description;
-                currentItemForUpdate.ExerciseId = ni.ExerciseId;
-                continue;
-            }
-        }
     }
 
     private async Task<bool> HasUserAccessToWorkoutPlanAsync(UserContext currentUser, Guid clientId, CancellationToken cancellationToken) =>

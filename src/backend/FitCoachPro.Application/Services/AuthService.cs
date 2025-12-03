@@ -2,7 +2,7 @@
 using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Common.Response;
-using FitCoachPro.Application.Interfaces.Repository;
+using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Identity;

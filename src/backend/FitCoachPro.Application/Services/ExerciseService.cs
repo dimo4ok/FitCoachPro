@@ -4,7 +4,7 @@ using FitCoachPro.Application.Common.Extensions.WorkoutExtensions;
 using FitCoachPro.Application.Common.Models.Exercise;
 using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Response;
-using FitCoachPro.Application.Interfaces.Repository;
+using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -78,7 +78,7 @@ public class ExerciseService(
 
         exercise.ExerciseName = model.ExerciseName;
         exercise.GifUrl = model.GifUrl;
-        exercise.RowVersion = model.rowVersion;
+        exercise.RowVersion = model.RowVersion;
 
         _exerciseRepository.Update(exercise);
 
@@ -99,7 +99,7 @@ public class ExerciseService(
         if (!await CanModifyExerciseAsync(id, _userContext.Current.Role, cancellationToken))
             return Result.Fail(ExerciseErrors.UsedInActiveWorkoutPlan, 409);
 
-        exercise.RowVersion = model.rowVersion;
+        exercise.RowVersion = model.RowVersion;
 
         _exerciseRepository.Delete(exercise);
 
