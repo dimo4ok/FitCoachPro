@@ -10,23 +10,13 @@ public class UpdateExerciseModelValidatior : AbstractValidator<UpdateExerciseMod
     {
         RuleFor(x => x.ExerciseName)
             .NotEmpty()
-                .WithErrorCode(ExerciseErrors.NameEmpty.Code)
-                .WithMessage(ExerciseErrors.NameEmpty.Message)
-             .Length(3, 50)
-                 .WithErrorCode(ExerciseErrors.NameInvalid.Code)
-                 .WithMessage(ExerciseErrors.NameInvalid.Message);
+             .Length(3, 50);
 
         RuleFor(x => x.GifUrl)
             .NotEmpty()
-                .WithErrorCode(ExerciseErrors.GifUrlEmpty.Code)
-                .WithMessage(ExerciseErrors.GifUrlEmpty.Message)
-            .Length(1, 100)
-                .WithErrorCode(ExerciseErrors.GifUrlInvalid.Code)
-                .WithMessage(ExerciseErrors.GifUrlInvalid.Message);
+            .Length(1, 100);
 
         RuleFor(x => x.RowVersion)
-            .NotNull()
-                .WithErrorCode(ExerciseErrors.RowVersionMissing.Code)
-                .WithMessage(ExerciseErrors.RowVersionMissing.Message);
+            .NotNull();
     }
 }

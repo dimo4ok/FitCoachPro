@@ -9,6 +9,8 @@ using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
+using FitCoachPro.Domain.Entities.Workouts;
+using FitCoachPro.Domain.Entities.Workouts.Plans;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Application.Services;
@@ -33,10 +35,10 @@ public class WorkoutPlanService(
     {
         var workoutPlan = await _workoutPlanRepository.GetByIdAsync(id, cancellationToken);
         if (workoutPlan == null)
-            return Result<WorkoutPlanModel>.Fail(WorkoutPlanErrors.NotFound);
+            return Result<WorkoutPlanModel>.Fail(DomainErrors.NotFound(nameof(WorkoutPlan)));
 
         if (!await HasUserAccessToWorkoutPlanAsync(_userContext.Current, workoutPlan.ClientId, cancellationToken))
-            return Result<WorkoutPlanModel>.Fail(WorkoutPlanErrors.Forbidden, 403);
+            return Result<WorkoutPlanModel>.Fail(DomainErrors.Forbidden, 403);
 
         return Result<WorkoutPlanModel>.Success(workoutPlan.ToModel());
     }
@@ -44,11 +46,11 @@ public class WorkoutPlanService(
     public async Task<Result<PaginatedModel<WorkoutPlanModel>>> GetMyWorkoutPlansAsync(PaginationParams paginationParams, CancellationToken cancellationToken = default)
     {
         if (_userContext.Current.Role != UserRole.Client)
-            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.Forbidden, 403);
+            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(DomainErrors.Forbidden, 403);
 
         var query = _workoutPlanRepository.GetAllByUserIdAsQuery(_userContext.Current.UserId);
         if (!await query.AnyAsync(cancellationToken))
-            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.NotFound);
+            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(DomainErrors.NotFound(nameof(WorkoutPlan)));
 
         var paginated = await query.PaginateAsync(paginationParams.PageNumber, paginationParams.PageSize, cancellationToken);
 
@@ -60,11 +62,11 @@ public class WorkoutPlanService(
         var currentUser = _userContext.Current;
 
         if (currentUser.Role != UserRole.Admin && !await HasCoachAccessToWorkoutPlan(currentUser, clientId, cancellationToken))
-            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.Forbidden, 403);
+            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(DomainErrors.Forbidden, 403);
 
         var query = _workoutPlanRepository.GetAllByUserIdAsQuery(clientId);
         if (!await query.AnyAsync(cancellationToken))
-            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(WorkoutPlanErrors.NotFound);
+            return Result<PaginatedModel<WorkoutPlanModel>>.Fail(DomainErrors.NotFound(nameof(WorkoutPlan)));
 
         var paginated = await query.PaginateAsync(paginationParams.PageNumber, paginationParams.PageSize, cancellationToken);
 
@@ -74,17 +76,17 @@ public class WorkoutPlanService(
     public async Task<Result> CreateAsync(CreateWorkoutPlanModel model, CancellationToken cancellationToken = default)
     {
         if (!await HasCoachAccessToWorkoutPlan(_userContext.Current, model.ClientId, cancellationToken))
-            return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         if (await _workoutPlanRepository.ExistsByClientAndDateAsync(model.ClientId, model.WorkoutDate, cancellationToken))
-            return Result.Fail(WorkoutPlanErrors.AlreadyExists, 409);
+            return Result.Fail(DomainErrors.AlreadyExists(nameof(WorkoutPlan)), 409);
 
         var exerciseIdsSet = _exerciseRepository
            .GetAllAsQuery()
            .Select(exercise => exercise.Id)
            .ToHashSet();
         if (exerciseIdsSet.Count == 0)
-            return Result.Fail(ExerciseErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         var (exercsieExistSuccess, exercsieExistError) = _workoutPlanHelper.ExercisesExist(model.WorkoutItems, exerciseIdsSet);
         if (!exercsieExistSuccess)
@@ -100,14 +102,14 @@ public class WorkoutPlanService(
     {
         var workoutPlan = await _workoutPlanRepository.GetByIdAsync(workoutPlanId, cancellationToken, track: true);
         if (workoutPlan == null)
-            return Result.Fail(WorkoutPlanErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(WorkoutPlan)));
 
         if (!await HasCoachAccessToWorkoutPlan(_userContext.Current, workoutPlan.ClientId, cancellationToken))
-            return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         if (await _workoutPlanRepository.ExistsByClientAndDateAsync(workoutPlan.ClientId, model.WorkoutDate, cancellationToken)
             && model.WorkoutDate != workoutPlan.WorkoutDate)
-            return Result.Fail(WorkoutPlanErrors.AlreadyExists, 409);
+            return Result.Fail(DomainErrors.AlreadyExists(nameof(WorkoutPlan)), 409);
 
         workoutPlan.WorkoutDate = model.WorkoutDate;
 
@@ -116,7 +118,7 @@ public class WorkoutPlanService(
            .Select(exercise => exercise.Id)
            .ToHashSet();
         if (exerciseIdsSet.Count == 0)
-            return Result.Fail(ExerciseErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         var (validateItemsSuccess, validateItemsError) = _workoutPlanHelper.ValidateUpdateItems(workoutPlan.WorkoutItems, model.WorkoutItems, exerciseIdsSet);
         if (validateItemsSuccess == false)
@@ -132,10 +134,10 @@ public class WorkoutPlanService(
     {
         var workoutPlan = await _workoutPlanRepository.GetByIdAsync(id, cancellationToken, track: true);
         if (workoutPlan == null)
-            return Result.Fail(WorkoutPlanErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(WorkoutPlan)));
 
         if (!await HasCoachAccessToWorkoutPlan(_userContext.Current, workoutPlan.ClientId, cancellationToken))
-            return Result.Fail(WorkoutPlanErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         _workoutPlanRepository.Delete(workoutPlan);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

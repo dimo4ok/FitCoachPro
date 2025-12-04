@@ -10,15 +10,9 @@ public class SignInModelValidator : AbstractValidator<SignInModel>
     {
         RuleFor(x => x.UserName)
             .MinimumLength(3)
-                .WithErrorCode(UserErrors.UserNameInvalidLength.Code)
-                .WithMessage(UserErrors.UserNameInvalidLength.Message)
-            .MaximumLength(20)
-                .WithErrorCode(UserErrors.UserNameInvalidLength.Code)
-                .WithMessage(UserErrors.UserNameInvalidLength.Message);
+            .MaximumLength(20);
 
         RuleFor(x => x.Password)
-            .NotEmpty()
-                .WithErrorCode(UserErrors.PasswordRequired.Code)
-                .WithMessage(UserErrors.PasswordRequired.Message);
+            .NotEmpty();
     }
 }

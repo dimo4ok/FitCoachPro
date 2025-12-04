@@ -7,6 +7,7 @@ using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
+using FitCoachPro.Domain.Entities.Workouts;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Application.Services;
@@ -24,11 +25,11 @@ public class ExerciseService(
     public async Task<Result<ExerciseModel>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if (!HasUserAccess(_userContext.Current.Role))
-            return Result<ExerciseModel>.Fail(ExerciseErrors.Forbidden, 403);
+            return Result<ExerciseModel>.Fail(DomainErrors.Forbidden, 403);
 
         var exercise = await _exerciseRepository.GetByIdAsync(id, cancellationToken);
         if (exercise == null)
-            return Result<ExerciseModel>.Fail(ExerciseErrors.NotFound);
+            return Result<ExerciseModel>.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         return Result<ExerciseModel>.Success(exercise.ToModel());
     }
@@ -36,11 +37,11 @@ public class ExerciseService(
     public async Task<Result<PaginatedModel<ExerciseModel>>> GetAllAsync(PaginationParams paginationParams, CancellationToken cancellationToken = default)
     {
         if (!HasUserAccess(_userContext.Current.Role))
-            return Result<PaginatedModel<ExerciseModel>>.Fail(ExerciseErrors.Forbidden, 403);
+            return Result<PaginatedModel<ExerciseModel>>.Fail(DomainErrors.Forbidden, 403);
 
         var query = _exerciseRepository.GetAllAsQuery();
         if (!await query.AnyAsync(cancellationToken))
-            return Result<PaginatedModel<ExerciseModel>>.Fail(ExerciseErrors.NotFound);
+            return Result<PaginatedModel<ExerciseModel>>.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         var paginated = await query.PaginateAsync(paginationParams.PageNumber, paginationParams.PageSize, cancellationToken);
 
@@ -50,10 +51,10 @@ public class ExerciseService(
     public async Task<Result> CreateAsync(CreateExerciseModel model, CancellationToken cancellationToken = default)
     {
         if (!HasUserAccess(_userContext.Current.Role))
-            return Result.Fail(ExerciseErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         if (await _exerciseRepository.ExistsByExerciseNameAsync(model.ExerciseName.NormalizeValue(), cancellationToken))
-            return Result.Fail(ExerciseErrors.AlreadyExists, 409);
+            return Result.Fail(DomainErrors.AlreadyExists(nameof(Exercise)), 409);
 
         await _exerciseRepository.CreateAsync(model.ToEntity(), cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -64,17 +65,17 @@ public class ExerciseService(
     public async Task<Result> UpdateAsync(Guid id, UpdateExerciseModel model, CancellationToken cancellationToken = default)
     {
         if (!HasUserAccess(_userContext.Current.Role))
-            return Result.Fail(ExerciseErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         var exercise = await _exerciseRepository.GetByIdAsync(id, cancellationToken);
         if (exercise == null)
-            return Result.Fail(ExerciseErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         if (await _exerciseRepository.ExistsByExerciseNameForAnotherIdAsync(id, model.ExerciseName.NormalizeValue(), cancellationToken))
-            return Result.Fail(ExerciseErrors.AlreadyExists, 409);
+            return Result.Fail(DomainErrors.AlreadyExists(nameof(Exercise)), 409);
 
         if (!await CanModifyExerciseAsync(id, _userContext.Current.Role, cancellationToken))
-            return Result.Fail(ExerciseErrors.UsedInActiveWorkoutPlan, 409);
+            return Result.Fail(DomainErrors.UsedInActiveEntity(nameof(Exercise)), 409);
 
         exercise.ExerciseName = model.ExerciseName;
         exercise.GifUrl = model.GifUrl;
@@ -90,14 +91,14 @@ public class ExerciseService(
     public async Task<Result> DeleteAsync(Guid id, DeleteExerciseModel model, CancellationToken cancellationToken = default)
     {
         if (!HasUserAccess(_userContext.Current.Role))
-            return Result.Fail(ExerciseErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         var exercise = await _exerciseRepository.GetByIdAsync(id, cancellationToken);
         if (exercise == null)
-            return Result.Fail(ExerciseErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         if (!await CanModifyExerciseAsync(id, _userContext.Current.Role, cancellationToken))
-            return Result.Fail(ExerciseErrors.UsedInActiveWorkoutPlan, 409);
+            return Result.Fail(DomainErrors.UsedInActiveEntity(nameof(Exercise)), 409);
 
         exercise.RowVersion = model.RowVersion;
 

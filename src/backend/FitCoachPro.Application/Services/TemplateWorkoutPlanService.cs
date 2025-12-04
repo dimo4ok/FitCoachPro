@@ -9,6 +9,8 @@ using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
+using FitCoachPro.Domain.Entities.Workouts;
+using FitCoachPro.Domain.Entities.Workouts.Plans;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Application.Services;
@@ -31,10 +33,10 @@ public class TemplateWorkoutPlanService(
     {
         var templatePlan = await _templateRepository.GetByIdAsync(id, cancellationToken);
         if (templatePlan == null)
-            return Result<TemplateWorkoutPlanModel>.Fail(TemplateWorkoutPlanErrors.NotFound);
+            return Result<TemplateWorkoutPlanModel>.Fail(DomainErrors.NotFound(nameof(TemplateWorkoutPlan)));
 
         if (!await HasUserAccessToTemplateAsync(templatePlan.CoachId, _userContext.Current))
-            return Result<TemplateWorkoutPlanModel>.Fail(TemplateWorkoutPlanErrors.Forbidden, 403);
+            return Result<TemplateWorkoutPlanModel>.Fail(DomainErrors.Forbidden, 403);
 
         return Result<TemplateWorkoutPlanModel>.Success(templatePlan.ToModel());
     }
@@ -44,11 +46,11 @@ public class TemplateWorkoutPlanService(
         var currentUser = _userContext.Current;
 
         if (_userContext.Current.Role != UserRole.Coach)
-            return Result<PaginatedModel<TemplateWorkoutPlanModel>>.Fail(TemplateWorkoutPlanErrors.Forbidden, 403);
+            return Result<PaginatedModel<TemplateWorkoutPlanModel>>.Fail(DomainErrors.Forbidden, 403);
 
         var query = _templateRepository.GetAllAsQuery(currentUser.UserId);
         if (!await query.AnyAsync(cancellationToken))
-            return Result<PaginatedModel<TemplateWorkoutPlanModel>>.Fail(TemplateWorkoutPlanErrors.NotFound);
+            return Result<PaginatedModel<TemplateWorkoutPlanModel>>.Fail(DomainErrors.NotFound(nameof(TemplateWorkoutPlan)));
 
         var paginated = await query.PaginateAsync(pagination.PageNumber, pagination.PageSize, cancellationToken);
 
@@ -58,11 +60,11 @@ public class TemplateWorkoutPlanService(
     public async Task<Result<PaginatedModel<TemplateWorkoutPlanModel>>> GetAllForAdminByCoachIdAsync(Guid coachId, PaginationParams pagination, CancellationToken cancellationToken = default)
     {
         if (_userContext.Current.Role != UserRole.Admin)
-            return Result<PaginatedModel<TemplateWorkoutPlanModel>>.Fail(TemplateWorkoutPlanErrors.Forbidden, 403);
+            return Result<PaginatedModel<TemplateWorkoutPlanModel>>.Fail(DomainErrors.Forbidden, 403);
 
         var query = _templateRepository.GetAllAsQuery(coachId);
         if (!await query.AnyAsync(cancellationToken))
-            return Result<PaginatedModel<TemplateWorkoutPlanModel>>.Fail(TemplateWorkoutPlanErrors.NotFound);
+            return Result<PaginatedModel<TemplateWorkoutPlanModel>>.Fail(DomainErrors.NotFound(nameof(TemplateWorkoutPlan)));
 
         var paginated = await query.PaginateAsync(pagination.PageNumber, pagination.PageSize, cancellationToken);
 
@@ -74,17 +76,17 @@ public class TemplateWorkoutPlanService(
         var currentUser = _userContext.Current;
 
         if (currentUser.Role != UserRole.Coach)
-            return Result.Fail(TemplateWorkoutPlanErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         if (await _templateRepository.ExistsByNameAndCoachIdAsync(model.TemplateName, currentUser.UserId, cancellationToken))
-            return Result.Fail(TemplateWorkoutPlanErrors.AlreadyExists, 409);
+            return Result.Fail(DomainErrors.AlreadyExists(nameof(TemplateWorkoutPlan)), 409);
 
         var exerciseIdsSet = _exerciseRepository
             .GetAllAsQuery()
             .Select(exercise => exercise.Id)
             .ToHashSet();
         if (exerciseIdsSet.Count == 0)
-            return Result.Fail(ExerciseErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         var (exerciseExistSuccess, exerciseExistError) = _templateHelper.ExercisesExist(model.TemplateWorkoutItems, exerciseIdsSet);
         if (!exerciseExistSuccess)
@@ -104,21 +106,21 @@ public class TemplateWorkoutPlanService(
 
         var templatePlan = await _templateRepository.GetByIdAsync(id, cancellationToken, track: true);
         if (templatePlan == null)
-            return Result.Fail(TemplateWorkoutPlanErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(TemplateWorkoutPlan)));
 
         if (currentUser.UserId != templatePlan.CoachId)
-            return Result.Fail(TemplateWorkoutPlanErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         if (await _templateRepository.ExistsByNameAndCoachIdAsync(model.TemplateName, currentUser.UserId, cancellationToken)
             && model.TemplateName != templatePlan.TemplateName)
-            return Result.Fail(TemplateWorkoutPlanErrors.AlreadyExists, 409);
+            return Result.Fail(DomainErrors.AlreadyExists(nameof(TemplateWorkoutPlan)), 409);
 
         var exerciseIdsSet = _exerciseRepository
           .GetAllAsQuery()
           .Select(exercise => exercise.Id)
           .ToHashSet();
         if (exerciseIdsSet.Count == 0)
-            return Result.Fail(ExerciseErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         var (validateItemsSuccess, validateItemsError) = _templateHelper.ValidateUpdateItems(templatePlan.TemplateWorkoutItems, model.TemplateWorkoutItems, exerciseIdsSet);
         if (validateItemsSuccess == false)
@@ -137,10 +139,10 @@ public class TemplateWorkoutPlanService(
     {
         var templatePlan = await _templateRepository.GetByIdAsync(id, cancellationToken, track: true);
         if (templatePlan == null)
-            return Result.Fail(TemplateWorkoutPlanErrors.NotFound);
+            return Result.Fail(DomainErrors.NotFound(nameof(TemplateWorkoutPlan)));
 
         if (_userContext.Current.UserId != templatePlan.CoachId)
-            return Result.Fail(TemplateWorkoutPlanErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, 403);
 
         _templateRepository.Delete(templatePlan);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

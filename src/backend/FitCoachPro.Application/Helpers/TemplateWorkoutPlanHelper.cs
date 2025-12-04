@@ -14,7 +14,7 @@ public class TemplateWorkoutPlanHelper : ITemplateWorkoutPlanHelper
         foreach (var ni in newItems)
         {
             if (!exercisIdsSet.Contains(ni.ExerciseId))
-                return (false, ExerciseErrors.InvalidExerciseId);
+                return (false, DomainErrors.InvalidEntityId(nameof(ni.ExerciseId)));
         }
 
         return (true, null);
@@ -25,10 +25,10 @@ public class TemplateWorkoutPlanHelper : ITemplateWorkoutPlanHelper
         foreach (var ni in newItems)
         {
             if (!exercisIdsSet.Contains(ni.ExerciseId))
-                return (false, ExerciseErrors.InvalidExerciseId);
+                return (false, DomainErrors.InvalidEntityId(nameof(ni.ExerciseId)));
 
             if (ni.Id.HasValue && currentItems.All(ci => ci.Id != ni.Id))
-                return (false, TemplateWorkoutItemErrors.InvalidTempalteWorkoutItemId);
+                return (false, DomainErrors.InvalidEntityId(nameof(TemplateWorkoutItem)));
         }
 
         return (true, null);

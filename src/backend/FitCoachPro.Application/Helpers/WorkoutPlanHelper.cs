@@ -4,6 +4,7 @@ using FitCoachPro.Application.Common.Models.WorkoutItem;
 using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Domain.Entities.Workouts.Items;
+using FitCoachPro.Domain.Entities.Workouts.Plans;
 
 namespace FitCoachPro.Application.Helpers;
 
@@ -14,7 +15,7 @@ public class WorkoutPlanHelper : IWorkoutPlanHelper
         foreach (var ni in newItems)
         {
             if (!exercisIdsSet.Contains(ni.ExerciseId))
-                return (false, ExerciseErrors.InvalidExerciseId);
+                return (false, DomainErrors.InvalidEntityId(nameof(ni.ExerciseId)));
         }
 
         return (true, null);
@@ -25,10 +26,10 @@ public class WorkoutPlanHelper : IWorkoutPlanHelper
         foreach (var ni in newItems)
         {
             if (!exercisIdsSet.Contains(ni.ExerciseId))
-                return (false, ExerciseErrors.InvalidExerciseId);
+                return (false, DomainErrors.InvalidEntityId(nameof(ni.ExerciseId)));
 
             if (ni.Id.HasValue && currentItems.All(ci => ci.Id != ni.Id))
-                return (false, WorkoutItemErrors.InvalidWorkoutItemId);
+                return (false, DomainErrors.InvalidEntityId(nameof(WorkoutItem)));
         }
 
         return (true, null);

@@ -10,11 +10,6 @@ public class WorkoutItemEntityConfiguration : IEntityTypeConfiguration<WorkoutIt
     {
         builder.HasKey(x => x.Id);
 
-        //builder.Property(x => x.Reps)
-        //    .HasDefaultValue(null);
-        //builder.Property(x => x.Sets)
-        //    .HasDefaultValue(null);
-
         builder.Property(x => x.Description)
             .HasMaxLength(200)
             .IsRequired();
