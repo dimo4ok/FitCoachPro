@@ -1,6 +1,6 @@
 ﻿using FitCoachPro.Domain.Entities.Workouts.Plans;
 
-namespace FitCoachPro.Infrastructure.Persistence.Seed;
+namespace FitCoachPro.Infrastructure.Persistence.Seed.Wokrouts;
 
 public class TemplateWorkoutPlanSeed
 {

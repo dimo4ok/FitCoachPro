@@ -1,4 +1,5 @@
-﻿using FitCoachPro.Domain.Entities.Identity;
+﻿using FitCoachPro.Domain.Entities;
+using FitCoachPro.Domain.Entities.Identity;
 using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Items;
@@ -22,6 +23,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<TemplateWorkoutItem> TemplateWorkoutItems { get; set; }
 
     public DbSet<Exercise> Exercises { get; set; }
+
+    public DbSet<ClientCoachRequest> ClientCoachRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,6 +1,6 @@
 ﻿using FitCoachPro.Domain.Entities.Workouts;
 
-namespace FitCoachPro.Infrastructure.Persistence.Seed;
+namespace FitCoachPro.Infrastructure.Persistence.Seed.Wokrouts;
 
 public static class ExerciseSeed
 {

@@ -3,7 +3,7 @@ using FitCoachPro.Domain.Entities.Workouts.Plans;
 using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitCoachPro.Infrastructure.Repositories;
+namespace FitCoachPro.Infrastructure.Repositories.WorkoutRepositories;
 
 public class WorkoutPlanRepository(AppDbContext dbContext) : IWorkoutPlanRepository
 {

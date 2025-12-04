@@ -1,6 +1,6 @@
 ﻿using FitCoachPro.Domain.Entities.Users;
 
-namespace FitCoachPro.Infrastructure.Persistence.Seed;
+namespace FitCoachPro.Infrastructure.Persistence.Seed.Users;
 
 public static class UserSeed
 {

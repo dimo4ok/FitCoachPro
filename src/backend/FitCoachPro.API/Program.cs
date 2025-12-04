@@ -4,7 +4,8 @@ using FitCoachPro.API.Extensions;
 using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Infrastructure;
 using FitCoachPro.Infrastructure.Persistence;
-using FitCoachPro.Infrastructure.Persistence.Seed;
+using FitCoachPro.Infrastructure.Persistence.Seed.Users;
+using FitCoachPro.Infrastructure.Persistence.Seed.Wokrouts;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

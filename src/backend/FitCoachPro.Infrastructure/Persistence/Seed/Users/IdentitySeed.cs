@@ -1,7 +1,7 @@
 ﻿using FitCoachPro.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
-namespace FitCoachPro.Infrastructure.Persistence.Seed;
+namespace FitCoachPro.Infrastructure.Persistence.Seed.Users;
 
 public static class IdentitySeed
 {

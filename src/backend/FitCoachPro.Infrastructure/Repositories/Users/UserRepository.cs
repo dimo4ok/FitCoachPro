@@ -5,7 +5,7 @@ using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitCoachPro.Infrastructure.Repositories;
+namespace FitCoachPro.Infrastructure.Repositories.UsersRepositories;
 
 public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
