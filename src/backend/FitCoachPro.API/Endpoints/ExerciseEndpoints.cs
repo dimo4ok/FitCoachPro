@@ -1,9 +1,9 @@
-﻿using FitCoachPro.API.Endpoints.ApiRoutes;
+﻿using FitCoachPro.API.Common;
+using FitCoachPro.API.Endpoints.ApiRoutes;
 using FitCoachPro.API.Filters;
 using FitCoachPro.Application.Common.Models.Exercise;
 using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Interfaces.Services;
-using FitCoachPro.Domain.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitCoachPro.API.Endpoints;
@@ -25,7 +25,7 @@ public static class ExerciseEndpoints
                 var response = await service.GetByIdAsync(id, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Admin.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Admin)
             .WithTags(AdminExercise);
 
         app.MapGet(ExerciseRoutes.Coach.GetById,
@@ -38,7 +38,7 @@ public static class ExerciseEndpoints
               var response = await service.GetByIdAsync(id, cancellationToken);
               return Results.Json(response, statusCode: response.StatusCode);
           })
-          .RequireAuthorization(UserRole.Coach.ToString())
+          .RequireAuthorization(AuthorizationPolicies.Coach)
           .WithTags(CoachExercise);
 
         app.MapGet(ExerciseRoutes.Admin.GetAll,
@@ -51,7 +51,7 @@ public static class ExerciseEndpoints
                var response = await service.GetAllAsync(paginationParams, cancellationToken);
                return Results.Json(response, statusCode: response.StatusCode);
            })
-           .RequireAuthorization(UserRole.Admin.ToString())
+           .RequireAuthorization(AuthorizationPolicies.Admin)
            .AddEndpointFilter<ValidationFilter<PaginationParams>>()
            .WithTags(AdminExercise);
 
@@ -65,7 +65,7 @@ public static class ExerciseEndpoints
                 var response = await service.GetAllAsync(paginationParams, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Coach.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Coach)
             .AddEndpointFilter<ValidationFilter<PaginationParams>>()
             .WithTags(CoachExercise);
 
@@ -79,7 +79,7 @@ public static class ExerciseEndpoints
                var response = await service.CreateAsync(model, cancellationToken);
                return Results.Json(response, statusCode: response.StatusCode);
            })
-           .RequireAuthorization(UserRole.Admin.ToString())
+           .RequireAuthorization(AuthorizationPolicies.Admin)
            .AddEndpointFilter<ValidationFilter<CreateExerciseModel>>()
            .WithTags(AdminExercise);
 
@@ -93,7 +93,7 @@ public static class ExerciseEndpoints
                var response = await service.CreateAsync(model, cancellationToken);
                return Results.Json(response, statusCode: response.StatusCode);
            })
-           .RequireAuthorization(UserRole.Coach.ToString())
+           .RequireAuthorization(AuthorizationPolicies.Coach)
            .AddEndpointFilter<ValidationFilter<CreateExerciseModel>>()
            .WithTags(CoachExercise);
 
@@ -108,7 +108,7 @@ public static class ExerciseEndpoints
                var response = await service.UpdateAsync(id, model, cancellationToken);
                return Results.Json(response, statusCode: response.StatusCode);
            })
-           .RequireAuthorization(UserRole.Admin.ToString())
+           .RequireAuthorization(AuthorizationPolicies.Admin)
            .AddEndpointFilter<ValidationFilter<UpdateExerciseModel>>()
            .WithTags(AdminExercise);
 
@@ -123,7 +123,7 @@ public static class ExerciseEndpoints
                 var response = await service.UpdateAsync(id, model, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Coach.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Coach)
             .AddEndpointFilter<ValidationFilter<UpdateExerciseModel>>()
             .WithTags(CoachExercise);
 
@@ -138,7 +138,7 @@ public static class ExerciseEndpoints
                 var response = await service.DeleteAsync(id, model, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Admin.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Admin)
             .AddEndpointFilter<ValidationFilter<DeleteExerciseModel>>()
             .WithTags(AdminExercise);
 
@@ -153,7 +153,7 @@ public static class ExerciseEndpoints
                 var response = await service.DeleteAsync(id, model, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Coach.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Coach)
             .AddEndpointFilter<ValidationFilter<DeleteExerciseModel>>()
             .WithTags(CoachExercise);
     }

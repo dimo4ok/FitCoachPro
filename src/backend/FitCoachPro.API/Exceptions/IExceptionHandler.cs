@@ -1,5 +1,4 @@
-﻿
-namespace FitCoachPro.API.Exceptions
+﻿namespace FitCoachPro.API.Exceptions
 {
     internal interface IExceptionHandler
     {

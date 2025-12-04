@@ -22,30 +22,30 @@ public class ExerciseService(
     private readonly IExerciseRepository _exerciseRepository = exerciseRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Result<ExerciseModel>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result<ExerciseDetailModel>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if (!HasUserAccess(_userContext.Current.Role))
-            return Result<ExerciseModel>.Fail(DomainErrors.Forbidden, 403);
+            return Result<ExerciseDetailModel>.Fail(DomainErrors.Forbidden, 403);
 
         var exercise = await _exerciseRepository.GetByIdAsync(id, cancellationToken);
         if (exercise == null)
-            return Result<ExerciseModel>.Fail(DomainErrors.NotFound(nameof(Exercise)));
+            return Result<ExerciseDetailModel>.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
-        return Result<ExerciseModel>.Success(exercise.ToModel());
+        return Result<ExerciseDetailModel>.Success(exercise.ToModel());
     }
 
-    public async Task<Result<PaginatedModel<ExerciseModel>>> GetAllAsync(PaginationParams paginationParams, CancellationToken cancellationToken = default)
+    public async Task<Result<PaginatedModel<ExerciseDetailModel>>> GetAllAsync(PaginationParams paginationParams, CancellationToken cancellationToken = default)
     {
         if (!HasUserAccess(_userContext.Current.Role))
-            return Result<PaginatedModel<ExerciseModel>>.Fail(DomainErrors.Forbidden, 403);
+            return Result<PaginatedModel<ExerciseDetailModel>>.Fail(DomainErrors.Forbidden, 403);
 
         var query = _exerciseRepository.GetAllAsQuery();
         if (!await query.AnyAsync(cancellationToken))
-            return Result<PaginatedModel<ExerciseModel>>.Fail(DomainErrors.NotFound(nameof(Exercise)));
+            return Result<PaginatedModel<ExerciseDetailModel>>.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         var paginated = await query.PaginateAsync(paginationParams.PageNumber, paginationParams.PageSize, cancellationToken);
 
-        return Result<PaginatedModel<ExerciseModel>>.Success(paginated.ToModel(x => x.ToModel()));
+        return Result<PaginatedModel<ExerciseDetailModel>>.Success(paginated.ToModel(x => x.ToModel()));
     }
 
     public async Task<Result> CreateAsync(CreateExerciseModel model, CancellationToken cancellationToken = default)

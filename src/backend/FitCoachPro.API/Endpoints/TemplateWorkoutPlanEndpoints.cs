@@ -1,9 +1,9 @@
-﻿using FitCoachPro.API.Endpoints.ApiRoutes;
+﻿using FitCoachPro.API.Common;
+using FitCoachPro.API.Endpoints.ApiRoutes;
 using FitCoachPro.API.Filters;
 using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Models.TemplateWorkoutPlan;
 using FitCoachPro.Application.Interfaces.Services;
-using FitCoachPro.Domain.Entities.Enums;
 
 namespace FitCoachPro.API.Endpoints;
 
@@ -24,7 +24,7 @@ public static class TemplateWorkoutPlanEndpoints
                 var response = await service.GetByIdAsync(id, canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Admin.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Admin)
             .WithTags(AdminTempalteWorkoutPLan);
 
         app.MapGet(TemplateWorkoutPlanRoutes.Coach.GetById,
@@ -37,7 +37,7 @@ public static class TemplateWorkoutPlanEndpoints
                 var response = await service.GetByIdAsync(id, canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Coach.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Coach)
             .WithTags(CoachTemplateWorkoutPLan);
 
         app.MapGet(TemplateWorkoutPlanRoutes.Admin.GetAll,
@@ -51,7 +51,7 @@ public static class TemplateWorkoutPlanEndpoints
                 var response = await service.GetAllForAdminByCoachIdAsync(coachId, paginationParams, canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-           .RequireAuthorization(UserRole.Admin.ToString())
+           .RequireAuthorization(AuthorizationPolicies.Admin)
            .WithTags(AdminTempalteWorkoutPLan)
            .AddEndpointFilter<ValidationFilter<PaginationParams>>();
 
@@ -65,7 +65,7 @@ public static class TemplateWorkoutPlanEndpoints
                 var response = await service.GetAllForCoachAsync(paginationParams, canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-           .RequireAuthorization(UserRole.Coach.ToString())
+           .RequireAuthorization(AuthorizationPolicies.Coach)
            .WithTags(CoachTemplateWorkoutPLan)
            .AddEndpointFilter<ValidationFilter<PaginationParams>>();
 
@@ -79,7 +79,7 @@ public static class TemplateWorkoutPlanEndpoints
                 var response = await service.CreateAsync(model, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Coach.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Coach)
             .WithTags(CoachTemplateWorkoutPLan)
             .AddEndpointFilter<ValidationFilter<CreateTemplateWorkoutPlanModel>>();
 
@@ -94,7 +94,7 @@ public static class TemplateWorkoutPlanEndpoints
                 var response = await service.UpdateAsync(id, model, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Coach.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Coach)
             .WithTags(CoachTemplateWorkoutPLan)
             .AddEndpointFilter<ValidationFilter<UpdateTemplateWorkoutPlanModel>>();
 
@@ -108,7 +108,7 @@ public static class TemplateWorkoutPlanEndpoints
                 var response = await service.DeleteAsync(id, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
-            .RequireAuthorization(UserRole.Coach.ToString())
+            .RequireAuthorization(AuthorizationPolicies.Coach)
             .WithTags(CoachTemplateWorkoutPLan);
     }
 }

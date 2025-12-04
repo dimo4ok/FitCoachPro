@@ -13,20 +13,20 @@ public static class ExerciseExtensions
             GifUrl = model.GifUrl,
         };
 
-    public static ExerciseModel ToModel(this Exercise exercise) =>
+    public static ExerciseDetailModel ToModel(this Exercise exercise) =>
        new(
            exercise.Id,
            exercise.ExerciseName,
            exercise.GifUrl,
            exercise.RowVersion);
 
-    public static ExerciseNestedModel ToNestedModel(this Exercise exercise) =>
+    public static ExerciseModel ToNestedModel(this Exercise exercise) =>
         new(
             exercise.Id,
             exercise.ExerciseName,
             exercise.GifUrl);
 
-    public static IReadOnlyList<ExerciseModel> ToModel(this IReadOnlyList<Exercise> exercise) =>
+    public static IReadOnlyList<ExerciseDetailModel> ToModel(this IReadOnlyList<Exercise> exercise) =>
         exercise
             .Select(x => x.ToModel())
             .ToList()
