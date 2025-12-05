@@ -18,7 +18,7 @@ public class WorkoutPlanRepository(AppDbContext dbContext) : IWorkoutPlanReposit
     public async Task<WorkoutPlan?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool track = false)
     {
         var query = track 
-            ? _dbContext.WorkoutPlans 
+            ? _dbContext.WorkoutPlans
             : _dbContext.WorkoutPlans.AsNoTracking();
 
         return await query

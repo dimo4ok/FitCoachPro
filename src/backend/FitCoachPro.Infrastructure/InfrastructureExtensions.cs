@@ -3,7 +3,6 @@ using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Identity;
 using FitCoachPro.Infrastructure.Persistence;
 using FitCoachPro.Infrastructure.Repositories;
-using FitCoachPro.Infrastructure.Repositories.UsersRepositories;
 using FitCoachPro.Infrastructure.Repositories.WorkoutRepositories;
 using FitCoachPro.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

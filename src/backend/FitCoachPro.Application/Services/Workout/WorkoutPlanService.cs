@@ -13,7 +13,7 @@ using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitCoachPro.Application.Services;
+namespace FitCoachPro.Application.Services.Workout;
 
 public class WorkoutPlanService(
     IUserContextService userContext,

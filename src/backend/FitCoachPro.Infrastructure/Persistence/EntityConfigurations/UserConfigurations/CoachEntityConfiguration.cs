@@ -22,6 +22,9 @@ public class CoachEntityConfiguration : IEntityTypeConfiguration<Coach>
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
+        builder.Property(x => x.IsAcceptingNewClients)
+            .IsRequired();
+
         builder.HasOne(x => x.User)
             .WithOne()
             .HasForeignKey<Coach>(x => x.UserId)

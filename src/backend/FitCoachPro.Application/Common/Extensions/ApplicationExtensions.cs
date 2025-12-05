@@ -3,6 +3,7 @@ using FitCoachPro.Application.Helpers;
 using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Application.Services;
+using FitCoachPro.Application.Services.Workout;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 

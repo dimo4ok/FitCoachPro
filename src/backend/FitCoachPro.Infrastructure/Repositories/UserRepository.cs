@@ -5,7 +5,7 @@ using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitCoachPro.Infrastructure.Repositories.UsersRepositories;
+namespace FitCoachPro.Infrastructure.Repositories;
 
 public class UserRepository(AppDbContext dbContext) : IUserRepository
 {
@@ -48,9 +48,9 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         return domainUserId;
     }
 
-    public async Task<bool> CanCoachAccessClientAsync(Guid coachId, Guid clientId, CancellationToken cancellationToken = default)
-        => await _dbContext.Clients.AnyAsync(
-            x => x.Id == clientId
-            && x.CoachId == coachId,
+    public async Task<bool> CanCoachAccessClientAsync(Guid coachId, Guid clientId, CancellationToken cancellationToken = default) => 
+        await _dbContext.Clients.AnyAsync(
+            x => x.Id == clientId && 
+            x.CoachId == coachId,
             cancellationToken);
 }

@@ -10,7 +10,7 @@ using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Workouts;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitCoachPro.Application.Services;
+namespace FitCoachPro.Application.Services.Workout;
 
 public class ExerciseService(
     IUserContextService userContext,

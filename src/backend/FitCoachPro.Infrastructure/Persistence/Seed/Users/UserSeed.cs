@@ -31,6 +31,7 @@ public static class UserSeed
                 FirstName = "John",
                 LastName = "Doe",
                 CreatedAt = DateTime.UtcNow,
+                IsAcceptingNewClients = true,
                 UserId = Guid.Parse("00000011-0000-0000-0000-000000000011"),
                 Clients = new List<Client>()
             };
@@ -45,6 +46,7 @@ public static class UserSeed
                 FirstName = "Jane",
                 LastName = "Smith",
                 CreatedAt = DateTime.UtcNow,
+                IsAcceptingNewClients = true,
                 UserId = Guid.Parse("00000012-0000-0000-0000-000000000012"),
                 Clients = new List<Client>()
             };
