@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Common.Models.Exercise;
+﻿using FitCoachPro.Application.Common.Models.Workouts.Exercise;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
 

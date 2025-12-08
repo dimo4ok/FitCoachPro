@@ -18,6 +18,8 @@ public static class ApplicationExtensions
         services.AddHttpContextAccessor();
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserService, UserService>();
+
         services.AddScoped<IUserContextService, UserContextService>();
 
         services.AddScoped<ITemplateWorkoutPlanService, TemplateWorkoutPlanService>();
@@ -27,6 +29,8 @@ public static class ApplicationExtensions
         services.AddScoped<IWorkoutPlanHelper, WorkoutPlanHelper>();
 
         services.AddScoped<IExerciseService, ExerciseService>();
+
+        services.AddScoped<IClientCoachRequestService, ClientCoachRequestService>();
 
         return services;
     }

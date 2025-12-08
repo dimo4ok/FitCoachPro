@@ -1,5 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Errors;
-using FitCoachPro.Application.Common.Models.TemplateWorkoutPlan;
+using FitCoachPro.Application.Common.Models.Workouts.TemplateWorkoutPlan;
 using FitCoachPro.Application.Common.Validators.TemplateWorkoutItemValidators;
 using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Items;

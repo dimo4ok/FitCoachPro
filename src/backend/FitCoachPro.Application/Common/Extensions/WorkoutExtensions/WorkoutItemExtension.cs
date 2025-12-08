@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Common.Models.WorkoutItem;
+﻿using FitCoachPro.Application.Common.Models.Workouts.WorkoutItem;
 using FitCoachPro.Domain.Entities.Workouts.Items;
 
 namespace FitCoachPro.Application.Common.Extensions.WorkoutExtensions;

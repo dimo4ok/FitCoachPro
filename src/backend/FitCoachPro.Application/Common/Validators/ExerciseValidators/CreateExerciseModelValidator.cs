@@ -1,5 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Errors;
-using FitCoachPro.Application.Common.Models.Exercise;
+using FitCoachPro.Application.Common.Models.Workouts.Exercise;
 using FluentValidation;
 
 namespace FitCoachPro.Application.Common.Validators.ExerciseValidators;
