@@ -20,6 +20,51 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             _ => null
         };
 
+    public async Task<Admin?> GetAdminById(Guid id, CancellationToken cancellationToken = default, bool track = false)
+    {
+        var query = track
+            ? _dbContext.Admins
+            : _dbContext.Admins.AsNoTracking();
+
+        return await query.Where(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<Coach?> GetCoachById(Guid id, CancellationToken cancellationToken = default, bool track = false)
+    {
+        var query = track
+            ? _dbContext.Coaches
+            : _dbContext.Coaches.AsNoTracking();
+
+        return await query.Where(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<Client?> GetClientById(Guid id, CancellationToken cancellationToken = default, bool track = false)
+    {
+        var query = track
+            ? _dbContext.Clients
+            : _dbContext.Clients.AsNoTracking();
+
+        return await query.Where(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public IQueryable<UserProfile> GetAllAsQuery(UserRole role) =>
+        role switch
+        {
+            UserRole.Admin =>
+                _dbContext.Admins
+                .AsNoTracking()
+                .OrderBy(x => x.CreatedAt),
+            UserRole.Coach =>
+                _dbContext.Coaches
+                .AsNoTracking()
+                .OrderBy(x => x.CreatedAt),
+            UserRole.Client =>
+                _dbContext.Clients
+                .AsNoTracking()
+                .OrderBy(x => x.CreatedAt),
+            _ => Enumerable.Empty<UserProfile>().AsQueryable()
+        };
+
     public async Task<Guid> CreateAsync(CreateUserModel model, CancellationToken cancellationToken = default)
     {
         Guid domainUserId;
