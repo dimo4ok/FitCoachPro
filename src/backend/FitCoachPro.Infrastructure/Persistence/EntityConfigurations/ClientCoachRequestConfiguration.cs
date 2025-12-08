@@ -20,6 +20,9 @@ public class ClientCoachRequestConfiguration : IEntityTypeConfiguration<ClientCo
 
         builder.Property(x => x.ReviewedAt);
 
+        builder.Property(x => x.RowVersion)
+           .IsRowVersion();
+
         builder.HasOne(x => x.Client)
             .WithMany()
             .HasForeignKey(x => x.ClientId)

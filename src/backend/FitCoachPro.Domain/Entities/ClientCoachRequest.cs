@@ -10,11 +10,11 @@ public class ClientCoachRequest
     public string? Comment { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ReviewedAt { get; set; }
+    public byte[] RowVersion { get; set; } = null!;
 
     public Guid ClientId { get; set; }
     public Client Client { get; set; } = null!;
 
     public Guid CoachId { get; set; }
     public Coach Coach { get; set; } = null!;
-
 }

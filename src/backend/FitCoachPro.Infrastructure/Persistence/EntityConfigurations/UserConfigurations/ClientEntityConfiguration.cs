@@ -24,6 +24,9 @@ public class ClientEntityConfiguration : IEntityTypeConfiguration<Client>
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
+        builder.Property(x => x.RowVersion)
+            .IsRowVersion();
+
         builder.HasOne(x => x.User)
             .WithOne()
             .HasForeignKey<Client>(x => x.UserId)

@@ -22,6 +22,9 @@ public class AdminEntityConfiguration : IEntityTypeConfiguration<Admin>
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
+        builder.Property(x => x.RowVersion)
+            .IsRowVersion();
+
         builder.HasOne(x => x.User)
             .WithOne()
             .HasForeignKey<Admin>(x => x.UserId)
