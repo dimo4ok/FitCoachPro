@@ -13,6 +13,5 @@ public static class ClientCoachRequestExtenisons
             request.Status,
             request.Comment,
             request.CreatedAt,
-            request.ReviewedAt,
-            request.RowVersion);
+            request.ReviewedAt);
 }

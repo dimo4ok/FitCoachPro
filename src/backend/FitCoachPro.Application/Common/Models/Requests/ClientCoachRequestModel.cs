@@ -11,6 +11,5 @@ public record ClientCoachRequestModel(
     CoachRequestStatus Status,
     string? Comment,
     DateTime CreatedAt,
-    DateTime? ReviewedAt,
-    byte[] RowVersion
+    DateTime? ReviewedAt
     );
