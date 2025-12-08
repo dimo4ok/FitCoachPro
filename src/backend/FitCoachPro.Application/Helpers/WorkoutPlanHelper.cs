@@ -4,7 +4,6 @@ using FitCoachPro.Application.Common.Models.Workouts.WorkoutItem;
 using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Domain.Entities.Workouts.Items;
-using FitCoachPro.Domain.Entities.Workouts.Plans;
 
 namespace FitCoachPro.Application.Helpers;
 

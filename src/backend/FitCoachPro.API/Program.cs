@@ -53,5 +53,6 @@ app.MapAuthEndpoints();
 app.MapTempalteWorkoutPlanEndpoints();
 app.MapWorkoutPlanEndpoints();
 app.MapExerciseEndpoints();
+app.MapCoachClientRequestEndpoints();
 
 app.Run();

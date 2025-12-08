@@ -2,7 +2,7 @@
 using FitCoachPro.API.Endpoints.ApiRoutes;
 using FitCoachPro.API.Filters;
 using FitCoachPro.Application.Common.Models.Pagination;
-using FitCoachPro.Application.Common.Models.TemplateWorkoutPlan;
+using FitCoachPro.Application.Common.Models.Workouts.TemplateWorkoutPlan;
 using FitCoachPro.Application.Interfaces.Services;
 
 namespace FitCoachPro.API.Endpoints;
