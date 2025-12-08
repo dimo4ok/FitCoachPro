@@ -1,5 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Models.Pagination;
-using FitCoachPro.Application.Common.Models.TemplateWorkoutPlan;
+using FitCoachPro.Application.Common.Models.Workouts.TemplateWorkoutPlan;
 using FitCoachPro.Application.Common.Response;
 
 namespace FitCoachPro.Application.Interfaces.Services;

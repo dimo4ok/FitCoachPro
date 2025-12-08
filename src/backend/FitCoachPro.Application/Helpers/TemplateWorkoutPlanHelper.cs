@@ -1,6 +1,6 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Extensions.WorkoutExtensions;
-using FitCoachPro.Application.Common.Models.TemplateWorkoutItem;
+using FitCoachPro.Application.Common.Models.Workouts.TemplateWorkoutItem;
 using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Domain.Entities.Workouts.Items;

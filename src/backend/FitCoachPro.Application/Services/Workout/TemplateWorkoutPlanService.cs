@@ -3,7 +3,7 @@ using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Extensions.WorkoutExtensions;
 using FitCoachPro.Application.Common.Models;
 using FitCoachPro.Application.Common.Models.Pagination;
-using FitCoachPro.Application.Common.Models.TemplateWorkoutPlan;
+using FitCoachPro.Application.Common.Models.Workouts.TemplateWorkoutPlan;
 using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
