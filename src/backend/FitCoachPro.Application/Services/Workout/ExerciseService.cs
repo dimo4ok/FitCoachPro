@@ -1,8 +1,8 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Extensions.WorkoutExtensions;
-using FitCoachPro.Application.Common.Models.Exercise;
 using FitCoachPro.Application.Common.Models.Pagination;
+using FitCoachPro.Application.Common.Models.Workouts.Exercise;
 using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
@@ -67,7 +67,7 @@ public class ExerciseService(
         if (!HasUserAccess(_userContext.Current.Role))
             return Result.Fail(DomainErrors.Forbidden, 403);
 
-        var exercise = await _exerciseRepository.GetByIdAsync(id, cancellationToken);
+        var exercise = await _exerciseRepository.GetByIdAsync(id, cancellationToken, track: true);
         if (exercise == null)
             return Result.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
@@ -77,11 +77,11 @@ public class ExerciseService(
         if (!await CanModifyExerciseAsync(id, _userContext.Current.Role, cancellationToken))
             return Result.Fail(DomainErrors.UsedInActiveEntity(nameof(Exercise)), 409);
 
+        if (!exercise.RowVersion.SequenceEqual(model.RowVersion))
+            return Result.Fail(SystemErrors.ConcurrencyConflict, 409);
+
         exercise.ExerciseName = model.ExerciseName;
         exercise.GifUrl = model.GifUrl;
-        exercise.RowVersion = model.RowVersion;
-
-        _exerciseRepository.Update(exercise);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -93,14 +93,15 @@ public class ExerciseService(
         if (!HasUserAccess(_userContext.Current.Role))
             return Result.Fail(DomainErrors.Forbidden, 403);
 
-        var exercise = await _exerciseRepository.GetByIdAsync(id, cancellationToken);
+        var exercise = await _exerciseRepository.GetByIdAsync(id, cancellationToken, track: true);
         if (exercise == null)
             return Result.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         if (!await CanModifyExerciseAsync(id, _userContext.Current.Role, cancellationToken))
             return Result.Fail(DomainErrors.UsedInActiveEntity(nameof(Exercise)), 409);
 
-        exercise.RowVersion = model.RowVersion;
+        if (!exercise.RowVersion.SequenceEqual(model.RowVersion))
+            return Result.Fail(SystemErrors.ConcurrencyConflict, 409);
 
         _exerciseRepository.Delete(exercise);
 

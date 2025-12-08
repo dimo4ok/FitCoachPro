@@ -14,19 +14,20 @@ public class ExerciseRepository(AppDbContext dbContext) : IExerciseRepository
             .AsNoTracking()
             .OrderBy(x => x.ExerciseName);
 
-    public async Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        await _dbContext.Exercises
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    public async Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool track = false)
+    {
+        var query = track
+            ? _dbContext.Exercises
+            : _dbContext.Exercises.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
 
     public async Task CreateAsync(Exercise exercise, CancellationToken cancellationToken = default) =>
         await _dbContext.Exercises.AddAsync(exercise, cancellationToken);
 
-    public void Update(Exercise exercise) =>
-        _dbContext.Entry(exercise).State = EntityState.Modified;
-
     public void Delete(Exercise exercise) =>
-        _dbContext.Entry(exercise).State = EntityState.Deleted;
+        _dbContext.Exercises.Remove(exercise);
 
     public async Task<bool> ExistsByExerciseNameAsync(string normalizedExerciseName, CancellationToken cancellationToken = default) =>
         await _dbContext.Exercises

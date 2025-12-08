@@ -6,10 +6,9 @@ public interface IExerciseRepository
 {
     IQueryable<Exercise> GetAllAsQuery();
 
-    Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Exercise?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool track = false);
 
     Task CreateAsync(Exercise exercise, CancellationToken cancellationToken = default);
-    void Update(Exercise exercise);
     void Delete(Exercise exercise);
 
     Task<bool> ExistsByExerciseNameAsync(string exerciseName, CancellationToken cancellationToken = default);
