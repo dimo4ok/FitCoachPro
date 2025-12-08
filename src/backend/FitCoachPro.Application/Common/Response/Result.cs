@@ -1,4 +1,6 @@
-﻿namespace FitCoachPro.Application.Common.Response;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace FitCoachPro.Application.Common.Response;
 
 public class Result
 {
@@ -6,14 +8,14 @@ public class Result
     public int StatusCode { get; init; }
     public List<Error>? Errors { get; init; }
 
-    public static Result Success(int statusCode = 200)
+    public static Result Success(int statusCode = StatusCodes.Status200OK)
         => new()
         {
             IsSuccess = true,
             StatusCode = statusCode
         };
 
-    public static Result Fail(List<Error> errors, int statusCode = 404)
+    public static Result Fail(List<Error> errors, int statusCode = StatusCodes.Status400BadRequest)
         => new()
         {
             IsSuccess = false,
@@ -21,7 +23,7 @@ public class Result
             Errors = errors
         };
 
-    public static Result Fail(Error error, int statusCode = 404)
+    public static Result Fail(Error error, int statusCode = StatusCodes.Status400BadRequest)
         => new()
         {
             IsSuccess = false,
@@ -37,7 +39,7 @@ public class Result<T>
     public T? Data { get; init; }
     public List<Error>? Errors { get; init; }
 
-    public static Result<T> Success(T data, int statusCode = 200)
+    public static Result<T> Success(T data, int statusCode = StatusCodes.Status200OK)
         => new()
         {
             IsSuccess = true,
@@ -45,7 +47,7 @@ public class Result<T>
             Data = data
         };
 
-    public static Result<T> Fail(List<Error> errors, int statusCode = 404)
+    public static Result<T> Fail(List<Error> errors, int statusCode = StatusCodes.Status400BadRequest)
         => new()
         {
             IsSuccess = false,
@@ -53,7 +55,7 @@ public class Result<T>
             Errors = errors
         };
 
-    public static Result<T> Fail(Error error, int statusCode = 404)
+    public static Result<T> Fail(Error error, int statusCode = StatusCodes.Status400BadRequest)
        => new()
        {
            IsSuccess = false,

@@ -6,6 +6,7 @@ using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace FitCoachPro.Application.Services;
@@ -32,7 +33,7 @@ public class AuthService(
         {
             var existingEmail = await _userManager.FindByEmailAsync(model.Email);
             if (existingEmail != null)
-                return Result<AuthModel>.Fail(UserErrors.EmailAlreadyExists, 400);
+                return Result<AuthModel>.Fail(UserErrors.EmailAlreadyExists, StatusCodes.Status400BadRequest);
 
             var user = new User
             {
@@ -42,20 +43,20 @@ public class AuthService(
 
             var createUserResult = await _userManager.CreateAsync(user, model.Password);
             if (!createUserResult.Succeeded)
-                return Result<AuthModel>.Fail(createUserResult.Errors.ToErrorList(), 400);
+                return Result<AuthModel>.Fail(createUserResult.Errors.ToErrorList(), StatusCodes.Status400BadRequest);
 
             var roleExists = await _roleManager.RoleExistsAsync(model.Role.ToString());
             if (!roleExists)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                return Result<AuthModel>.Fail(UserErrors.RoleNotFound, 400);
+                return Result<AuthModel>.Fail(UserErrors.RoleNotFound, StatusCodes.Status400BadRequest);
             }
 
             var addRoleResult = await _userManager.AddToRoleAsync(user, model.Role.ToString());
             if (!addRoleResult.Succeeded)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                return Result<AuthModel>.Fail(addRoleResult.Errors.ToErrorList(), 400);
+                return Result<AuthModel>.Fail(addRoleResult.Errors.ToErrorList(), StatusCodes.Status400BadRequest);
             }
 
             var domainUserModel = new CreateUserModel
@@ -80,12 +81,12 @@ public class AuthService(
 
             var authModel = GenerateTokenByData(jwtPayloadModel);
 
-            return Result<AuthModel>.Success(authModel);
+            return Result<AuthModel>.Success(authModel, StatusCodes.Status201Created);
         }
         catch
         {
             await transaction.RollbackAsync(cancellationToken);
-            return Result<AuthModel>.Fail(SystemErrors.TransactionFailed, 500);
+            return Result<AuthModel>.Fail(SystemErrors.TransactionFailed, StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -97,14 +98,14 @@ public class AuthService(
 
         var validPassword = await _userManager.CheckPasswordAsync(user, model.Password);
         if (!validPassword)
-            return Result<AuthModel>.Fail(UserErrors.InvalidCredentials, 401);
+            return Result<AuthModel>.Fail(UserErrors.InvalidCredentials, StatusCodes.Status401Unauthorized);
 
         var roleString = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
         if (string.IsNullOrEmpty(roleString))
-            return Result<AuthModel>.Fail(UserErrors.RoleNotFound, 500);
+            return Result<AuthModel>.Fail(UserErrors.RoleNotFound, StatusCodes.Status500InternalServerError);
 
         if (!Enum.TryParse<UserRole>(roleString, true, out var userRole))
-            return Result<AuthModel>.Fail(UserErrors.InvalidRole, 500);
+            return Result<AuthModel>.Fail(UserErrors.InvalidRole, StatusCodes.Status500InternalServerError);
 
         var domainUser = await _userRepository.GetByAppUserIdAndRoleAsync(user.Id, userRole, cancellationToken);
         if (domainUser == null)

@@ -25,7 +25,7 @@ public class CoachEntityConfiguration : IEntityTypeConfiguration<Coach>
         builder.Property(x => x.RowVersion)
             .IsRowVersion();
 
-        builder.Property(x => x.IsAcceptingNewClients)
+        builder.Property(x => x.AcceptanceStatus)
             .IsRequired();
 
         builder.HasOne(x => x.User)

@@ -118,31 +118,28 @@ public static class CoachClientRequestEndpoints
         app.MapPut(CoachClientRequestRoutes.Coach.Update,
             async (
                 Guid id,
-                UpdateClientCoachRequestModel model,
+                CoachRequestStatus status,
                 IClientCoachRequestService service,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await service.UpdateAsync(id, model, cancellationToken);
+                var response = await service.UpdateAsync(id, status, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Coach)
-            .AddEndpointFilter<ValidationFilter<UpdateClientCoachRequestModel>>()
             .WithTags(CoachRequest);
 
         app.MapDelete(CoachClientRequestRoutes.Client.Cancel,
             async (
                 Guid id,
-                [FromBody] DeleteClientCoachRequestModel model,
                 IClientCoachRequestService service,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await service.CancelRequestAsync(id, model, cancellationToken);
+                var response = await service.CancelRequestAsync(id, cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Client)
-            .AddEndpointFilter<ValidationFilter<DeleteClientCoachRequestModel>>()
             .WithTags(ClientRequest);
     }
 }

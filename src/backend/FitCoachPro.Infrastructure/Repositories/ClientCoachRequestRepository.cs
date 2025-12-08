@@ -56,7 +56,7 @@ public class ClientCoachRequestRepository(AppDbContext dbContext) : IClientCoach
             cancellationToken);
 
     public async Task<bool> IsCoachAcceptingNewClientsAsync(Guid coachId, CancellationToken cancellationToken = default) =>
-        await _dbContext.Coaches.AnyAsync(x => x.Id == coachId && x.IsAcceptingNewClients == true, cancellationToken);
+        await _dbContext.Coaches.AnyAsync(x => x.Id == coachId && x.AcceptanceStatus == ClientAcceptanceStatus.Accepting, cancellationToken);
 
     public async Task<bool> IsClientAvailableForNewCoachAsync(Guid clientId, CancellationToken cancellationToken = default) =>
         await _dbContext.Clients.AnyAsync(x => x.Id == clientId && x.CoachId == null, cancellationToken);

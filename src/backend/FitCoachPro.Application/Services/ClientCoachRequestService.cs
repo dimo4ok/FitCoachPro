@@ -8,6 +8,7 @@ using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities;
 using FitCoachPro.Domain.Entities.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitCoachPro.Application.Services;
@@ -32,7 +33,7 @@ public class ClientCoachRequestService(
 
         var currentUser = _userContext.Current;
         if (!HasAccesToRequest(request, currentUser))
-            return Result<ClientCoachRequestModel>.Fail(DomainErrors.Forbidden, 403);
+            return Result<ClientCoachRequestModel>.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         return Result<ClientCoachRequestModel>.Success(request.ToModel());
     }
@@ -42,7 +43,7 @@ public class ClientCoachRequestService(
         var currentUser = _userContext.Current;
 
         if (currentUser.Role != UserRole.Coach && currentUser.Role != UserRole.Client)
-            return Result<PaginatedModel<ClientCoachRequestModel>>.Fail(DomainErrors.Forbidden, 403);
+            return Result<PaginatedModel<ClientCoachRequestModel>>.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         var query = _requestRepository.GetAllByUserIdAndUserRoleAsQuery(currentUser.UserId, currentUser.Role);
         if (status != null)
@@ -59,7 +60,7 @@ public class ClientCoachRequestService(
     public async Task<Result<PaginatedModel<ClientCoachRequestModel>>> GetAllForAdminAsync(Guid userId, PaginationParams paginationParams, CoachRequestStatus? status = null, CancellationToken cancellationToken = default)
     {
         if (_userContext.Current.Role != UserRole.Admin)
-            return Result<PaginatedModel<ClientCoachRequestModel>>.Fail(DomainErrors.Forbidden, 403);
+            return Result<PaginatedModel<ClientCoachRequestModel>>.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         var query = _requestRepository.GetAllByUserIdAsQuery(userId);
         if (status != null)
@@ -78,16 +79,16 @@ public class ClientCoachRequestService(
         var currentUserId = _userContext.Current.UserId;
 
         if (_userContext.Current.Role != UserRole.Client)
-            return Result.Fail(DomainErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         if (!await _requestRepository.IsCoachAcceptingNewClientsAsync(coachId, cancellationToken))
-            return Result.Fail(ClientCoachRequestErrors.CoachNotAcceptingNewClients, 409);
+            return Result.Fail(ClientCoachRequestErrors.CoachNotAcceptingNewClients, StatusCodes.Status409Conflict);
 
         if (!await _requestRepository.IsClientAvailableForNewCoachAsync(currentUserId, cancellationToken))
-            return Result.Fail(ClientCoachRequestErrors.ClientAlreadyHasCoach, 409);
+            return Result.Fail(ClientCoachRequestErrors.ClientAlreadyHasCoach, StatusCodes.Status409Conflict);
 
         if(await _requestRepository.IsDuplicateRequestAsync(currentUserId, coachId, cancellationToken))
-            return Result.Fail(ClientCoachRequestErrors.PendingRequestAlreadyExists, 409);
+            return Result.Fail(ClientCoachRequestErrors.PendingRequestAlreadyExists, StatusCodes.Status409Conflict);
 
         var request = new ClientCoachRequest
         {
@@ -99,31 +100,28 @@ public class ClientCoachRequestService(
         await _requestRepository.CreateAsync(request, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(201);
+        return Result.Success(StatusCodes.Status201Created);
     }
 
-    public async Task<Result> UpdateAsync(Guid requstId, UpdateClientCoachRequestModel model, CancellationToken cancellationToken = default)
+    public async Task<Result> UpdateAsync(Guid requstId, CoachRequestStatus status, CancellationToken cancellationToken = default)
     {
         var currentUser = _userContext.Current;
         if (currentUser.Role != UserRole.Coach)
-            return Result.Fail(DomainErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         var request = await _requestRepository.GetByIdAsync(requstId, cancellationToken, track: true);
         if (request == null)
             return Result.Fail(DomainErrors.NotFound(nameof(ClientCoachRequest)));
 
         if (!HasAccesToRequest(request, currentUser))
-            return Result.Fail(DomainErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         if (request.Status != CoachRequestStatus.Pending)
-            return Result.Fail(ClientCoachRequestErrors.CannotUpdateFinalizedRequest, 409);
+            return Result.Fail(ClientCoachRequestErrors.CannotUpdateFinalizedRequest, StatusCodes.Status409Conflict);
 
-        if(!request.RowVersion.SequenceEqual(model.RowVersion))
-            return Result.Fail(SystemErrors.ConcurrencyConflict, 409);
-
-        if (model.status != CoachRequestStatus.Accepted)
+        if (status != CoachRequestStatus.Accepted)
         {
-            request.Status = model.status;
+            request.Status = status;
             request.ReviewedAt = DateTime.UtcNow;
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -133,7 +131,7 @@ public class ClientCoachRequestService(
         await using var transaction =  await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            request.Status = model.status;
+            request.Status = status;
             request.ReviewedAt = DateTime.UtcNow;
 
             var clientUpdateResult = await _userService.AssignCoachToClientAsync(request.ClientId, request.CoachId, cancellationToken);
@@ -155,37 +153,34 @@ public class ClientCoachRequestService(
         }
     }
 
-    public async Task<Result> CancelRequestAsync(Guid requestId, DeleteClientCoachRequestModel model, CancellationToken cancellationToken = default)
+    public async Task<Result> CancelRequestAsync(Guid requestId, CancellationToken cancellationToken = default)
     {
         var currentUser = _userContext.Current;
         if (currentUser.Role != UserRole.Client)
-            return Result.Fail(DomainErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         var request = await _requestRepository.GetByIdAsync(requestId, cancellationToken, track: true);
         if (request == null)
             return Result.Fail(DomainErrors.NotFound(nameof(ClientCoachRequest)));
 
         if (!HasAccesToRequest(request, currentUser))
-            return Result.Fail(DomainErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         if(request.Status != CoachRequestStatus.Pending)
-            return Result.Fail(ClientCoachRequestErrors.CannotUpdateFinalizedRequest, 409);
-
-        if(!request.RowVersion.SequenceEqual(model.RowVersion))
-            return Result.Fail(SystemErrors.ConcurrencyConflict, 409);
+            return Result.Fail(ClientCoachRequestErrors.CannotUpdateFinalizedRequest, StatusCodes.Status409Conflict);
 
         _requestRepository.Delete(request);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(204);
+        return Result.Success(StatusCodes.Status204NoContent);
     }
 
     public async Task<Result> DeleteOwnRequestsAsync(CancellationToken cancellationToken = default)
     {
         var currentUser = _userContext.Current;
         if (currentUser.Role != UserRole.Coach && currentUser.Role != UserRole.Client)
-            return Result.Fail(DomainErrors.Forbidden, 403);
+            return Result.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         var requests = await _requestRepository
             .GetAllByUserIdAndUserRoleAsQuery(currentUser.UserId, currentUser.Role, track: true)
@@ -196,7 +191,7 @@ public class ClientCoachRequestService(
         _requestRepository.DeleteRequests(requests);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(203);
+        return Result.Success(StatusCodes.Status204NoContent);
     }
 
     private bool HasAccesToRequest(ClientCoachRequest request, UserContext userContext) =>

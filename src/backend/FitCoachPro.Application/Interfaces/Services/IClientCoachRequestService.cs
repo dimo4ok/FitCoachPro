@@ -12,7 +12,7 @@ public interface IClientCoachRequestService
     Task<Result<PaginatedModel<ClientCoachRequestModel>>> GetAllForAdminAsync(Guid userId, PaginationParams paginationParams, CoachRequestStatus? status = null, CancellationToken cancellationToken = default);
 
     Task<Result> CreateAsync(Guid coachId, CancellationToken cancellationToken = default);
-    Task<Result> UpdateAsync(Guid requstId, UpdateClientCoachRequestModel model, CancellationToken cancellationToken = default);
-    Task<Result> CancelRequestAsync(Guid requestId, DeleteClientCoachRequestModel model, CancellationToken cancellationToken = default);
+    Task<Result> UpdateAsync(Guid requstId, CoachRequestStatus status, CancellationToken cancellationToken = default);
+    Task<Result> CancelRequestAsync(Guid requestId, CancellationToken cancellationToken = default);
     Task<Result> DeleteOwnRequestsAsync(CancellationToken cancellationToken = default);
 }
