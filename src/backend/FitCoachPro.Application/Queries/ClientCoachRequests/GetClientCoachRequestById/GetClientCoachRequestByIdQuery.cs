@@ -1,0 +1,3 @@
+﻿namespace FitCoachPro.Application.Queries.ClientCoachRequests.GetClientCoachRequestById;
+
+public record GetClientCoachRequestByIdQuery(Guid RequestId);

@@ -1,0 +1,5 @@
+﻿using FitCoachPro.Application.Common.Models.Pagination;
+
+namespace FitCoachPro.Application.Queries.TemplateWorkoutPlans.GetAllTempalatesForAdminByCoachId;
+
+public record GetAllTempalatesForAdminByCoachIdQuery(Guid CoachId, PaginationParams PaginationParams);

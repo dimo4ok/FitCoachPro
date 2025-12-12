@@ -1,0 +1,3 @@
+﻿namespace FitCoachPro.Application.Commands.ClientCoachRequests.CreateClientCoachRequest;
+
+public record CreateClientCoachRequestCommand(Guid CoachId);
