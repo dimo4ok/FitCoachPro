@@ -1,9 +1,16 @@
 ﻿using FitCoachPro.API.Common;
 using FitCoachPro.API.Endpoints.ApiRoutes;
 using FitCoachPro.API.Filters;
+using FitCoachPro.Application.Commands.TemplateWorkoutPlans.CreateTemplateWorkoutPlan;
+using FitCoachPro.Application.Commands.TemplateWorkoutPlans.DeleteTemplateWorkoutPlan;
+using FitCoachPro.Application.Commands.TemplateWorkoutPlans.UpdateTemplateWorkoutPlan;
 using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Models.Workouts.TemplateWorkoutPlan;
-using FitCoachPro.Application.Interfaces.Services;
+using FitCoachPro.Application.Common.Response;
+using FitCoachPro.Application.Mediator.Interfaces;
+using FitCoachPro.Application.Queries.TemplateWorkoutPlans.GetAllTempalatesForAdminByCoachId;
+using FitCoachPro.Application.Queries.TemplateWorkoutPlans.GetAllTemplatesForCoach;
+using FitCoachPro.Application.Queries.TemplateWorkoutPlans.GetTemplateById;
 
 namespace FitCoachPro.API.Endpoints;
 
@@ -17,11 +24,16 @@ public static class TemplateWorkoutPlanEndpoints
         app.MapGet(TemplateWorkoutPlanRoutes.Admin.GetById,
             async (
                 Guid id,
-                ITemplateWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken = default
             ) =>
             {
-                var response = await service.GetByIdAsync(id, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetTemplateByIdQuery,
+                    Result<TemplateWorkoutPlanModel>>(
+                        new GetTemplateByIdQuery(id),
+                        canceletionToken);
+
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Admin)
@@ -30,11 +42,16 @@ public static class TemplateWorkoutPlanEndpoints
         app.MapGet(TemplateWorkoutPlanRoutes.Coach.GetById,
             async (
                 Guid id,
-                ITemplateWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken = default
             ) =>
             {
-                var response = await service.GetByIdAsync(id, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetTemplateByIdQuery,
+                    Result<TemplateWorkoutPlanModel>>(
+                        new GetTemplateByIdQuery(id),
+                        canceletionToken);
+
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Coach)
@@ -44,11 +61,16 @@ public static class TemplateWorkoutPlanEndpoints
             async (
                 Guid coachId,
                 [AsParameters] PaginationParams paginationParams,
-                ITemplateWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken
             ) =>
             {
-                var response = await service.GetAllForAdminByCoachIdAsync(coachId, paginationParams, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetAllTempalatesForAdminByCoachIdQuery,
+                    Result<PaginatedModel<TemplateWorkoutPlanModel>>>(
+                        new GetAllTempalatesForAdminByCoachIdQuery(coachId, paginationParams),
+                        canceletionToken);
+
                 return Results.Json(response, statusCode: response.StatusCode);
             })
            .RequireAuthorization(AuthorizationPolicies.Admin)
@@ -58,11 +80,16 @@ public static class TemplateWorkoutPlanEndpoints
         app.MapGet(TemplateWorkoutPlanRoutes.Coach.GetAll,
             async (
                 [AsParameters] PaginationParams paginationParams,
-                ITemplateWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken
             ) =>
             {
-                var response = await service.GetAllForCoachAsync(paginationParams, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetAllTemplatesForCoachQuery,
+                    Result<PaginatedModel<TemplateWorkoutPlanModel>>>(
+                        new GetAllTemplatesForCoachQuery(paginationParams),
+                        canceletionToken);
+
                 return Results.Json(response, statusCode: response.StatusCode);
             })
            .RequireAuthorization(AuthorizationPolicies.Coach)
@@ -72,11 +99,16 @@ public static class TemplateWorkoutPlanEndpoints
         app.MapPost(TemplateWorkoutPlanRoutes.Coach.Create,
             async (
                 CreateTemplateWorkoutPlanModel model,
-                ITemplateWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await service.CreateAsync(model, cancellationToken);
+                var response = await mediator.ExecuteCommandAsync<
+                    CreateTemplateCommand,
+                    Result>(
+                        new CreateTemplateCommand(model),
+                        cancellationToken);
+
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Coach)
@@ -87,11 +119,16 @@ public static class TemplateWorkoutPlanEndpoints
             async (
                 Guid id,
                 UpdateTemplateWorkoutPlanModel model,
-                ITemplateWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await service.UpdateAsync(id, model, cancellationToken);
+                var response = await mediator.ExecuteCommandAsync<
+                    UpdateTemplateCommand,
+                    Result>(
+                    new UpdateTemplateCommand(id, model),
+                        cancellationToken);
+
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Coach)
@@ -101,11 +138,16 @@ public static class TemplateWorkoutPlanEndpoints
         app.MapDelete(TemplateWorkoutPlanRoutes.Coach.Delete,
             async (
                 Guid id,
-                ITemplateWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await service.DeleteAsync(id, cancellationToken);
+                var response = await mediator.ExecuteCommandAsync<
+                    DeleteTemplateCommand,
+                    Result>(
+                        new DeleteTemplateCommand(id),
+                        cancellationToken);
+
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Coach)

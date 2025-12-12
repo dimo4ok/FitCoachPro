@@ -1,7 +1,10 @@
 ﻿using FitCoachPro.API.Endpoints.ApiRoutes;
 using FitCoachPro.API.Filters;
+using FitCoachPro.Application.Commands.Auth.SignIn;
+using FitCoachPro.Application.Commands.Auth.SignUp;
 using FitCoachPro.Application.Common.Models.Auth;
-using FitCoachPro.Application.Interfaces.Services;
+using FitCoachPro.Application.Common.Response;
+using FitCoachPro.Application.Mediator.Interfaces;
 
 namespace FitCoachPro.API.Endpoints;
 
@@ -14,11 +17,11 @@ public static class AuthEndpoints
         app.MapPost(AuthRoutes.SignUp,
             async (
                 SignUpModel model,
-                IAuthService authService,
+                IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await authService.SignUpAsync(model, cancellationToken);
+                var response = await mediator.ExecuteCommandAsync<SignUpCommand, Result<AuthModel>>(new SignUpCommand(model), cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<SignUpModel>>()
@@ -27,11 +30,11 @@ public static class AuthEndpoints
         app.MapPost(AuthRoutes.SignIn,
             async (
                 SignInModel model,
-                IAuthService authService,
+                IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await authService.SignInAsync(model, cancellationToken);
+                var response = await mediator.ExecuteCommandAsync<SignInCommand, Result<AuthModel>>(new SignInCommand(model), cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<SignInModel>>()

@@ -1,7 +1,7 @@
 using FitCoachPro.API.Endpoints;
 using FitCoachPro.API.Exceptions;
 using FitCoachPro.API.Extensions;
-using FitCoachPro.Application.Common.Extensions;
+using FitCoachPro.Application.Common.ServiceRegistration;
 using FitCoachPro.Infrastructure;
 using FitCoachPro.Infrastructure.Persistence;
 using FitCoachPro.Infrastructure.Persistence.Seed.Users;

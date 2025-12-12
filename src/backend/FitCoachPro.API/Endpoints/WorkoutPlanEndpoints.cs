@@ -1,9 +1,16 @@
 ﻿using FitCoachPro.API.Common;
 using FitCoachPro.API.Endpoints.ApiRoutes;
 using FitCoachPro.API.Filters;
+using FitCoachPro.Application.Commands.WorkoutPlans.CreateWorkoutPlan;
+using FitCoachPro.Application.Commands.WorkoutPlans.DeleteWorkoutPlan;
+using FitCoachPro.Application.Commands.WorkoutPlans.UpdateWorkoutPlan;
 using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Models.Workouts.WorkoutPlan;
-using FitCoachPro.Application.Interfaces.Services;
+using FitCoachPro.Application.Common.Response;
+using FitCoachPro.Application.Mediator.Interfaces;
+using FitCoachPro.Application.Queries.WorkoutPlans.GetClientWorkoutPlans;
+using FitCoachPro.Application.Queries.WorkoutPlans.GetMyWorkoutPlans;
+using FitCoachPro.Application.Queries.WorkoutPlans.GetWorkoutPlanById;
 
 namespace FitCoachPro.API.Endpoints;
 
@@ -18,11 +25,15 @@ public static class WorkoutPlanEndpoints
         app.MapGet(WorkoutPlanRoutes.Admin.GetById,
             async (
                 Guid id,
-                IWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken = default
             ) =>
             {
-                var response = await service.GetByIdAsync(id, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetWorkoutPlanByIdQuery,
+                    Result<WorkoutPlanModel>>(
+                        new GetWorkoutPlanByIdQuery(id),
+                        canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Admin)
@@ -31,11 +42,15 @@ public static class WorkoutPlanEndpoints
         app.MapGet(WorkoutPlanRoutes.Coach.GetById,
             async (
                 Guid id,
-                IWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken = default
             ) =>
             {
-                var response = await service.GetByIdAsync(id, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetWorkoutPlanByIdQuery,
+                    Result<WorkoutPlanModel>>(
+                        new GetWorkoutPlanByIdQuery(id),
+                        canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Coach)
@@ -44,11 +59,15 @@ public static class WorkoutPlanEndpoints
         app.MapGet(WorkoutPlanRoutes.Client.GetById,
             async (
                 Guid id,
-                IWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken = default
             ) =>
             {
-                var response = await service.GetByIdAsync(id, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetWorkoutPlanByIdQuery,
+                    Result<WorkoutPlanModel>>(
+                        new GetWorkoutPlanByIdQuery(id),
+                        canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Client)
@@ -58,11 +77,15 @@ public static class WorkoutPlanEndpoints
             async (
                 Guid clientId,
                 [AsParameters] PaginationParams paginationParams,
-                IWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken
             ) =>
             {
-                var response = await service.GetClientWorkoutPlansAsync(clientId, paginationParams, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetClientWorkoutPlansQuery,
+                    Result<PaginatedModel<WorkoutPlanModel>>>(
+                        new GetClientWorkoutPlansQuery(clientId, paginationParams),
+                        canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
            .RequireAuthorization(AuthorizationPolicies.Admin)
@@ -73,11 +96,15 @@ public static class WorkoutPlanEndpoints
             async (
                 Guid clientId,
                 [AsParameters] PaginationParams paginationParams,
-                IWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken canceletionToken
             ) =>
             {
-                var response = await service.GetClientWorkoutPlansAsync(clientId, paginationParams, canceletionToken);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetClientWorkoutPlansQuery,
+                    Result<PaginatedModel<WorkoutPlanModel>>>(
+                        new GetClientWorkoutPlansQuery(clientId, paginationParams),
+                        canceletionToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
            .RequireAuthorization(AuthorizationPolicies.Coach)
@@ -87,11 +114,15 @@ public static class WorkoutPlanEndpoints
         app.MapGet(WorkoutPlanRoutes.Client.GetAll,
             async (
                 [AsParameters] PaginationParams paginationParams,
-                IWorkoutPlanService service,
-                CancellationToken cancellation
+                IMediator mediator,
+                CancellationToken cancellationToken
             ) =>
             {
-                var response = await service.GetMyWorkoutPlansAsync(paginationParams, cancellation);
+                var response = await mediator.ExecuteQueryAsync<
+                    GetMyWorkoutPlansQuery,
+                    Result<PaginatedModel<WorkoutPlanModel>>>(
+                        new GetMyWorkoutPlansQuery(paginationParams),
+                        cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Client)
@@ -101,11 +132,15 @@ public static class WorkoutPlanEndpoints
         app.MapPost(WorkoutPlanRoutes.Coach.Create,
             async (
                 CreateWorkoutPlanModel model,
-                IWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await service.CreateAsync(model, cancellationToken);
+                var response = await mediator.ExecuteCommandAsync<
+                    CreateWorkoutPlanCommand,
+                    Result>(
+                        new CreateWorkoutPlanCommand(model),
+                        cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<CreateWorkoutPlanModel>>()
@@ -116,11 +151,15 @@ public static class WorkoutPlanEndpoints
             async (
                 Guid id,
                 UpdateWorkoutPlanModel model,
-                IWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await service.UpdateAsync(id, model, cancellationToken);
+                var response = await mediator.ExecuteCommandAsync<
+                    UpdateWorkoutPlanCommand,
+                    Result>(
+                        new UpdateWorkoutPlanCommand(id, model),
+                        cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .AddEndpointFilter<ValidationFilter<UpdateWorkoutPlanModel>>()
@@ -130,11 +169,15 @@ public static class WorkoutPlanEndpoints
         app.MapDelete(WorkoutPlanRoutes.Coach.Delete,
             async (
                 Guid id,
-                IWorkoutPlanService service,
+                IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
             {
-                var response = await service.DeleteAsync(id, cancellationToken);
+                var response = await mediator.ExecuteCommandAsync<
+                    DeleteWorkoutPlanCommand,
+                    Result>(
+                        new DeleteWorkoutPlanCommand(id),
+                        cancellationToken);
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Coach)
