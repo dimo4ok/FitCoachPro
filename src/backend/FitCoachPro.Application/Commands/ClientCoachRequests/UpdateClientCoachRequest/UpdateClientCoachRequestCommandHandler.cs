@@ -41,37 +41,21 @@ public class UpdateClientCoachRequestCommandHandler(
         if (request.Status != CoachRequestStatus.Pending)
             return Result.Fail(ClientCoachRequestErrors.CannotUpdateFinalizedRequest, StatusCodes.Status409Conflict);
 
+        request.Status = command.Status;
+        request.ReviewedAt = DateTime.UtcNow;
+
         if (command.Status != CoachRequestStatus.Accepted)
         {
-            request.Status = command.Status;
-            request.ReviewedAt = DateTime.UtcNow;
-
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
 
-        await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            request.Status = command.Status;
-            request.ReviewedAt = DateTime.UtcNow;
+        var clientUpdateResult = await _userHelper.AssignCoachToClientAsync(request.ClientId, request.CoachId, cancellationToken);
+        if (!clientUpdateResult.IsSuccess)
+            return Result.Fail(clientUpdateResult.Errors!, clientUpdateResult.StatusCode);
 
-            var clientUpdateResult = await _userHelper.AssignCoachToClientAsync(request.ClientId, request.CoachId, cancellationToken);
-            if (!clientUpdateResult.IsSuccess)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                return Result.Fail(clientUpdateResult.Errors!, clientUpdateResult.StatusCode);
-            }
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
-
-            return Result.Success();
-        }
-        catch
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+        return Result.Success();
     }
 }

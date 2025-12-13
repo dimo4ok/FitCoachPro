@@ -1,4 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Models.Auth;
+using FitCoachPro.Application.Common.Options;
 using FitCoachPro.Application.Interfaces.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

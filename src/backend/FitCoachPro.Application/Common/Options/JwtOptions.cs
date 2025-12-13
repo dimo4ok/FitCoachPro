@@ -1,4 +1,4 @@
-﻿namespace FitCoachPro.Infrastructure.Security;
+﻿namespace FitCoachPro.Application.Common.Options;
 
 public  class JwtOptions
 {

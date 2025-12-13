@@ -4,7 +4,6 @@ using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Common.Response;
 using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
-using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Application.Mediator.Interfaces;
 using FitCoachPro.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +15,6 @@ public class SignUpCommandHandler(
     UserManager<User> userManager,
     RoleManager<IdentityRole<Guid>> roleManager,
     IUserRepository domainUserRepository,
-    IJwtService jwtService,
     IUnitOfWork unitOfWork,
     IAuthHelper authHelper
     ) : ICommandHandler<SignUpCommand, Result<AuthModel>>
@@ -24,7 +22,6 @@ public class SignUpCommandHandler(
     private readonly UserManager<User> _userManager = userManager;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager = roleManager;
     private readonly IUserRepository _userRepository = domainUserRepository;
-    private readonly IJwtService _jwtService = jwtService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IAuthHelper _authHelper = authHelper;
 
