@@ -15,8 +15,5 @@ public class UpdateExerciseModelValidatior : AbstractValidator<UpdateExerciseMod
         RuleFor(x => x.GifUrl)
             .NotEmpty()
             .Length(1, 100);
-
-        RuleFor(x => x.RowVersion)
-            .NotNull();
     }
 }

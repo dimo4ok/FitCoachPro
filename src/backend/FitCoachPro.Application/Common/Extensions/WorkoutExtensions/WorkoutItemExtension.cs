@@ -30,5 +30,5 @@ public static class WorkoutItemExtension
          workoutItem.Sets,
          workoutItem.Description,
          workoutItem.ExerciseId,
-         workoutItem.Exercise.ToNestedModel());
+         workoutItem.Exercise.ToModel());
 }

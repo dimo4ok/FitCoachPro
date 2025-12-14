@@ -33,9 +33,6 @@ public class DeleteExerciseCommandHandler(
         if (!await _accessService.CanModifyExerciseAsync(command.Id, _userContext.Current.Role, cancellationToken))
             return Result.Fail(DomainErrors.UsedInActiveEntity(nameof(Exercise)), StatusCodes.Status409Conflict);
 
-        if (!exercise.RowVersion.SequenceEqual(command.Model.RowVersion))
-            return Result.Fail(SystemErrors.ConcurrencyConflict, StatusCodes.Status409Conflict);
-
         _exerciseRepository.Delete(exercise);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

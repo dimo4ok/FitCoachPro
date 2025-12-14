@@ -18,23 +18,23 @@ public class GetAllExercisesQueryHandler(
     IUserContextService userContext,
     IExerciseRepository exerciseRepository,
     IExerciseAccessService accessService
-    ) : IQueryHandler<GetAllExercisesQuery, Result<PaginatedModel<ExerciseDetailModel>>>
+    ) : IQueryHandler<GetAllExercisesQuery, Result<PaginatedModel<ExerciseModel>>>
 {
     private readonly IUserContextService _userContext = userContext;
     private readonly IExerciseRepository _exerciseRepository = exerciseRepository;
     private readonly IExerciseAccessService _accessService = accessService;
 
-    public async Task<Result<PaginatedModel<ExerciseDetailModel>>> ExecuteAsync(GetAllExercisesQuery query, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedModel<ExerciseModel>>> ExecuteAsync(GetAllExercisesQuery query, CancellationToken cancellationToken)
     {
         if (!_accessService.HasUserAccess(_userContext.Current.Role))
-            return Result<PaginatedModel<ExerciseDetailModel>>.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
+            return Result<PaginatedModel<ExerciseModel>>.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         var exercsiesQuery = _exerciseRepository.GetAllAsQuery();
         if (!await exercsiesQuery.AnyAsync(cancellationToken))
-            return Result<PaginatedModel<ExerciseDetailModel>>.Fail(DomainErrors.NotFound(nameof(Exercise)));
+            return Result<PaginatedModel<ExerciseModel>>.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
         var paginated = await exercsiesQuery.PaginateAsync(query.PaginationParams.PageNumber, query.PaginationParams.PageSize, cancellationToken);
 
-        return Result<PaginatedModel<ExerciseDetailModel>>.Success(paginated.ToModel(x => x.ToModel()));
+        return Result<PaginatedModel<ExerciseModel>>.Success(paginated.ToModel(x => x.ToModel()));
     }
 }

@@ -15,21 +15,21 @@ public class GetExerciseByIdQueryHandler(
     IUserContextService userContext,
     IExerciseRepository exerciseRepository,
     IExerciseAccessService accessService
-    ) : IQueryHandler<GetExerciseByIdQuery, Result<ExerciseDetailModel>>
+    ) : IQueryHandler<GetExerciseByIdQuery, Result<ExerciseModel>>
 {
     private readonly IUserContextService _userContext = userContext;
     private readonly IExerciseRepository _exerciseRepository = exerciseRepository;
     private readonly IExerciseAccessService _accessService = accessService;
 
-    public async Task<Result<ExerciseDetailModel>> ExecuteAsync(GetExerciseByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<ExerciseModel>> ExecuteAsync(GetExerciseByIdQuery query, CancellationToken cancellationToken)
     {
         if (!_accessService.HasUserAccess(_userContext.Current.Role))
-            return Result<ExerciseDetailModel>.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
+            return Result<ExerciseModel>.Fail(DomainErrors.Forbidden, StatusCodes.Status403Forbidden);
 
         var exercise = await _exerciseRepository.GetByIdAsync(query.Id, cancellationToken);
         if (exercise == null)
-            return Result<ExerciseDetailModel>.Fail(DomainErrors.NotFound(nameof(Exercise)));
+            return Result<ExerciseModel>.Fail(DomainErrors.NotFound(nameof(Exercise)));
 
-        return Result<ExerciseDetailModel>.Success(exercise.ToModel());
+        return Result<ExerciseModel>.Success(exercise.ToModel());
     }
 }

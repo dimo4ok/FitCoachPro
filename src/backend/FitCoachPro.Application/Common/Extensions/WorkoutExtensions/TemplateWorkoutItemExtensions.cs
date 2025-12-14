@@ -12,7 +12,7 @@ public static class TemplateWorkoutItemExtensions
             templateItem.Sets,
             templateItem.Description,
             templateItem.ExerciseId,
-            templateItem.Exercise.ToNestedModel());
+            templateItem.Exercise.ToModel());
 
     public static TemplateWorkoutItem ToEntity(this CreateTemplateWorkoutItemModel model) =>
         new()

@@ -30,7 +30,7 @@ public static class ExerciseEndpoints
             {
                 var response = await mediator.ExecuteQueryAsync<
                     GetExerciseByIdQuery, 
-                    Result<ExerciseDetailModel>>(
+                    Result<ExerciseModel>>(
                         new GetExerciseByIdQuery(id),
                         cancellationToken);
 
@@ -48,7 +48,7 @@ public static class ExerciseEndpoints
             {
                 var response = await mediator.ExecuteQueryAsync<
                     GetExerciseByIdQuery,
-                    Result<ExerciseDetailModel>>(
+                    Result<ExerciseModel>>(
                         new GetExerciseByIdQuery(id),
                         cancellationToken);
                 
@@ -66,7 +66,7 @@ public static class ExerciseEndpoints
             {
                 var response = await mediator.ExecuteQueryAsync<
                     GetAllExercisesQuery, 
-                    Result<PaginatedModel<ExerciseDetailModel>>>(
+                    Result<PaginatedModel<ExerciseModel>>>(
                         new GetAllExercisesQuery(paginationParams), 
                         cancellationToken);
                 
@@ -85,7 +85,7 @@ public static class ExerciseEndpoints
             {
                 var response = await mediator.ExecuteQueryAsync<
                     GetAllExercisesQuery,
-                    Result<PaginatedModel<ExerciseDetailModel>>>(
+                    Result<PaginatedModel<ExerciseModel>>>(
                         new GetAllExercisesQuery(paginationParams),
                         cancellationToken);
 
@@ -176,7 +176,6 @@ public static class ExerciseEndpoints
         app.MapDelete(ExerciseRoutes.Admin.Delete,
             async (
                 Guid id,
-                [FromBody] DeleteExerciseModel model,
                 IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
@@ -184,19 +183,17 @@ public static class ExerciseEndpoints
                 var response = await mediator.ExecuteCommandAsync<
                     DeleteExerciseCommand,
                     Result>(
-                        new DeleteExerciseCommand(id, model),
+                        new DeleteExerciseCommand(id),
                         cancellationToken);
 
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Admin)
-            .AddEndpointFilter<ValidationFilter<DeleteExerciseModel>>()
             .WithTags(AdminExercise);
 
         app.MapDelete(ExerciseRoutes.Coach.Delete,
             async (
                 Guid id,
-                [FromBody] DeleteExerciseModel model,
                 IMediator mediator,
                 CancellationToken cancellationToken = default
             ) =>
@@ -204,13 +201,12 @@ public static class ExerciseEndpoints
                 var response = await mediator.ExecuteCommandAsync<
                     DeleteExerciseCommand,
                     Result>(
-                        new DeleteExerciseCommand(id, model),
+                        new DeleteExerciseCommand(id),
                         cancellationToken);
                 
                 return Results.Json(response, statusCode: response.StatusCode);
             })
             .RequireAuthorization(AuthorizationPolicies.Coach)
-            .AddEndpointFilter<ValidationFilter<DeleteExerciseModel>>()
             .WithTags(CoachExercise);
     }
 }

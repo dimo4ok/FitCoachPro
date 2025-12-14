@@ -65,8 +65,8 @@ public static class MediatorHandlerExtensions
         services.AddScoped<ICommandHandler<DeleteTemplateCommand, Result>, DeleteTemplateCommandHandler>();
 
         //exercises
-        services.AddScoped<IQueryHandler<GetExerciseByIdQuery, Result<ExerciseDetailModel>>, GetExerciseByIdQueryHandler>();
-        services.AddScoped<IQueryHandler<GetAllExercisesQuery, Result<PaginatedModel<ExerciseDetailModel>>>, GetAllExercisesQueryHandler>();
+        services.AddScoped<IQueryHandler<GetExerciseByIdQuery, Result<ExerciseModel>>, GetExerciseByIdQueryHandler>();
+        services.AddScoped<IQueryHandler<GetAllExercisesQuery, Result<PaginatedModel<ExerciseModel>>>, GetAllExercisesQueryHandler>();
 
         services.AddScoped<ICommandHandler<CreateExerciseCommand, Result>, CreateExerciseCommandHandler>();
         services.AddScoped<ICommandHandler<UpdateExerciseCommand, Result>, UpdateExerciseCommandHandler>();
