@@ -24,6 +24,7 @@ public class WorkoutPlanEntityConfiguration : IEntityTypeConfiguration<WorkoutPl
         builder.HasMany(x => x.WorkoutItems)
             .WithOne(x => x.WorkoutPlan)
             .HasForeignKey(x => x.WorkoutPlanId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

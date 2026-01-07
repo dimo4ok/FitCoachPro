@@ -34,11 +34,13 @@ public class ClientEntityConfiguration : IEntityTypeConfiguration<Client>
 
         builder.HasOne(x => x.Coach)
             .WithMany(x => x.Clients)
-            .HasForeignKey(x => x.CoachId);
+            .HasForeignKey(x => x.CoachId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(x => x.WorkoutPlans)
             .WithOne(x => x.Client)
             .HasForeignKey(x => x.ClientId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

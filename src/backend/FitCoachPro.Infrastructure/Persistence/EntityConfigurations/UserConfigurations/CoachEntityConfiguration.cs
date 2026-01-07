@@ -1,5 +1,4 @@
-﻿using FitCoachPro.Domain.Entities.Identity;
-using FitCoachPro.Domain.Entities.Users;
+﻿using FitCoachPro.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -41,6 +40,7 @@ public class CoachEntityConfiguration : IEntityTypeConfiguration<Coach>
         builder.HasMany(x => x.TemplateWorkoutPlans)
             .WithOne(x => x.Coach)
             .HasForeignKey(x => x.CoachId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

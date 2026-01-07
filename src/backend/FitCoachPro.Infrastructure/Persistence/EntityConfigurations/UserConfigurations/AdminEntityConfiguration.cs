@@ -1,5 +1,4 @@
-﻿using FitCoachPro.Domain.Entities.Identity;
-using FitCoachPro.Domain.Entities.Users;
+﻿using FitCoachPro.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

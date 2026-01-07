@@ -24,6 +24,7 @@ public class TemplateWorkoutPlanEntityConfiguration : IEntityTypeConfiguration<T
         builder.HasOne(x => x.Coach)
             .WithMany(x => x.TemplateWorkoutPlans)
             .HasForeignKey(x => x.CoachId)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

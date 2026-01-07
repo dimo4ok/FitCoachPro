@@ -26,13 +26,13 @@ public class ClientCoachRequestConfiguration : IEntityTypeConfiguration<ClientCo
         builder.HasOne(x => x.Client)
             .WithMany()
             .HasForeignKey(x => x.ClientId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.Coach)
             .WithMany()
             .HasForeignKey(x => x.CoachId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired();
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
