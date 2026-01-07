@@ -50,9 +50,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthEndpoints();
+app.MapAdminEndpoints();
+app.MapCoachEndpoints();
+app.MapClientEndpoints();
+app.MapCoachClientRequestEndpoints();
+
 app.MapTempalteWorkoutPlanEndpoints();
 app.MapWorkoutPlanEndpoints();
 app.MapExerciseEndpoints();
-app.MapCoachClientRequestEndpoints();
 
 app.Run();
