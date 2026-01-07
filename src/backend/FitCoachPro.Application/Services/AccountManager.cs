@@ -2,8 +2,8 @@
 using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Models.Users;
 using FitCoachPro.Application.Common.Response;
-using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
+using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Domain.Entities;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Identity;
@@ -12,62 +12,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace FitCoachPro.Application.Helpers;
+namespace FitCoachPro.Application.Services;
 
-public class UserHelper(
+public class AccountManager(
     UserManager<User> userManager,
     IUserRepository userRepository,
     IClientCoachRequestRepository clientCoachRequestRepository
-    ) : IUserHelper
+    ) : IAccountManager
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IClientCoachRequestRepository _clientCoachRequestRepository = clientCoachRequestRepository;
 
-    public async Task<Result> AssignCoachToClientAsync(Guid clientId, Guid coachId, CancellationToken cancellationToken = default)
-    {
-        var client = await _userRepository.GetClientByIdAsync(clientId, cancellationToken, track: true);
-        if (client == null)
-            return Result.Fail(DomainErrors.NotFound(nameof(Client)));
-
-        if (client.CoachId != null)
-            return Result.Fail(ClientCoachRequestErrors.ClientAlreadyHasCoach, StatusCodes.Status409Conflict);
-
-        var coach = await _userRepository.GetCoachByIdAsync(coachId, cancellationToken, track: true);
-        if (coach == null)
-            return Result.Fail(DomainErrors.NotFound(nameof(Coach)));
-
-        if (coach.AcceptanceStatus == ClientAcceptanceStatus.NotAccepting)
-            return Result.Fail(ClientCoachRequestErrors.CoachNotAcceptingNewClients, StatusCodes.Status409Conflict);
-
-        client.CoachId = coachId;
-        coach.Clients.Add(client);
-
-        return Result.Success();
-    }
-
-    public async Task<Result> UnassignCoachAsync(Guid clientId, CancellationToken cancellationToken = default)
-    {
-        var client = await _userRepository.GetClientByIdWithCoachAsync(clientId, cancellationToken, true);
-        if (client is null)
-            return Result.Fail(DomainErrors.NotFound(nameof(Client)), StatusCodes.Status404NotFound);
-
-        if (client.Coach is null)
-            return Result.Fail(UserErrors.RelationshipNotFound(nameof(Client), nameof(Coach)), StatusCodes.Status400BadRequest);
-
-        if (client.SubscriptionExpiresAt.HasValue &&
-            client.SubscriptionExpiresAt.Value.Date > DateTime.UtcNow)
-            return Result.Fail(UserErrors.ActiveSubscriptionPreventsUnassign, StatusCodes.Status400BadRequest);
-
-        client.CoachId = null;
-        client.Coach.Clients.Remove(client);
-
-        return Result.Success();
-    }
-
     public async Task<Result> UpdateEmailAsync(User user, string newEmail)
     {
-        if(user.Email == newEmail)
+        if (user.Email == newEmail)
             return Result.Success();
 
         var existingEmail = await _userManager.FindByEmailAsync(newEmail);
@@ -99,7 +58,7 @@ public class UserHelper(
 
     public async Task<Result> UpdatePasswordAsync(User user, UpdatePasswordModel model)
     {
-        if(model.NewPassword != model.ConfirmPassword)
+        if (model.NewPassword != model.ConfirmPassword)
             return Result.Fail(UserErrors.PasswordsDoNotMatch, StatusCodes.Status400BadRequest);
 
         var passwordChangeResult = await _userManager.ChangePasswordAsync(user, model.Password, model.NewPassword);

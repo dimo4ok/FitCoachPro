@@ -19,7 +19,6 @@ public static class ApplicationExtensions
 
         //helpers
         services.AddScoped<IAuthHelper, AuthHelper>();
-        services.AddScoped<IUserHelper, UserHelper>();
         services.AddScoped<IWorkoutPlanHelper, WorkoutPlanHelper>();
         services.AddScoped<ITemplateWorkoutPlanHelper, TemplateWorkoutPlanHelper>();
 
@@ -27,6 +26,8 @@ public static class ApplicationExtensions
         services.AddScoped<IUserContextService, UserContextService>();
 
         services.AddScoped<IUsersAccessService, UsersAccessService>();
+        services.AddScoped<IAccountManager, AccountManager>();
+        services.AddScoped<ICoachAssignmentService, CoachAssignmentService>();
         services.AddScoped<IWorkoutPlanAccessService, WorkoutPlanAccessService>();
         services.AddScoped<ITemplateWorkoutPlanAccessService, TemplateWorkoutPlanAccessService>();
         services.AddScoped<IExerciseAccessService, ExerciseAccessService>();

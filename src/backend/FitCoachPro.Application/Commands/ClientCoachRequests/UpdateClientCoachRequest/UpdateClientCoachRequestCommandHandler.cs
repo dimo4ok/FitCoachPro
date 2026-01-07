@@ -1,6 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Response;
-using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Application.Interfaces.Services.Access;
@@ -15,14 +14,14 @@ public class UpdateClientCoachRequestCommandHandler(
     IUserContextService userContext,
     IUnitOfWork unitOfWork,
     IClientCoachRequestRepository requestRepository,
-    IUserHelper userHelper,
+    ICoachAssignmentService coachAssignmentService,
     IClientCoachRequestAccessService accessService
     ) : ICommandHandler<UpdateClientCoachRequestCommand, Result>
 {
     private readonly IUserContextService _userContext = userContext;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IClientCoachRequestRepository _requestRepository = requestRepository;
-    private readonly IUserHelper _userHelper = userHelper;
+    private readonly ICoachAssignmentService _coachAssignmentService = coachAssignmentService;
     private readonly IClientCoachRequestAccessService _accessService = accessService;
 
     public async Task<Result> ExecuteAsync(UpdateClientCoachRequestCommand command, CancellationToken cancellationToken)
@@ -50,7 +49,7 @@ public class UpdateClientCoachRequestCommandHandler(
             return Result.Success();
         }
 
-        var clientUpdateResult = await _userHelper.AssignCoachToClientAsync(request.ClientId, request.CoachId, cancellationToken);
+        var clientUpdateResult = await _coachAssignmentService.AssignCoachToClientAsync(request.ClientId, request.CoachId, cancellationToken);
         if (!clientUpdateResult.IsSuccess)
             return Result.Fail(clientUpdateResult.Errors!, clientUpdateResult.StatusCode);
 

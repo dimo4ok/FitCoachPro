@@ -1,6 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Response;
-using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Application.Interfaces.Services.Access;
@@ -13,14 +12,14 @@ namespace FitCoachPro.Application.Commands.Users.UpdateMyProfile;
 public class UpdateMyProfileCommandHandler(
     IUserContextService userContext,
     IUsersAccessService accessService,
-    IUserHelper userHelper,
+    IAccountManager accountManager,
     IUserRepository userRepository,
     IUnitOfWork unitOfWork
     ) : ICommandHandler<UpdateMyProfileCommand, Result>
 {
     private readonly IUserContextService _userContext = userContext;
     private readonly IUsersAccessService _accessService = accessService;
-    private readonly IUserHelper _userHelper = userHelper;
+    private readonly IAccountManager _accountManager = accountManager;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
@@ -37,11 +36,11 @@ public class UpdateMyProfileCommandHandler(
         await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            var emailUpdateResult = await _userHelper.UpdateEmailAsync(user.User, command.Model.Email);
+            var emailUpdateResult = await _accountManager.UpdateEmailAsync(user.User, command.Model.Email);
             if (!emailUpdateResult.IsSuccess)
                 return Result.Fail(emailUpdateResult.Errors!, emailUpdateResult.StatusCode);
 
-            var phoneUpdateResult = await _userHelper.UpdatePhoneNumberAsync(user.User, command.Model.PhoneNumber);
+            var phoneUpdateResult = await _accountManager.UpdatePhoneNumberAsync(user.User, command.Model.PhoneNumber);
             if (!phoneUpdateResult.IsSuccess)
             {
                 await transaction.RollbackAsync(cancellationToken);

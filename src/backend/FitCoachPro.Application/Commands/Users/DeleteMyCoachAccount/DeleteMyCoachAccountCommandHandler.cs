@@ -1,6 +1,5 @@
 ﻿using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Response;
-using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Application.Mediator.Interfaces;
@@ -13,14 +12,14 @@ namespace FitCoachPro.Application.Commands.Users.DeleteMyCoachAccount;
 public class DeleteMyCoachAccountCommandHandler(
     IUserContextService userContext,
     IUserRepository userRepository,
-    IUnitOfWork unitOfWork,
-    IUserHelper userHelper
+    IAccountManager accountManager,
+    IUnitOfWork unitOfWork
     ) : ICommandHandler<DeleteMyCoachAccountCommand, Result>
 {
     private readonly IUserContextService _userContext = userContext;
     private readonly IUserRepository _userRepository = userRepository;
+    private readonly IAccountManager _accountManager = accountManager;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly IUserHelper _userHelper = userHelper;
 
     public async Task<Result> ExecuteAsync(DeleteMyCoachAccountCommand command, CancellationToken cancellationToken)
     {
@@ -36,7 +35,7 @@ public class DeleteMyCoachAccountCommandHandler(
         if (coach.Clients.Count > 0)
             return Result.Fail(UserErrors.CoachHasActiveClientsDeleteAccount, StatusCodes.Status400BadRequest);
 
-        var deleteAccountResponse = await _userHelper.DeleteAccountAsync(coach, cancellationToken);
+        var deleteAccountResponse = await _accountManager.DeleteAccountAsync(coach, cancellationToken);
         if (!deleteAccountResponse.IsSuccess)
             return Result.Fail(deleteAccountResponse.Errors!, deleteAccountResponse.StatusCode);
 
