@@ -15,7 +15,7 @@ public class Result
             StatusCode = statusCode
         };
 
-    public static Result Fail(List<Error> errors, int statusCode = StatusCodes.Status400BadRequest)
+    public static Result Fail(List<Error> errors, int statusCode = StatusCodes.Status404NotFound)
         => new()
         {
             IsSuccess = false,
@@ -23,7 +23,7 @@ public class Result
             Errors = errors
         };
 
-    public static Result Fail(Error error, int statusCode = StatusCodes.Status400BadRequest)
+    public static Result Fail(Error error, int statusCode = StatusCodes.Status404NotFound)
         => new()
         {
             IsSuccess = false,
@@ -47,7 +47,7 @@ public class Result<T>
             Data = data
         };
 
-    public static Result<T> Fail(List<Error> errors, int statusCode = StatusCodes.Status400BadRequest)
+    public static Result<T> Fail(List<Error> errors, int statusCode = StatusCodes.Status404NotFound)
         => new()
         {
             IsSuccess = false,
@@ -55,7 +55,7 @@ public class Result<T>
             Errors = errors
         };
 
-    public static Result<T> Fail(Error error, int statusCode = StatusCodes.Status400BadRequest)
+    public static Result<T> Fail(Error error, int statusCode = StatusCodes.Status404NotFound)
        => new()
        {
            IsSuccess = false,
