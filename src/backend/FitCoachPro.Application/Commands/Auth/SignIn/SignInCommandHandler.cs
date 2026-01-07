@@ -38,13 +38,13 @@ public class SignInCommandHandler(
         if (!Enum.TryParse<UserRole>(roleString, true, out var userRole))
             return Result<AuthModel>.Fail(UserErrors.InvalidRole, StatusCodes.Status500InternalServerError);
 
-        var domainUser = await _userRepository.GetByAppUserIdAndRoleAsync(user.Id, userRole, cancellationToken);
-        if (domainUser == null)
+        var domainUserId = await _userRepository.GetIdByAppUserIdAndRoleAsync(user.Id, userRole, cancellationToken);
+        if (domainUserId == null)
             return Result<AuthModel>.Fail(UserErrors.NotFound);
 
         var jwtPayloadModel = new JwtPayloadModel
         {
-            Id = domainUser.Id,
+            Id = domainUserId.Value,
             UserName = user.UserName!,
             Role = userRole,
         };
