@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
 
-
 namespace FitCoachPro.Tests.Commands.Auth;
 
 public class SignUpCommandHandlerTests
