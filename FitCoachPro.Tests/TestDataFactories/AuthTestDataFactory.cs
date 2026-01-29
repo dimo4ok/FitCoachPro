@@ -4,9 +4,9 @@ using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Identity;
 
-namespace FitCoachPro.Tests;
+namespace FitCoachPro.Tests.TestDataFactories;
 
-public static class TestDataFactory
+public static class AuthTestDataFactory
 {
     public static SignInCommand GetSignInCommand(
         string? userName = null,
