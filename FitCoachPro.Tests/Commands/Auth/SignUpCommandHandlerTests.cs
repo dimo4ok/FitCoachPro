@@ -4,6 +4,7 @@ using FitCoachPro.Application.Common.Models.Auth;
 using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Domain.Entities.Identity;
+using FitCoachPro.Tests.TestDataFactories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
@@ -42,8 +43,8 @@ public class SignUpCommandHandlerTests
     public async Task ExecuteAsync_IfEmailAlreadyExists_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignUpCommand();
-        var existingUser = TestDataFactory.GetUser();
+        var command = AuthTestDataFactory.GetSignUpCommand();
+        var existingUser = AuthTestDataFactory.GetUser();
 
         _mockUserManager.FindByEmailAsync(command.Model.Email).Returns(existingUser);
 
@@ -60,7 +61,7 @@ public class SignUpCommandHandlerTests
     public async Task ExecuteAsync_IfCreateUserFails_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignUpCommand();
+        var command = AuthTestDataFactory.GetSignUpCommand();
 
         _mockUserManager.FindByEmailAsync(command.Model.Email).Returns((User?)null);
 
@@ -84,7 +85,7 @@ public class SignUpCommandHandlerTests
     public async Task ExecuteAsync_IfRoleNotExists_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignUpCommand();
+        var command = AuthTestDataFactory.GetSignUpCommand();
 
         _mockUserManager.FindByEmailAsync(command.Model.Email).Returns((User?)null);
         _mockUserManager.CreateAsync(Arg.Any<User>(), command.Model.Password).Returns(IdentityResult.Success);
@@ -104,7 +105,7 @@ public class SignUpCommandHandlerTests
     public async Task ExecuteAsync_IfAddRoleFail_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignUpCommand();
+        var command = AuthTestDataFactory.GetSignUpCommand();
 
         _mockUserManager.FindByEmailAsync(command.Model.Email).Returns((User?)null);
         _mockUserManager.CreateAsync(Arg.Any<User>(), command.Model.Password).Returns(IdentityResult.Success);
@@ -130,9 +131,9 @@ public class SignUpCommandHandlerTests
     public async Task ExecuteAsync_IfAllValid_ReturnsSuccessResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignUpCommand();
+        var command = AuthTestDataFactory.GetSignUpCommand();
         var createdDomainUserId = Guid.NewGuid();
-        var authModel = TestDataFactory.GetAuthModel();
+        var authModel = AuthTestDataFactory.GetAuthModel();
 
         _mockUserManager.FindByEmailAsync(command.Model.Email).Returns((User?)null);
         _mockUserManager.CreateAsync(Arg.Any<User>(), command.Model.Password).Returns(IdentityResult.Success);
@@ -150,5 +151,10 @@ public class SignUpCommandHandlerTests
         Assert.NotNull(result.Data);
         Assert.Equal(authModel.Token, result.Data!.Token);
         Assert.Equal(StatusCodes.Status201Created, result.StatusCode);
+
+        await _mockUserManager.Received(1).CreateAsync(Arg.Any<User>(), command.Model.Password);
+        await _mockUserManager.Received(1).AddToRoleAsync(Arg.Any<User>(), command.Model.Role.ToString());
+        await _mockRepository.Received(1).CreateAsync(Arg.Any<CreateUserModel>(), Arg.Any<CancellationToken>());
+        await _mockUnitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

@@ -5,6 +5,7 @@ using FitCoachPro.Application.Interfaces.Helpers;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Identity;
+using FitCoachPro.Tests.TestDataFactories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
@@ -35,7 +36,7 @@ public class SignInCommandHandlerTests
     public async Task ExecuteAsync_IfUserDoesNotExist_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignInCommand("unknow-user", "any");
+        var command = AuthTestDataFactory.GetSignInCommand("unknow-user", "any");
 
         _mockUserManager.FindByNameAsync(command.Model.UserName).Returns((User?)null);
 
@@ -52,8 +53,8 @@ public class SignInCommandHandlerTests
     public async Task ExecuteAsync_IfPasswordIsIncorrect_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignInCommand(password: "wrong-password");
-        var user = TestDataFactory.GetUser();
+        var command = AuthTestDataFactory.GetSignInCommand(password: "wrong-password");
+        var user = AuthTestDataFactory.GetUser();
 
         _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
         _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(false);
@@ -71,8 +72,8 @@ public class SignInCommandHandlerTests
     public async Task ExecuteAsync_IfUserHasNoRole_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignInCommand();
-        var user = TestDataFactory.GetUser();
+        var command = AuthTestDataFactory.GetSignInCommand();
+        var user = AuthTestDataFactory.GetUser();
 
         _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
         _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(true);
@@ -91,8 +92,8 @@ public class SignInCommandHandlerTests
     public async Task ExecuteAsync_IfRoleIsInvalid_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignInCommand();
-        var user = TestDataFactory.GetUser();
+        var command = AuthTestDataFactory.GetSignInCommand();
+        var user = AuthTestDataFactory.GetUser();
 
         _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
         _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(true);
@@ -111,8 +112,8 @@ public class SignInCommandHandlerTests
     public async Task ExecuteAsync_IfDomainUserNotFound_ReturnsFailResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignInCommand();
-        var user = TestDataFactory.GetUser();
+        var command = AuthTestDataFactory.GetSignInCommand();
+        var user = AuthTestDataFactory.GetUser();
 
         _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
         _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(true);
@@ -133,9 +134,9 @@ public class SignInCommandHandlerTests
     public async Task ExecuteAsync_IfAllValid_ReturnsSuccessResult()
     {
         //Arrange
-        var command = TestDataFactory.GetSignInCommand();
-        var user = TestDataFactory.GetUser();
-        var authModel = TestDataFactory.GetAuthModel();
+        var command = AuthTestDataFactory.GetSignInCommand();
+        var user = AuthTestDataFactory.GetUser();
+        var authModel = AuthTestDataFactory.GetAuthModel();
 
         _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
         _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(true);
