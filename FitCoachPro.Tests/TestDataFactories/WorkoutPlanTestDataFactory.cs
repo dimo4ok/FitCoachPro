@@ -1,7 +1,10 @@
 ﻿using FitCoachPro.Application.Commands.WorkoutPlans.CreateWorkoutPlan;
+using FitCoachPro.Application.Commands.WorkoutPlans.DeleteWorkoutPlan;
+using FitCoachPro.Application.Commands.WorkoutPlans.UpdateWorkoutPlan;
 using FitCoachPro.Application.Common.Models;
 using FitCoachPro.Application.Common.Models.Pagination;
 using FitCoachPro.Application.Common.Models.Workouts.WorkoutItem;
+using FitCoachPro.Application.Common.Models.Workouts.WorkoutPlan;
 using FitCoachPro.Application.Queries.WorkoutPlans.GetClientWorkoutPlans;
 using FitCoachPro.Application.Queries.WorkoutPlans.GetMyWorkoutPlans;
 using FitCoachPro.Application.Queries.WorkoutPlans.GetWorkoutPlanById;
@@ -23,7 +26,7 @@ public static class WorkoutPlanTestDataFactory
 
     public static List<WorkoutPlan> GetEmptyWorkoutPlans()
     {
-        var plans = new List<WorkoutPlan> { new WorkoutPlan() };
+        var plans = new List<WorkoutPlan> { new() };
 
         return plans;
     }
@@ -56,6 +59,18 @@ public static class WorkoutPlanTestDataFactory
                 workoutDate ?? DateTime.UtcNow,
                 clientId ?? Guid.NewGuid(),
                 items ?? new List<CreateWorkoutItemModel>()
+                )
+            );
+
+    public static DeleteWorkoutPlanCommand GetDeleteWorkoutPlanCommand(Guid? id = null) =>
+        new(id ?? Guid.NewGuid());
+
+    public static UpdateWorkoutPlanCommand GetUpdateWorkoutPlanCommand(Guid? workoutPlanId = null, DateTime? dateTime = null) =>
+        new(
+            workoutPlanId ?? Guid.NewGuid(),
+            new UpdateWorkoutPlanModel(
+                dateTime ?? DateTime.UtcNow,
+                new List<UpdateWorkoutItemModel>()
                 )
             );
 }
