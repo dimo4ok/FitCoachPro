@@ -17,22 +17,38 @@ public class WorkoutPlanAccessServiceTests
         _accessService = new (_mockRepository);
     }
 
-    [Theory]
-    [InlineData(UserRole.Coach)]
-    [InlineData(UserRole.Client)]
-    public async Task HasUserAccessToWorkoutPlanAsync_IfUserWithoutAccess_ReturnFalse(UserRole role)
+    [Fact]
+    public async Task HasUserAccessToWorkoutPlanAsync_ClientWithAnotherClientId_ReturnsFalse()
     {
         //Arrange
-        var currentUser = new UserContext(Guid.NewGuid(), role);
-        var clientId = Guid.NewGuid();
-
-        if (role == UserRole.Coach)
-            _mockRepository.CanCoachAccessClientAsync(currentUser.UserId, clientId, Arg.Any<CancellationToken>()).Returns(false);
+        var userId = Guid.NewGuid();
+        var currentUser = new UserContext(userId, UserRole.Client);
+        var anotherClientId = Guid.NewGuid();
 
         //Act
-        var result = await _accessService.HasUserAccessToWorkoutPlanAsync(currentUser, clientId, default);
+        var result = await _accessService.HasUserAccessToWorkoutPlanAsync(currentUser, anotherClientId, default);
 
         //Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public async Task HasUserAccessToWorkoutPlanAsync_CoachWithoutClientAccess_ReturnsFalse()
+    {
+        //Arrange
+        var coachId = Guid.NewGuid();
+        var clientId = Guid.NewGuid();
+        var currentUser = new UserContext(coachId, UserRole.Coach);
+
+        //Act
+        _mockRepository.CanCoachAccessClientAsync(coachId, clientId, Arg.Any<CancellationToken>()).Returns(false);
+
+        //Assert
+        var result = await _accessService.HasUserAccessToWorkoutPlanAsync(
+            currentUser,
+            clientId,
+            default);
+
         Assert.False(result);
     }
 
@@ -57,19 +73,14 @@ public class WorkoutPlanAccessServiceTests
         Assert.True(result);
     }
 
-
     [Theory]
     [InlineData(UserRole.Admin)]
-    [InlineData(UserRole.Coach)]
     [InlineData(UserRole.Client)]
-    public async Task HasCoachAccessToWorkoutPlan_IfUserWithoutAccess_ReturnFalse(UserRole role)
+    public async Task HasCoachAccessToWorkoutPlan_IfUserNotCoach_ReturnFalse(UserRole role)
     {
         //Arrange
         var currentUser = new UserContext(Guid.NewGuid(), role);
         var clientId = Guid.NewGuid();
-
-        if (role == UserRole.Coach)
-            _mockRepository.CanCoachAccessClientAsync(currentUser.UserId, clientId, Arg.Any<CancellationToken>()).Returns(false);
 
         //Act
         var result = await _accessService.HasCoachAccessToWorkoutPlan(currentUser, clientId, default);
@@ -79,7 +90,23 @@ public class WorkoutPlanAccessServiceTests
     }
 
     [Fact]
-    public async Task HasCoachAccessToWorkoutPlan_IfUserWithAccess_ReturnTrue()
+    public async Task HasCoachAccessToWorkoutPlan_IfCoachWithoutAccess_ReturnFalse()
+    {
+        //Arrange
+        var currentUser = new UserContext(Guid.NewGuid(), UserRole.Coach);
+        var clientId = Guid.NewGuid();
+        
+        _mockRepository.CanCoachAccessClientAsync(currentUser.UserId, clientId, Arg.Any<CancellationToken>()).Returns(false);
+
+        //Act
+        var result = await _accessService.HasCoachAccessToWorkoutPlan(currentUser, clientId, default);
+
+        //Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public async Task HasCoachAccessToWorkoutPlan_IfCoachWithAccess_ReturnTrue()
     {
         //Arrange
         var currentUser = new UserContext(Guid.NewGuid(), UserRole.Coach);
@@ -93,5 +120,4 @@ public class WorkoutPlanAccessServiceTests
         //Assert
         Assert.True(result);
     }
-
 }

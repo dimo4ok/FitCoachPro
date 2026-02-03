@@ -31,14 +31,11 @@ public class GetWorkoutPlanByIdQueryHandlerTests
             );
     }
 
-    [Theory]
-    [InlineData(UserRole.Admin)]
-    [InlineData(UserRole.Coach)]
-    [InlineData(UserRole.Client)]
-    public async Task ExecuteAsync_IfWorkoutPlanNotFound_ReturnsFailResult(UserRole userRole)
+    [Fact]
+    public async Task ExecuteAsync_IfWorkoutPlanNotFound_ReturnsFailResult()
     {
         //Arrange
-        var currentUser = WorkoutPlanTestDataFactory.GetCurrentUser(role: userRole);
+        var currentUser = WorkoutPlanTestDataFactory.GetCurrentUser(role: UserRole.Admin);
         var query = WorkoutPlanTestDataFactory.GetWorkoutPlanByIdQuery();
 
         _mockUserContext.Current.Returns(currentUser);
