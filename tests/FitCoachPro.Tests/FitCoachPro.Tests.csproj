@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\backend\FitCoachPro.Application\FitCoachPro.Application.csproj" />
+    <ProjectReference Include="..\..\src\FitCoachPro.Application\FitCoachPro.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
