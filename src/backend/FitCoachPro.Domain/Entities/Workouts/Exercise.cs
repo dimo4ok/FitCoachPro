@@ -6,5 +6,5 @@ public class Exercise
     public string ExerciseName { get; set; } = null!;
     public string GifUrl { get; set; } = null!;
 
-    public byte[] RowVersion { get; set; } = null!;
+    public uint RowVersion { get; set; }
 }

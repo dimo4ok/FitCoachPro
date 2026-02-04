@@ -13,5 +13,5 @@ public abstract class UserProfile
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 
-    public byte[] RowVersion { get; set; } = null!;
+    public uint RowVersion { get; set; }
 }
