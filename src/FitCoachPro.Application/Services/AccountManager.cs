@@ -36,7 +36,7 @@ public class AccountManager(
         var setEmailResult = await _userManager.SetEmailAsync(user, newEmail);
         if (!setEmailResult.Succeeded)
             return Result.Fail(setEmailResult.Errors.ToErrorList(), StatusCodes.Status400BadRequest);
-
+            
         return Result.Success();
     }
 
