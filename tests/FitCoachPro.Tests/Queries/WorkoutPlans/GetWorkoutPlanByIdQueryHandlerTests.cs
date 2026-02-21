@@ -97,6 +97,6 @@ public class GetWorkoutPlanByIdQueryHandlerTests
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Data);
 
-        _mockAccessService.HasUserAccessToWorkoutPlanAsync(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(false);
+        await _mockAccessService.Received(1).HasUserAccessToWorkoutPlanAsync(currentUser,workoutPlan.ClientId,Arg.Any<CancellationToken>());
     }
 }
