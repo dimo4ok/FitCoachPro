@@ -1,0 +1,863 @@
+[33mcommit e452402b9a593cf8b2cc239a3143547c2311b580[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m, [m[1;31mDima/develop-backend[m[33m, [m[1;31mDima/develop[m[33m, [m[1;32mdevelop-backend[m[33m)[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Sun Feb 22 01:27:23 2026 +0200
+
+    ci: add build, test and azure deploy pipeline and fix tests because ci/cd error
+
+[33mcommit 739b1dacc74a0c67ca5505862cb66d0e2da77f89[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Feb 4 18:26:45 2026 +0200
+
+    chore(): switch from local MSSQL to PostgreSQL Docker
+
+[33mcommit 338b254cc63a915f2e035adb786fdcfb1db7dc31[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Feb 4 00:11:51 2026 +0200
+
+    fix(Tests): refactor HasCoachAccessToWorkoutPlanTests and GetWorkoutPlanByIdQueryHandlerTests
+
+[33mcommit 90d40e5753e44374d73d9f13db7e1c429c13c5bd[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Jan 30 23:39:12 2026 +0200
+
+    test(Tests): add unit tests for WorkoutPlanHelper
+
+[33mcommit 24fee3b098edc04f3096dffe72a4494fa3a1bb00[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Jan 30 23:38:57 2026 +0200
+
+    test(Tests): add unit tests for WorkoutPlanAccessService
+
+[33mcommit 3255577f8d8d4b3188e08e7925dfaed2a1cac3e3[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Jan 30 23:38:26 2026 +0200
+
+    test(Tests): add unit tests for WorkoutPlanCommandHandler
+
+[33mcommit 39cedb1ecab5d2dc7ea3d5d8a04f83bcc016c000[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Jan 30 23:38:05 2026 +0200
+
+    test(Tests): add unit tests for WorkoutPlanQueryHandler
+
+[33mcommit e9ba393eebffaf15579767e291996d1fd837ee1a[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Thu Jan 29 22:20:08 2026 +0200
+
+    feat(tests): separate TestDataFactory
+
+[33mcommit 3316ddd2c9a6709cbf03e21a9e015faad2d2378d[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Thu Jan 29 22:18:18 2026 +0200
+
+    refactor(tests): add improvments to Auth tests
+
+[33mcommit 13a4289345cd58d35c1863080247d41678ee33ab[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Jan 28 15:28:11 2026 +0200
+
+    fix(Application): use IWorkoutPlanAccessService in GetWorkoutPlanByIdQueryHandler
+
+[33mcommit 18a6a4d1365c9edb6f761ec4e672b87021b1eb24[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Jan 27 23:04:25 2026 +0200
+
+    test(Tests): add unit tests for SignIn and SignUp command handlers
+
+[33mcommit 2a4cc5cdff6c4eed32eba74a7d22abe1b5aceaa6[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Jan 27 23:02:09 2026 +0200
+
+    feat(Test): create TestDataFactory for generating test data
+
+[33mcommit c7e655c8cabb2d3e3be672b6cabe741a9ebe1393[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Jan 27 23:01:30 2026 +0200
+
+    feat(Test): create mockFactory for unit tests
+
+[33mcommit 1dc2790c1dc3b66a13fdeda5b5a878337c696cfc[m[33m ([m[1;31mDima/feature/users-endpoints[m[33m, [m[1;32mfeature/users-endpoints[m[33m)[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Jan 7 13:57:44 2026 +0200
+
+    fix(): split UserHelper into AccountManager and CoachAssignmentService
+
+[33mcommit 7c3b24dfb43868282158c4bf97232acde6c10b55[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Jan 7 11:11:49 2026 +0200
+
+    feat(API): add user endpoints and routes
+
+[33mcommit fc1b5bbb664029080a6c6f044af0ef74cdadef3a[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Jan 7 11:10:41 2026 +0200
+
+    feat(Application): add user commands
+
+[33mcommit d7606f417e2d286e010b51faee8594d19fbe33b1[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Jan 7 11:10:20 2026 +0200
+
+    feat(Application): add user queries
+
+[33mcommit ec7b3ff5110843100e21ee20ca0726ba335db577[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Jan 7 11:09:47 2026 +0200
+
+    feat(Application): add users access service and update user helper
+
+[33mcommit 79313fa784e4a31e5074b424b7faff7c34836025[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Jan 7 11:08:06 2026 +0200
+
+    feat(Application): add user models, validators, and errors
+
+[33mcommit be9886e08ff67025aa887ba09d534ea68ba54f2d[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Jan 7 11:05:54 2026 +0200
+
+    feat(Infrastructure, Applciation): update user repository and entity configurations
+
+[33mcommit 54ce4bf4453c969b243502d2263a127fd1f36935[m[33m ([m[1;31mDima/feature/mediator-refactor[m[33m, [m[1;32mfeature/mediator-refactor[m[33m)[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Sun Dec 14 02:09:34 2025 +0200
+
+    fix(): delete rowVersions checking in exercise hanlders
+
+[33mcommit e04e606eb3666d06868b51af6f0ff1d0bd2a34f5[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Sun Dec 14 01:07:58 2025 +0200
+
+    fix(): remove transaction in UpdateClientCoachRequestQueryHandler and improve AuthHelper
+
+[33mcommit 551568c084e37cbe460326922823c95d7b49c79f[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Dec 12 21:26:44 2025 +0200
+
+    refactor(API): integrate Mediator for command/query handling
+
+[33mcommit 4604c97028757218e14a14e6f3ec3f1cab968971[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Dec 12 21:25:46 2025 +0200
+
+    chore(Application): register Mediator, helpers, and access services
+
+[33mcommit a01f0276a8af4a7a11171cef32bcf7d06034dbd8[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Dec 12 21:24:25 2025 +0200
+
+    refactor(Applcaition): refactor service to use Mediator
+
+[33mcommit c63d950f4c444dbbe9d888460c3a913ad4bb3c2d[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Dec 12 21:23:15 2025 +0200
+
+    feat(Applciation): add Mediator pattern implementation
+
+[33mcommit 4d0dbff49ff5bf926868adc0e0a5e594fd79b0e4[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Dec 12 21:21:24 2025 +0200
+
+    feat(Application): add Helpers with implementations
+
+[33mcommit ebcfc65fcf772c0c939c6aacd408ad1c7d00959e[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Dec 12 21:20:09 2025 +0200
+
+    feat(Application): add AccessServices with implementations
+
+[33mcommit 147f425399a5aeee731abb36b8c2da6cb460eb72[m[33m ([m[1;31mDima/feature/users-management[m[33m, [m[1;32mfeature/users-management[m[33m)[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 18:13:40 2025 +0200
+
+    fix(Applicaiton): delete RowVersion from ClientCoachRequestModel
+
+[33mcommit a40360b36184da90617ee4f7a8ca442a64107dcf[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 18:03:38 2025 +0200
+
+    fix(): replace AcceptingNewClients with AcceptanceStatus enum, use status code constants, remove excessive RowVersion check
+
+[33mcommit 8751c2abb155f8b93b03a7ad5d04a8aab11e147e[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 12:45:35 2025 +0200
+
+    feat(API): add CoachClientRequestRoutes and CoachClientRequestEndpoints
+
+[33mcommit 71e2ee84603ea9e68869dcdaaf2aa74fbaeac3d8[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 12:44:12 2025 +0200
+
+    feat(Application): add ClientCoachRequestService and UserService with implementation
+
+[33mcommit 670a9e22495a4ca473abb97d1e28a92d4d42ea06[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 12:41:43 2025 +0200
+
+    feat(Applicaiton): add Models/Extensions/Validators/Errors for ClientCoachRequest
+
+[33mcommit 3eb6b4f70940fa6a4996e16d51f633467f094193[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 12:39:20 2025 +0200
+
+    refactor(Infrastructure/Applciaiton): add new method to UserRepository
+
+[33mcommit ccd6c8a37c8e3bdd70e2fe23199f126a4088244d[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 12:38:12 2025 +0200
+
+    feat(Infrastructure/Applicaiton): add ClientCoachRequestRepository with implementation
+
+[33mcommit 12535884d2d58c26479c1fceac625ad18dbface2[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 12:34:44 2025 +0200
+
+    feat(Infrastructure): add ClientCoachRequest entity with persistence and add RowVersion for UserProfile
+
+[33mcommit fe6b55185f0d43b2545e6aaef7a8623583cf07c4[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Mon Dec 8 11:27:21 2025 +0200
+
+    refactor(Infrastructure, Applciation): improve tracking, concurrency, and update/delete logic
+
+[33mcommit b62f0a856732af7110214c65019303ae5daa2ea8[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Sat Dec 6 01:18:40 2025 +0200
+
+    feat(Domain, Infrastructure): add IsAcceptingNewClients field for Coach entity
+
+[33mcommit 9a6559495a85b4d6562c58ca8dbd5a32035f0b86[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Thu Dec 4 17:29:44 2025 +0200
+
+    feat(): add ClientCoachRequest table
+
+[33mcommit 94d9e681c2399feaaac60989567296b052b61a08[m[33m ([m[1;31mDima/feature/template-workout-plan-endpoints[m[33m, [m[1;32mfeature/template-workout-plan-endpoints[m[33m)[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Thu Dec 4 12:45:30 2025 +0200
+
+    fix(): add AuthorizationPolicies class for constant roles
+
+[33mcommit 963a92896f68cbc27cc8fe9cc3fc5a6380ca61d1[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Thu Dec 4 12:18:49 2025 +0200
+
+    fix(): refactor Error classes to use more universal, reusable error messages
+
+[33mcommit 263e86981670d10c5b18717797fea2481d447854[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Dec 3 18:29:51 2025 +0200
+
+    feat(Domain, Application): Add Reps and Sets properties to BaseWorkoutItem and update usage throughout the code
+
+[33mcommit 4947bb08d1502be561de73631664d1f4d2c6a746[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Dec 3 17:48:38 2025 +0200
+
+    refactor(Applciation): add helpers for workout/template plans and improve WorkoutPlanService logic
+
+[33mcommit 90fd7ea5d990168325a3087710d1e094bab97b88[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Dec 3 17:44:11 2025 +0200
+
+    feat(Application): add ExerciseNestedModel without RowVersion for nested usage
+
+[33mcommit 0743af26a3376672a516679ac081e9b7b0399084[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Dec 3 17:36:11 2025 +0200
+
+    refactor(Infrastructure, Applciation): unify GetById and GetByIdTracked into a single method with tracking option
+
+[33mcommit df271a01f265e0a1ad1d313aff2383057f3c3dd5[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Dec 2 20:42:35 2025 +0200
+
+    feat(Application/API): add TempalteWorkoutPLan fluentValidation
+
+[33mcommit d028ae34425ddb39e95ad84ad8024b77887ef973[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Dec 2 20:06:43 2025 +0200
+
+    feat(API): add TemplateWorkoutPlanEndpoints and TemplateWorkoutPanRoutes
+
+[33mcommit 52eee30049867e50b55e733d8fd7fb21b107eed4[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Dec 2 20:05:48 2025 +0200
+
+    feat(Application): add TemplateWorkoutPlanService with implementation
+
+[33mcommit 6dcf8f124dd25f5b8229cf10dfaa8424d56edc24[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Dec 2 20:02:57 2025 +0200
+
+    feat(Application): add new errors for TemplateWorkout
+
+[33mcommit c558ee72477c1a99576e8d1e5b295fb97dcc5052[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Dec 2 20:02:31 2025 +0200
+
+    feat(Applciation): add new extensions for TemplateWorkout
+
+[33mcommit 1c8bb76b20a41fe25e5da8a82cc55a8b1da98e52[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Dec 2 20:01:33 2025 +0200
+
+    feat(Application): add new models for TemplateWorkout
+
+[33mcommit dec230bf3badcdad52737ab9b927208660981d8a[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Dec 2 20:00:27 2025 +0200
+
+    feat(Infrastructure/Application): add TemplateWorkoutRepository implementation and remove unnecessary methods from ExerciseRepository
+
+[33mcommit 02a4ac3f55ade38c5b24971fcad6c303b4392d1e[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Tue Dec 2 19:57:40 2025 +0200
+
+    feat(Domain/Infrastructure): add property to domain entity, update configuration, seed TemplateWorkout data, and add new migration
+
+[33mcommit 967075e2aec81f512da8649ed09a5e341bd3657b[m[33m ([m[1;31mDima/feature/exercise-endpoints[m[33m, [m[1;32mfeature/exercise-endpoints[m[33m)[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Sun Nov 30 00:26:31 2025 +0200
+
+    fix(API): fix return validation type error
+
+[33mcommit 56dd8e89aa2fc01ecabc26cdc8438401a6637a39[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Sat Nov 29 20:36:43 2025 +0200
+
+    fix(API, Application): handle DbUpdateConcurrencyException globally
+
+[33mcommit 38494ef1f16bd063ed671f4f457d2fd606c3a243[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Sat Nov 29 19:42:39 2025 +0200
+
+    refactor(API): minor fixes from code review (tags constants, route ById)
+
+[33mcommit 2c424d782601674a6ac15e1c459ac6e12fe7fd43[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Nov 28 21:55:33 2025 +0200
+
+    feat(API): add ExerciseEndpoints with routes and udpate other endpoints
+
+[33mcommit 4067c337a37194cad6d1cf8f68a5bf07f96be68f[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Nov 28 21:52:25 2025 +0200
+
+    feat(Application): implement Exercise service and update WorkoutPlan service
+
+[33mcommit 4dc434c973c8cbf92ad87005da47f4846a58d928[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Nov 28 21:50:08 2025 +0200
+
+    feat(Application): add new validators for Exercise models
+
+[33mcommit 12da753acf35b80b0cda4578e11dc2b8fbda3ab2[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Nov 28 21:48:43 2025 +0200
+
+    feat(Applciation): add some new extensions
+
+[33mcommit 67e1b1417015f8a7364e5ac48fc1ee7562a938ee[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Nov 28 21:46:15 2025 +0200
+
+    feat(Application): add ExerciseErrors
+
+[33mcommit c16e373eb22efab4e47d1c5e903af5bdeb74296e[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Nov 28 21:42:53 2025 +0200
+
+    feat(Application): add Exercsie models and change others
+
+[33mcommit b9aced01ff50d779ff9ab962f9be15efb6a568ad[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Nov 28 21:41:38 2025 +0200
+
+    feat(Domain/Infrastructure): add rowVersion property with configuration and new migration
+
+[33mcommit f2677886312d0a3a26ff33d6cf662f618b3c92ba[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Fri Nov 28 21:33:40 2025 +0200
+
+    feat(Application, Infrastructure): add methods to ExerciseRepository and tweak WorkoutPlanRepo
+
+[33mcommit 95acdd896c29c76b6d3b755555a1777fcff162dd[m
+Author: Dmytrii Makota <mdmitry2002@gmail.com>
+Date:   Wed Nov 26 13:35:57 2025 +0200
+
+    feat(Infrastructure, Application):  expand Exerciserepository and correct some methods
+
+[33mcommit 79da1283171bc32512d8f9a4cd855c5709914505[m[33m ([m[1;31mDima/feature/workoutplan-endpoints[m[33m, [m[1;32mfeature/workoutplan-endpoints[m[33m)[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Nov 25 02:14:42 2025 +0200
+
+    fix(): apply suggestions from PR review
+
+[33mcommit ae2e1dadedb89771639bca09fb44ce26336078dc[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Nov 24 00:49:30 2025 +0200
+
+    feat(): add pagination
+
+[33mcommit 1cc439513a8381127f90cb830d3a110a44178be1[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Nov 21 21:43:33 2025 +0200
+
+    fix(): remove SaveChanges from repo methods, add UserContextService, and minor fixes
+
+[33mcommit 3071e0091b0384bcbbcbeac15a05a3ff052d975d[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Nov 21 01:18:01 2025 +0200
+
+    chore: minor code cleanup for readability
+
+[33mcommit 39874ab72dadb08681cdc3616ed91f1103ee69af[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Nov 20 19:04:24 2025 +0200
+
+    feat(API): add GlobalExceptionHandler
+
+[33mcommit 16f47d926f62c0a49d3a6222d3c40e184a2fbac9[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Nov 20 19:02:56 2025 +0200
+
+    feat(Application): add some new extension methods
+
+[33mcommit f841fbe291f70ad98a920057836b6e60d5e7ee14[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Nov 20 19:00:35 2025 +0200
+
+    feat(): fix service errors and add endpoint attribute for FluentValidation
+
+[33mcommit efff5916113cc01875e3f5a83013d3f9f5229d60[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Nov 20 18:55:33 2025 +0200
+
+    feat(validation): add FluentValidation for Workouts and Auth, register in ApplicationExtensions, update Errors
+
+[33mcommit 1671c2b400c1a32463045ec819834af9b5bec7df[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Nov 19 01:08:23 2025 +0200
+
+    feat(API): add new API routes and WorkoutPlan endpoints
+
+[33mcommit ad47a1f33b296f5c8f12d326b54688920106b033[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Nov 19 01:04:59 2025 +0200
+
+    feat(Application): add new Errors classes
+
+[33mcommit 3e1632582c4775a1eb7e5142c6cf384028e71e9a[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Nov 19 01:03:53 2025 +0200
+
+    feat(Application): add WorkoutExtensions class with ToModel and ToEntity methods
+
+[33mcommit a42b2e47290750175fc4ea0bc503558c7bebcd14[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Nov 19 01:02:38 2025 +0200
+
+    feat(Application): update existing models and add new models
+
+[33mcommit fa1401c620fffeac26c5be4671b09a98140f0ee0[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Nov 19 01:01:01 2025 +0200
+
+    feat(Infrastructure): reset migrations, create InitialCreate migration, and add new repo to InfrastructureExtension
+
+[33mcommit 84d4542304f0b331b40d50de498f86f73cf6f390[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Nov 19 00:55:27 2025 +0200
+
+    feat(Infrastructure/Application): Add ExerciseRepo with interface implementation and modify UserRepo
+
+[33mcommit acc7f745b6936024dbe440bbcd3a10c35ee2651e[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Nov 9 15:12:24 2025 +0200
+
+    feat(Application): Add AuthService & WorkoutPlanService models and extensions
+
+[33mcommit 52a5b8e0629da64f95cb0e63e618c27532b651a8[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Nov 9 15:07:53 2025 +0200
+
+    feat(API): Add seed invocation in Program.cs and configure JWT Bearer in Swagger
+
+[33mcommit 158d61d92fed4c9db2b8f5ba2a3aa27266dc9c98[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Nov 9 15:05:33 2025 +0200
+
+    feat(Infrastructure): Add initial seeds and migration
+
+[33mcommit 33126a36d2d2c98e3fa37f639aa3d7d1a0f14f66[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Nov 6 11:24:12 2025 +0200
+
+    fix(): fix project structure and transaction handling
+
+[33mcommit 22342409b8254f2d5a485f53e9284c6e83f5e1d3[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Nov 6 01:04:49 2025 +0200
+
+    fix(): remove unused service and move identity logic to domain
+
+[33mcommit 6e287430d159d96539777388a8cee6d3c0e1e487[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Nov 4 20:05:01 2025 +0200
+
+    fix(): apply code review suggestion (convert to minimal API and update DB from TPH to TPC)
+
+[33mcommit b29994254169778f05c8132c105d21a2c3f9c80e[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Oct 29 18:05:09 2025 +0200
+
+    feat(API): add AuthController
+
+[33mcommit 1a61f2862afc6940b7bc0f5cdecc7a8d7bb5b455[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Oct 29 18:04:18 2025 +0200
+
+    feat(Application): add authentication service and interface
+
+[33mcommit 20bb369ea9a2666510092d68de1189ee62dcaa10[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Oct 29 18:02:49 2025 +0200
+
+    feat(Application): add Result class with factory for error and HttpType
+
+[33mcommit fa171b07af94832f0e38e1e571827851dd573e68[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Oct 29 18:00:19 2025 +0200
+
+    feat(Application): add User Models
+
+[33mcommit 1849cd140eaa2062ae9d05836ead5ad48290459d[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Oct 29 17:58:59 2025 +0200
+
+    feat(Infrastructure/Application): add AppUser service and interface
+
+[33mcommit a5e96a6f7f7e24b7aa41bfc1963f810235c9ee9a[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Oct 29 17:57:12 2025 +0200
+
+    fix(Infrastructure): fix identity troubles
+
+[33mcommit c89d850ee2b1323bb19c4fca83fb395a03e7dabb[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Sep 25 23:49:27 2025 +0300
+
+    feat(Infrastructure/Application): add primary UserRepository with IUserRepository interface
+
+[33mcommit 7b91c251cdecd9203f7bf8e41b759afd3ba80774[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Sep 25 23:47:51 2025 +0300
+
+    feat(Application): add JWtService interface
+
+[33mcommit fe8262ccf1757767f226ce4fdd454e439d729597[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Sep 25 23:47:20 2025 +0300
+
+    feat(Infrastructure): add JwtService and JwtOptions class
+
+[33mcommit 5f90a83370682cb051685430c8ee9ee7ca5770a3[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Sep 25 23:43:38 2025 +0300
+
+    feat(Infrastructure): configure Identity, roles, and JWT authentication
+
+[33mcommit 2eee2f9c88190d7c0764d691d04f77e57732d394[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Sep 25 23:40:47 2025 +0300
+
+    chore(Infrastructure): add roles seeding to AppDbContext and create migration
+
+[33mcommit 532c82af7c8e7506d02d1454c716cde0a3e03517[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Thu Sep 25 23:32:39 2025 +0300
+
+    chore(API): Rename API project
+
+[33mcommit da196feddf8cfc70d4a4827b337b5f55bdd349e0[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 14:48:44 2025 +0300
+
+    feat(Infrastructure): delete old DataSeed migration and add DbSeedWithIdentity
+
+[33mcommit fe3dc78791639585400fd5e9343c8280ebb00695[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 14:47:30 2025 +0300
+
+    fix(Infrastructure): update AppDbContextFactory to correctly locate connection string
+
+[33mcommit f8642fbc3575e6177d73337c0b295bc688c8573c[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 14:46:50 2025 +0300
+
+    chore(Infrastructure): add configuration NuGet packages and setup JSON + environment variables
+
+[33mcommit 76f2a97d4199d02057c7d5f003719972558b210e[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 14:05:36 2025 +0300
+
+    feat(Infrastructure): add IdentityEntityConfiguration for ApplicationUser
+
+[33mcommit 21a974cffeea527bd0ffb53272b6c35ef9dcf446[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 13:57:13 2025 +0300
+
+    feat(Infrastructure): add InitialCreateWithIdentity and DataSeed migrations
+
+[33mcommit 429dff778ff5ebc2340ebd62a87308eb32447d73[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 13:47:34 2025 +0300
+
+    feat(Infrastructure): update AppDbContext and seed data for Identity and all entities
+
+[33mcommit d9765a763fc0bc99f2fcf60a9d7b03d2bf653767[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 13:46:31 2025 +0300
+
+    chore(Infrastructure): add NuGet package Microsoft.AspNetCore.Identity.EntityFrameworkCore
+
+[33mcommit 1da854f7c46e2da0eda5888ab84a3569f1ba737a[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 13:43:54 2025 +0300
+
+    feat(Infrastructure): ApplicationUser entity for Identity integration
+
+[33mcommit 747d533264cbe17785dca93815e93acc6bb343be[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 13:41:28 2025 +0300
+
+    feat(Infrastructure): prepare User and Client configurations for Identity integration
+
+[33mcommit 49de0ab950e31723f21c798c0f7e06378cffc413[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 13:39:46 2025 +0300
+
+    feat(Domain): prepare User and Client entities for Identity integration
+
+[33mcommit 64f1324e31303bcadca9f9468fce09babb75dd15[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Tue Sep 16 13:37:08 2025 +0300
+
+    chore(Infrastructure): remove old EF Core migration files
+
+[33mcommit d926ef2e70a38a9e01dba4d54048bb2bb96df6d6[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Sep 15 11:17:52 2025 +0300
+
+    chore(Infrastructure): add AddTemplateWorkoutEntities and AddWorkoutTemplatesAndUpdateSeed migrations
+
+[33mcommit e0e4d32f88e9bf3b3a440b90a0d4943367557219[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Sep 15 11:15:12 2025 +0300
+
+    chore(Infrastructure): update seed data and add new dataset for workout template
+
+[33mcommit 08f84f6317fce3bf8b75ac094c8b2e03472e1da8[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Sep 15 11:12:52 2025 +0300
+
+    chore(Infrastructure): update configurations and add template workout configuration
+
+[33mcommit fc5ad28900eeaf2460626f92cb5070c7447bf31c[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Sep 15 11:12:00 2025 +0300
+
+    feat(Domain): update fields for workouts
+
+[33mcommit fbea6ab331a6b2033cb421f3bfed67d8ec82aeb2[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Sep 15 11:10:01 2025 +0300
+
+    feat(Domain): add BaseWorkoutPlan as parent class for workout plans
+
+[33mcommit d51e430519a6812271ea0b1a3fffbbc22b55f7f4[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Sep 15 11:06:06 2025 +0300
+
+    feat(Domain): update fields for clients, coaches and admins
+
+[33mcommit e6c252692df315e1a920df7b1e7d222cff1a3db0[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Sep 15 11:05:04 2025 +0300
+
+    feat(Domain): add template workout plans
+
+[33mcommit 32164eb47e5d9ffc105eca596d456f3945cf0437[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Mon Sep 15 11:02:07 2025 +0300
+
+    chore(Solution): remove old workout entities and configurations
+
+[33mcommit 38be3ed00e93dfa1e7d3ec04b2d7ec1e050c3b67[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Sep 14 23:47:20 2025 +0300
+
+    chore(Solution): remove unnecessary files and duplicates
+
+[33mcommit d79aa89d568ad95e9ca044435f66c0d3d5a9efea[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Sep 14 23:24:51 2025 +0300
+
+    feat(infrastructure): add InitialCreate and DataSeed EF migrations
+
+[33mcommit aaac8418f3141e290b972b26adb64307672765a4[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Sep 14 23:22:30 2025 +0300
+
+    refactor(Infrastructure): update AppDbContext and seed data according to new entities and configurations
+
+[33mcommit fb5b5e09c942fd373cd779a9f326dc71cc12df71[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Sep 14 23:20:51 2025 +0300
+
+    feat(Infrastructure): add updated workout configuration for new entities
+
+[33mcommit 5c5f85cf86af3d530f00e4a858e4838a10e7fbf5[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Sep 14 23:19:45 2025 +0300
+
+    feat(Infrastructure): add updated user configuration for new entities
+
+[33mcommit 8e7fced191c2605a53387b462e45fb8cee4d12b7[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Sep 14 23:17:41 2025 +0300
+
+    feat(Domain): introduce BaseWorkoutItem with WorkoutItem and TemplateWorkoutItem inheritance
+
+[33mcommit f9aaec28b298e91ee1dddfcb3ae0d2411f1b7502[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Sep 14 23:10:18 2025 +0300
+
+    feat(Domain): introduce User entity with Admin, Coach, Client inheritance
+
+[33mcommit bf1232f287eaae49858406be1830bc4621e1921c[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sun Sep 14 23:09:30 2025 +0300
+
+    feat(Domain): add Coach and Admin fields for UserRole enum
+
+[33mcommit dc2bd7d12e4eec83121e43ee23e20ff086565e52[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 21:46:11 2025 +0300
+
+    chore(API): Add Swagger into launchSettings
+
+[33mcommit ace4e78a54984496440823a4799821b6e3365b8f[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 21:03:36 2025 +0300
+
+    chore(Infrastructure): create migration with seed data and configure AppDbContext
+
+[33mcommit e74984668e99b467dae5e53b9639dfac011e771b[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 20:42:34 2025 +0300
+
+    chore(Infrastructure): add InitialCreate efCore migration
+
+[33mcommit 2fe4408c0f6cf44af33d89f117f91311f7265822[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 20:40:18 2025 +0300
+
+    feat(API): enable Swagger and add Infrastructure layer
+
+[33mcommit b21b43b4a926c9938b88a752cef0b1602e404c46[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 20:39:34 2025 +0300
+
+    chore(API): add DefaultConnection to appsettings.json
+
+[33mcommit b4d3ec4881ef597c8f74fc8e4578946e3879d266[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 20:22:04 2025 +0300
+
+    feat(Infrastructure): add AppDbContextFactory
+
+[33mcommit cf23c99cc82488d9e7a0d0968078aae08c275988[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 00:53:56 2025 +0300
+
+    chore(Infrastructure): add EF Core packages
+
+[33mcommit 732a7d802c4439f24d30deded815d4f9b607f363[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 00:51:19 2025 +0300
+
+    feat(Infrastructure): add InfrastructureExtensions and configure AppDbContext
+
+[33mcommit 51d7a247dbc1fc5ba139f20db0a5ab2029a027a0[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 00:49:32 2025 +0300
+
+    feat(Infrastructure): add AppDbContext with DbSet and configurations
+
+[33mcommit 6cfd103b70664e0f4eab80dea3c6a066f1fbc7ea[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Sat Sep 13 00:24:48 2025 +0300
+
+    feat(Infrastructure): add EF Core configurations for all entities
+
+[33mcommit 1df92d71f61b9cc7179a3a4613b72c72f4e336cb[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Sep 12 23:55:24 2025 +0300
+
+    refactor(Domain): rename id to Id
+
+[33mcommit c7c20d9d63ad947858c7462a223c791a40492847[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Sep 12 23:55:00 2025 +0300
+
+    refactor(Domain): make setters public in WorkoutPlan
+
+[33mcommit 60bbbf1f14bb432d7e4c9568c56cd7006ba29039[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Sep 12 23:18:51 2025 +0300
+
+    refactor(Domain): change User role property to enum
+
+[33mcommit 15180db9d4b0eb6e949bd942b32dfbb1ac3c1f30[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Sep 12 23:15:31 2025 +0300
+
+    feat(Domain): add UserRole enum
+
+[33mcommit 523e3197c8d6dc53b780172d12208a5fae779cc0[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Sep 12 22:46:06 2025 +0300
+
+    feat(Domain): add User domain model
+
+[33mcommit 03930cb3b6bf59f96f941e229a3177bf46b8b979[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Sep 12 22:45:31 2025 +0300
+
+    feat(Domain): add WorkoutPlan domain model
+
+[33mcommit 9b926ad3b5aac6307fefb4c8312571508cfa1d24[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Sep 12 22:44:46 2025 +0300
+
+    feat(Domain): add WorkoutItem domain model
+
+[33mcommit 101f3ce87fb61c09688d29ce0bae00d0491095a7[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Fri Sep 12 22:44:09 2025 +0300
+
+    feat(Domain): add Exercise domain model
+
+[33mcommit d41b8f1bb62eec9d106a7da59dbfb7d741507fe9[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Sep 10 22:26:24 2025 +0300
+
+    chore(solution): add projects, configure references, and add NuGet packages for Infrastructure
+
+[33mcommit e838d4024e2b30886ffc529ac3e6dea2611984a7[m[33m ([m[1;31mDima/master[m[33m, [m[1;31mDima/develop-frontend[m[33m, [m[1;31mDima/HEAD[m[33m, [m[1;32mmaster[m[33m, [m[1;32mdevelop-frontend[m[33m)[m
+Author: Dima <mdmitry2002@gmail.com>
+Date:   Wed Sep 10 21:46:23 2025 +0300
+
+    Initial commit
