@@ -64,7 +64,7 @@ public class WorkoutPlanAccessServiceTests
         var clientId = id;
 
         if (role == UserRole.Coach)
-            _mockRepository.CanCoachAccessClientAsync(currentUser.UserId, clientId, Arg.Any<CancellationToken>()).Returns(true);
+            _mockRepository.CanCoachAccessClientAsync(Arg.Is(currentUser.UserId), Arg.Is(clientId), Arg.Any<CancellationToken>()).Returns(true);
 
         //Act
         var result = await _accessService.HasUserAccessToWorkoutPlanAsync(currentUser, clientId, default);
