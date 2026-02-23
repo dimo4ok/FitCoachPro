@@ -28,6 +28,8 @@ public class CreateWorkoutPlanCommandHandlerTests
 
     public CreateWorkoutPlanCommandHandlerTests()
     {
+        TestCleaner.Clean();
+
         _mockUserContext = Substitute.For<IUserContextService>();
         _mockWorkoutPlanRepository = Substitute.For<IWorkoutPlanRepository>();
         _mockExerciseRepository = Substitute.For<IExerciseRepository>();

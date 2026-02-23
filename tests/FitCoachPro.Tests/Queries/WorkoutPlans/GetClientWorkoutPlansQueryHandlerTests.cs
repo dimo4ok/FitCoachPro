@@ -21,6 +21,8 @@ public class GetClientWorkoutPlansQueryHandlerTests
 
     public GetClientWorkoutPlansQueryHandlerTests()
     {
+        TestCleaner.Clean();
+
         _mockUserContext = Substitute.For<IUserContextService>();
         _mockRepository = Substitute.For<IWorkoutPlanRepository>();
         _mockAccessService = Substitute.For<IWorkoutPlanAccessService>();

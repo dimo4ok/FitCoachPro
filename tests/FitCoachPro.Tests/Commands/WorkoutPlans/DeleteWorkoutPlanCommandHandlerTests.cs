@@ -21,6 +21,8 @@ public class DeleteWorkoutPlanCommandHandlerTests
 
     public DeleteWorkoutPlanCommandHandlerTests()
     {
+        TestCleaner.Clean();
+
         _mockUserContext = Substitute.For<IUserContextService>();
         _mockRepository = Substitute.For<IWorkoutPlanRepository>();
         _mockUnitOfWork = Substitute.For<IUnitOfWork>();

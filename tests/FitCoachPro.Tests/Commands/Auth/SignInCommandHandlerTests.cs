@@ -21,6 +21,8 @@ public class SignInCommandHandlerTests
 
     public SignInCommandHandlerTests()
     {
+        TestCleaner.Clean();
+
         _mockUserManager = MockFactory.GetMockUserManager<User>();
         _mockRepository = Substitute.For<IUserRepository>();
         _mockAuthHelper = Substitute.For<IAuthHelper>();

@@ -14,6 +14,8 @@ public class WorkoutPlanAccessServiceTests
 
     public WorkoutPlanAccessServiceTests()
     {
+        TestCleaner.Clean();
+
         _accessService = new (_mockRepository);
     }
 

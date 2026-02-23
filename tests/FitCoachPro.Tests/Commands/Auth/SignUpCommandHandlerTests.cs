@@ -22,6 +22,8 @@ public class SignUpCommandHandlerTests
 
     public SignUpCommandHandlerTests()
     {
+        TestCleaner.Clean();
+
         _mockUserManager = MockFactory.GetMockUserManager<User>();
         _mockRoleManager = MockFactory.GetMockRoleManager();
         _mockRepository = Substitute.For<IUserRepository>();

@@ -10,6 +10,11 @@ public class WorkoutPlanHelperTests
 {
     private readonly WorkoutPlanHelper _helper = new();
 
+    public WorkoutPlanHelperTests()
+    {
+        TestCleaner.Clean();
+    }
+
     [Fact]
     public void ExercisesExist_IfExerciseIdNotExist_ReturnsFalse()
     {
