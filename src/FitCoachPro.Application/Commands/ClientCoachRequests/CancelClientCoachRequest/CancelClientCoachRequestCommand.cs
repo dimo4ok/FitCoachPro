@@ -1,0 +1,3 @@
+﻿namespace FitCoachPro.Application.Commands.ClientCoachRequests.CancelClientCoachRequest;
+
+public record CancelClientCoachRequestCommand(Guid RequestId);

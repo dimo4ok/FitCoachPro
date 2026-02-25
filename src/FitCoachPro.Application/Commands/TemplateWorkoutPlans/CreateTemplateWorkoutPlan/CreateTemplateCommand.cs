@@ -1,0 +1,5 @@
+﻿using FitCoachPro.Application.Common.Models.Workouts.TemplateWorkoutPlan;
+
+namespace FitCoachPro.Application.Commands.TemplateWorkoutPlans.CreateTemplateWorkoutPlan;
+
+public record CreateTemplateCommand(CreateTemplateWorkoutPlanModel Model);

@@ -1,0 +1,12 @@
+﻿namespace FitCoachPro.Application.Common.Models.Users;
+
+public record ClientPublicProfileModel(
+    Guid Id,
+    string UserName,
+    string Email,
+    string? PhoneNumber,
+    string FirstName,
+    string LastName,
+    DateTime CreatedAt,
+    bool HasCoach);
+

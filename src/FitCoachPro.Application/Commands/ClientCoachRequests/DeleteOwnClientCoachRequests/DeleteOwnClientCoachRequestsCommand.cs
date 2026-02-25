@@ -1,0 +1,3 @@
+﻿namespace FitCoachPro.Application.Commands.ClientCoachRequests.DeleteOwnClientCoachRequests;
+
+public record DeleteOwnClientCoachRequestsCommand();
