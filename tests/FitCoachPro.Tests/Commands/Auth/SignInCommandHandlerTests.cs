@@ -21,8 +21,6 @@ public class SignInCommandHandlerTests
 
     public SignInCommandHandlerTests()
     {
-        TestCleaner.Clean();
-
         _mockUserManager = MockFactory.GetMockUserManager<User>();
         _mockRepository = Substitute.For<IUserRepository>();
         _mockAuthHelper = Substitute.For<IAuthHelper>();
@@ -40,7 +38,7 @@ public class SignInCommandHandlerTests
         //Arrange
         var command = AuthTestDataFactory.GetSignInCommand("unknow-user", "any");
 
-        _mockUserManager.FindByNameAsync(command.Model.UserName).Returns((User?)null);
+        _mockUserManager.FindByNameAsync(Arg.Is(command.Model.UserName)).Returns((User?)null);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -58,8 +56,8 @@ public class SignInCommandHandlerTests
         var command = AuthTestDataFactory.GetSignInCommand(password: "wrong-password");
         var user = AuthTestDataFactory.GetUser();
 
-        _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
-        _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(false);
+        _mockUserManager.FindByNameAsync(Arg.Is(command.Model.UserName)).Returns(user);
+        _mockUserManager.CheckPasswordAsync(Arg.Is(user), Arg.Is(command.Model.Password)).Returns(false);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -77,9 +75,9 @@ public class SignInCommandHandlerTests
         var command = AuthTestDataFactory.GetSignInCommand();
         var user = AuthTestDataFactory.GetUser();
 
-        _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
-        _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(true);
-        _mockUserManager.GetRolesAsync(user).Returns(new List<string>());
+        _mockUserManager.FindByNameAsync(Arg.Is(command.Model.UserName)).Returns(user);
+        _mockUserManager.CheckPasswordAsync(Arg.Is(user), Arg.Is(command.Model.Password)).Returns(true);
+        _mockUserManager.GetRolesAsync(Arg.Is(user)).Returns(new List<string>());
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -97,9 +95,9 @@ public class SignInCommandHandlerTests
         var command = AuthTestDataFactory.GetSignInCommand();
         var user = AuthTestDataFactory.GetUser();
 
-        _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
-        _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(true);
-        _mockUserManager.GetRolesAsync(user).Returns(new List<string>() { "InvalidEnum" });
+        _mockUserManager.FindByNameAsync(Arg.Is(command.Model.UserName)).Returns(user);
+        _mockUserManager.CheckPasswordAsync(Arg.Is(user), Arg.Is(command.Model.Password)).Returns(true);
+        _mockUserManager.GetRolesAsync(Arg.Is(user)).Returns(new List<string>() { "InvalidEnum" });
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -117,9 +115,9 @@ public class SignInCommandHandlerTests
         var command = AuthTestDataFactory.GetSignInCommand();
         var user = AuthTestDataFactory.GetUser();
 
-        _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
-        _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(true);
-        _mockUserManager.GetRolesAsync(user).Returns(new List<string>() { $"{UserRole.Admin}" });
+        _mockUserManager.FindByNameAsync(Arg.Is(command.Model.UserName)).Returns(user);
+        _mockUserManager.CheckPasswordAsync(Arg.Is(user), Arg.Is(command.Model.Password)).Returns(true);
+        _mockUserManager.GetRolesAsync(Arg.Is(user)).Returns(new List<string>() { $"{UserRole.Admin}" });
         _mockRepository.GetIdByAppUserIdAndRoleAsync(user.Id, Arg.Any<UserRole>(), Arg.Any<CancellationToken>())
             .Returns((Guid?)null);
 
@@ -140,12 +138,12 @@ public class SignInCommandHandlerTests
         var user = AuthTestDataFactory.GetUser();
         var authModel = AuthTestDataFactory.GetAuthModel();
 
-        _mockUserManager.FindByNameAsync(command.Model.UserName).Returns(user);
-        _mockUserManager.CheckPasswordAsync(user, command.Model.Password).Returns(true);
-        _mockUserManager.GetRolesAsync(user).Returns(new List<string>() { $"{UserRole.Admin}" });
-        _mockRepository.GetIdByAppUserIdAndRoleAsync(user.Id, Arg.Any<UserRole>(), Arg.Any<CancellationToken>())
-            .Returns(new Guid());
-        
+        _mockUserManager.FindByNameAsync(Arg.Is(command.Model.UserName)).Returns(user);
+        _mockUserManager.CheckPasswordAsync(Arg.Is(user), Arg.Is(command.Model.Password)).Returns(true);
+        _mockUserManager.GetRolesAsync(Arg.Is(user)).Returns(new List<string>() { $"{UserRole.Admin}" });
+        _mockRepository.GetIdByAppUserIdAndRoleAsync(Arg.Is(user.Id), Arg.Any<UserRole>(), Arg.Any<CancellationToken>())
+            .Returns(Guid.NewGuid());
+
         _mockAuthHelper.GenerateTokenByData(Arg.Any<JwtPayloadModel>()).Returns(authModel);
 
         //Act

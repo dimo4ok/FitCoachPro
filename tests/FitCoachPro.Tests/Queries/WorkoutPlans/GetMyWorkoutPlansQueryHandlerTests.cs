@@ -19,8 +19,6 @@ public class GetMyWorkoutPlansQueryHandlerTests
 
     public GetMyWorkoutPlansQueryHandlerTests()
     {
-        TestCleaner.Clean();
-
         _mockUserContext = Substitute.For<IUserContextService>();
         _mockRepository = Substitute.For<IWorkoutPlanRepository>();
 
@@ -59,7 +57,7 @@ public class GetMyWorkoutPlansQueryHandlerTests
         var emptyPlansQuery = new List<WorkoutPlan>().BuildMock();
 
         _mockUserContext.Current.Returns(currentUser);
-        _mockRepository.GetAllByUserIdAsQuery(currentUser.UserId).Returns(emptyPlansQuery);
+        _mockRepository.GetAllByUserIdAsQuery(Arg.Is(currentUser.UserId)).Returns(emptyPlansQuery);
 
         //Act
         var result = await _handler.ExecuteAsync(query, default);
@@ -79,7 +77,7 @@ public class GetMyWorkoutPlansQueryHandlerTests
         var plansQuery = new List<WorkoutPlan> { new(), new() }.BuildMock();
 
         _mockUserContext.Current.Returns(currentUser);
-        _mockRepository.GetAllByUserIdAsQuery(currentUser.UserId).Returns(plansQuery);
+        _mockRepository.GetAllByUserIdAsQuery(Arg.Is(currentUser.UserId)).Returns(plansQuery);
 
         //Act
         var result = await _handler.ExecuteAsync(query, default);

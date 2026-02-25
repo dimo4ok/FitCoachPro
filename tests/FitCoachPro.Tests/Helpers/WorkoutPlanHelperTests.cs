@@ -2,18 +2,12 @@
 using FitCoachPro.Application.Common.Models.Workouts.WorkoutItem;
 using FitCoachPro.Application.Helpers;
 using FitCoachPro.Domain.Entities.Workouts.Items;
-using NSubstitute;
 
 namespace FitCoachPro.Tests.Helpers;
 
 public class WorkoutPlanHelperTests
 {
     private readonly WorkoutPlanHelper _helper = new();
-
-    public WorkoutPlanHelperTests()
-    {
-        TestCleaner.Clean();
-    }
 
     [Fact]
     public void ExercisesExist_IfExerciseIdNotExist_ReturnsFalse()
@@ -61,6 +55,7 @@ public class WorkoutPlanHelperTests
         // Arrange
         var invalidExerciseId = Guid.NewGuid();
         var existingExerciseIds = new HashSet<Guid> { Guid.NewGuid() };
+        var workoutItems = new List<WorkoutItem>();
 
         var newItems = new[]
         {
@@ -68,7 +63,7 @@ public class WorkoutPlanHelperTests
         };
 
         // Act
-        var (success, error) = _helper.ValidateUpdateItems(Arg.Any<ICollection<WorkoutItem>>(), newItems, existingExerciseIds);
+        var (success, error) = _helper.ValidateUpdateItems(workoutItems, newItems, existingExerciseIds);
 
         // Assert
         Assert.False(success);

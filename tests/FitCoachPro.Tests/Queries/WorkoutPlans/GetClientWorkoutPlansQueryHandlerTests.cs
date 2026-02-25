@@ -21,8 +21,6 @@ public class GetClientWorkoutPlansQueryHandlerTests
 
     public GetClientWorkoutPlansQueryHandlerTests()
     {
-        TestCleaner.Clean();
-
         _mockUserContext = Substitute.For<IUserContextService>();
         _mockRepository = Substitute.For<IWorkoutPlanRepository>();
         _mockAccessService = Substitute.For<IWorkoutPlanAccessService>();
@@ -46,7 +44,7 @@ public class GetClientWorkoutPlansQueryHandlerTests
         _mockUserContext.Current.Returns(currentUser);
 
         if (userRole == UserRole.Coach)
-            _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, query.ClientId, Arg.Any<CancellationToken>()).Returns(false);
+            _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(query.ClientId), Arg.Any<CancellationToken>()).Returns(false);
 
         //Act
         var result = await _handler.ExecuteAsync(query, default);
@@ -57,7 +55,7 @@ public class GetClientWorkoutPlansQueryHandlerTests
         Assert.Equal(StatusCodes.Status403Forbidden, result.StatusCode);
 
         if (userRole == UserRole.Coach)
-            await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, query.ClientId, Arg.Any<CancellationToken>());
+            await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(query.ClientId), Arg.Any<CancellationToken>());
     }
 
     [Theory]
@@ -73,9 +71,9 @@ public class GetClientWorkoutPlansQueryHandlerTests
         _mockUserContext.Current.Returns(currentUser);
 
         if(userRole == UserRole.Coach)
-            _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, query.ClientId, Arg.Any<CancellationToken>()).Returns(true);
+            _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(query.ClientId), Arg.Any<CancellationToken>()).Returns(true);
 
-        _mockRepository.GetAllByUserIdAsQuery(query.ClientId).Returns(emptyPlansQuery);
+        _mockRepository.GetAllByUserIdAsQuery(Arg.Is(query.ClientId)).Returns(emptyPlansQuery);
 
         //Act
         var result = await _handler.ExecuteAsync(query, default);
@@ -86,7 +84,7 @@ public class GetClientWorkoutPlansQueryHandlerTests
         Assert.Equal(StatusCodes.Status404NotFound, result.StatusCode);
 
         if (userRole == UserRole.Coach)
-            await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, query.ClientId, Arg.Any<CancellationToken>());
+            await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(query.ClientId), Arg.Any<CancellationToken>());
     }
 
     [Theory]
@@ -102,9 +100,9 @@ public class GetClientWorkoutPlansQueryHandlerTests
         _mockUserContext.Current.Returns(currentUser);
 
         if(userRole == UserRole.Coach)
-            _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, query.ClientId, Arg.Any<CancellationToken>()).Returns(true);
+            _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(query.ClientId), Arg.Any<CancellationToken>()).Returns(true);
 
-        _mockRepository.GetAllByUserIdAsQuery(query.ClientId).Returns(plansQuery);
+        _mockRepository.GetAllByUserIdAsQuery(Arg.Is(query.ClientId)).Returns(plansQuery);
 
         //Act
         var result = await _handler.ExecuteAsync(query, default);
@@ -115,6 +113,6 @@ public class GetClientWorkoutPlansQueryHandlerTests
         Assert.Equal(2, result.Data.Items.Count);
 
         if (userRole == UserRole.Coach)
-            await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, query.ClientId, Arg.Any<CancellationToken>());
+            await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(query.ClientId), Arg.Any<CancellationToken>());
     }
 }

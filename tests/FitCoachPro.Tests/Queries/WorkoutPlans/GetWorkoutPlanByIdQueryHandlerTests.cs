@@ -20,8 +20,6 @@ public class GetWorkoutPlanByIdQueryHandlerTests
 
     public GetWorkoutPlanByIdQueryHandlerTests()
     {
-        TestCleaner.Clean();
-
         _mockUserContext = Substitute.For<IUserContextService>();
         _mockRepository = Substitute.For<IWorkoutPlanRepository>();
         _mockAccessService = Substitute.For<IWorkoutPlanAccessService>();
@@ -41,7 +39,7 @@ public class GetWorkoutPlanByIdQueryHandlerTests
         var query = WorkoutPlanTestDataFactory.GetWorkoutPlanByIdQuery();
 
         _mockUserContext.Current.Returns(currentUser);
-        _mockRepository.GetByIdAsync(query.Id, Arg.Any<CancellationToken>()).Returns((WorkoutPlan?)null);
+        _mockRepository.GetByIdAsync(Arg.Is(query.Id), Arg.Any<CancellationToken>()).Returns((WorkoutPlan?)null);
 
         //Act
         var result = await _handler.ExecuteAsync(query, default);
@@ -63,8 +61,8 @@ public class GetWorkoutPlanByIdQueryHandlerTests
         var workoutPlan = new WorkoutPlan();
 
         _mockUserContext.Current.Returns(currentUser);
-        _mockRepository.GetByIdAsync(query.Id, Arg.Any<CancellationToken>()).Returns(workoutPlan);
-        _mockAccessService.HasUserAccessToWorkoutPlanAsync(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(false);
+        _mockRepository.GetByIdAsync(Arg.Is(query.Id), Arg.Any<CancellationToken>()).Returns(workoutPlan);
+        _mockAccessService.HasUserAccessToWorkoutPlanAsync(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>()).Returns(false);
 
         //Act
         var result = await _handler.ExecuteAsync(query, default);
@@ -74,7 +72,7 @@ public class GetWorkoutPlanByIdQueryHandlerTests
         Assert.Equal(DomainErrors.Forbidden, result.Errors!.FirstOrDefault());
         Assert.Equal(StatusCodes.Status403Forbidden, result.StatusCode);
 
-        await _mockAccessService.Received(1).HasUserAccessToWorkoutPlanAsync(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>());
+        await _mockAccessService.Received(1).HasUserAccessToWorkoutPlanAsync(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>());
     }
 
     [Theory]
@@ -89,8 +87,8 @@ public class GetWorkoutPlanByIdQueryHandlerTests
         var workoutPlan = new WorkoutPlan();
 
         _mockUserContext.Current.Returns(currentUser);
-        _mockRepository.GetByIdAsync(query.Id, Arg.Any<CancellationToken>()).Returns(workoutPlan);
-        _mockAccessService.HasUserAccessToWorkoutPlanAsync(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(true);
+        _mockRepository.GetByIdAsync(Arg.Is(query.Id), Arg.Any<CancellationToken>()).Returns(workoutPlan);
+        _mockAccessService.HasUserAccessToWorkoutPlanAsync(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>()).Returns(true);
 
         //Act
         var result = await _handler.ExecuteAsync(query, default);
@@ -99,6 +97,6 @@ public class GetWorkoutPlanByIdQueryHandlerTests
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Data);
 
-        await _mockAccessService.Received(1).HasUserAccessToWorkoutPlanAsync(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>());
+        await _mockAccessService.Received(1).HasUserAccessToWorkoutPlanAsync(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>());
     }
 }

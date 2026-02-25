@@ -22,8 +22,6 @@ public class SignUpCommandHandlerTests
 
     public SignUpCommandHandlerTests()
     {
-        TestCleaner.Clean();
-
         _mockUserManager = MockFactory.GetMockUserManager<User>();
         _mockRoleManager = MockFactory.GetMockRoleManager();
         _mockRepository = Substitute.For<IUserRepository>();
@@ -48,14 +46,14 @@ public class SignUpCommandHandlerTests
         var command = AuthTestDataFactory.GetSignUpCommand();
         var existingUser = AuthTestDataFactory.GetUser();
 
-        _mockUserManager.FindByEmailAsync(command.Model.Email).Returns(existingUser);
+        _mockUserManager.FindByEmailAsync(Arg.Is(command.Model.Email)).Returns(existingUser);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
 
         //Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal(UserErrors.EmailAlreadyExists, result.Errors!.FirstOrDefault());
+        Assert.Equal(UserErrors.EmailAlreadyExists,result.Errors!.FirstOrDefault());
         Assert.Equal(StatusCodes.Status400BadRequest, result.StatusCode);
     }
 
@@ -65,14 +63,10 @@ public class SignUpCommandHandlerTests
         //Arrange
         var command = AuthTestDataFactory.GetSignUpCommand();
 
-        _mockUserManager.FindByEmailAsync(command.Model.Email).Returns((User?)null);
+        _mockUserManager.FindByEmailAsync(Arg.Is(command.Model.Email)).Returns((User?)null);
 
-        _mockUserManager.CreateAsync(Arg.Any<User>(), command.Model.Password)
-            .Returns(IdentityResult.Failed(new IdentityError
-            {
-                Code = "AnyError",
-                Description = "Something went wrong"
-            }));
+        _mockUserManager.CreateAsync(Arg.Any<User>(), Arg.Is(command.Model.Password))
+            .Returns(IdentityResult.Failed(new IdentityError { Code = "AnyError", Description = "Something went wrong" }));
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -89,10 +83,10 @@ public class SignUpCommandHandlerTests
         //Arrange
         var command = AuthTestDataFactory.GetSignUpCommand();
 
-        _mockUserManager.FindByEmailAsync(command.Model.Email).Returns((User?)null);
-        _mockUserManager.CreateAsync(Arg.Any<User>(), command.Model.Password).Returns(IdentityResult.Success);
+        _mockUserManager.FindByEmailAsync(Arg.Is(command.Model.Email)).Returns((User?)null);
+        _mockUserManager.CreateAsync(Arg.Any<User>(), Arg.Is(command.Model.Password)).Returns(IdentityResult.Success);
 
-        _mockRoleManager.RoleExistsAsync(command.Model.Role.ToString()).Returns(false);
+        _mockRoleManager.RoleExistsAsync(Arg.Is(command.Model.Role.ToString())).Returns(false);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -109,16 +103,12 @@ public class SignUpCommandHandlerTests
         //Arrange
         var command = AuthTestDataFactory.GetSignUpCommand();
 
-        _mockUserManager.FindByEmailAsync(command.Model.Email).Returns((User?)null);
-        _mockUserManager.CreateAsync(Arg.Any<User>(), command.Model.Password).Returns(IdentityResult.Success);
-        _mockRoleManager.RoleExistsAsync(command.Model.Role.ToString()).Returns(true);
+        _mockUserManager.FindByEmailAsync(Arg.Is(command.Model.Email)).Returns((User?)null);
+        _mockUserManager.CreateAsync(Arg.Any<User>(), Arg.Is(command.Model.Password)).Returns(IdentityResult.Success);
+        _mockRoleManager.RoleExistsAsync(Arg.Is(command.Model.Role.ToString())).Returns(true);
 
-        _mockUserManager.AddToRoleAsync(Arg.Any<User>(), command.Model.Role.ToString())
-            .Returns(IdentityResult.Failed(new IdentityError
-            {
-                Code = "AnyError",
-                Description = "Something went wrong"
-            }));
+        _mockUserManager.AddToRoleAsync(Arg.Any<User>(), Arg.Is(command.Model.Role.ToString()))
+            .Returns(IdentityResult.Failed(new IdentityError { Code = "AnyError", Description = "Something went wrong" }));
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -137,16 +127,16 @@ public class SignUpCommandHandlerTests
         var createdDomainUserId = Guid.NewGuid();
         var authModel = AuthTestDataFactory.GetAuthModel();
 
-        _mockUserManager.FindByEmailAsync(command.Model.Email).Returns((User?)null);
-        _mockUserManager.CreateAsync(Arg.Any<User>(), command.Model.Password).Returns(IdentityResult.Success);
-        _mockRoleManager.RoleExistsAsync(command.Model.Role.ToString()).Returns(true);
-        _mockUserManager.AddToRoleAsync(Arg.Any<User>(), command.Model.Role.ToString()).Returns(IdentityResult.Success);
+        _mockUserManager.FindByEmailAsync(Arg.Is(command.Model.Email)).Returns((User?)null);
+        _mockUserManager.CreateAsync(Arg.Any<User>(), Arg.Is(command.Model.Password)).Returns(IdentityResult.Success);
+        _mockRoleManager.RoleExistsAsync(Arg.Is(command.Model.Role.ToString())).Returns(true);
+        _mockUserManager.AddToRoleAsync(Arg.Any<User>(), Arg.Is(command.Model.Role.ToString())).Returns(IdentityResult.Success);
         _mockRepository.CreateAsync(Arg.Any<CreateUserModel>(), Arg.Any<CancellationToken>()).Returns(createdDomainUserId);
 
         _mockAuthHelper.GenerateTokenByData(Arg.Any<JwtPayloadModel>()).Returns(authModel);
 
         //Act
-        var result = await _handler.ExecuteAsync(command, Arg.Any<CancellationToken>());
+        var result = await _handler.ExecuteAsync(command, default);
 
         //Assert
         Assert.True(result.IsSuccess);
@@ -154,8 +144,8 @@ public class SignUpCommandHandlerTests
         Assert.Equal(authModel.Token, result.Data!.Token);
         Assert.Equal(StatusCodes.Status201Created, result.StatusCode);
 
-        await _mockUserManager.Received(1).CreateAsync(Arg.Any<User>(), command.Model.Password);
-        await _mockUserManager.Received(1).AddToRoleAsync(Arg.Any<User>(), command.Model.Role.ToString());
+        await _mockUserManager.Received(1).CreateAsync(Arg.Any<User>(), Arg.Is(command.Model.Password));
+        await _mockUserManager.Received(1).AddToRoleAsync(Arg.Any<User>(), Arg.Is(command.Model.Role.ToString()));
         await _mockRepository.Received(1).CreateAsync(Arg.Any<CreateUserModel>(), Arg.Any<CancellationToken>());
         await _mockUnitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }

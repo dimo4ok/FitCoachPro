@@ -21,8 +21,6 @@ public class DeleteWorkoutPlanCommandHandlerTests
 
     public DeleteWorkoutPlanCommandHandlerTests()
     {
-        TestCleaner.Clean();
-
         _mockUserContext = Substitute.For<IUserContextService>();
         _mockRepository = Substitute.For<IWorkoutPlanRepository>();
         _mockUnitOfWork = Substitute.For<IUnitOfWork>();
@@ -46,7 +44,7 @@ public class DeleteWorkoutPlanCommandHandlerTests
         var currentUser = WorkoutPlanTestDataFactory.GetCurrentUser(role: userRole);
         var command = WorkoutPlanTestDataFactory.GetDeleteWorkoutPlanCommand();
 
-        _mockRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>(), track: true).Returns((WorkoutPlan?)null);
+        _mockRepository.GetByIdAsync(Arg.Is(command.Id), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns((WorkoutPlan?)null);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -70,10 +68,10 @@ public class DeleteWorkoutPlanCommandHandlerTests
         var command = WorkoutPlanTestDataFactory.GetDeleteWorkoutPlanCommand();
         var workoutPlan = new WorkoutPlan { Id = command.Id, ClientId = Guid.NewGuid() };
 
-        _mockRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>(), track: true).Returns(workoutPlan);
+        _mockRepository.GetByIdAsync(Arg.Is(command.Id), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns(workoutPlan);
         
         _mockUserContext.Current.Returns(currentUser);
-        _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(false);
+        _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>()).Returns(false);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -83,7 +81,7 @@ public class DeleteWorkoutPlanCommandHandlerTests
         Assert.Equal(DomainErrors.Forbidden, result.Errors!.FirstOrDefault());
         Assert.Equal(StatusCodes.Status403Forbidden, result.StatusCode);
         
-        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>());
+        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>());
         await _mockUnitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -95,9 +93,9 @@ public class DeleteWorkoutPlanCommandHandlerTests
         var command = WorkoutPlanTestDataFactory.GetDeleteWorkoutPlanCommand();
         var workoutPlan = new WorkoutPlan { Id = command.Id, ClientId = Guid.NewGuid() };
 
-        _mockRepository.GetByIdAsync(command.Id, Arg.Any<CancellationToken>(), track: true).Returns(workoutPlan);
+        _mockRepository.GetByIdAsync(Arg.Is(command.Id), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns(workoutPlan);
         _mockUserContext.Current.Returns(currentUser);
-        _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(true);
+        _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>()).Returns(true);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -106,7 +104,7 @@ public class DeleteWorkoutPlanCommandHandlerTests
         Assert.True(result.IsSuccess);
         Assert.Equal(StatusCodes.Status204NoContent, result.StatusCode);
 
-        _mockRepository.Received(1).Delete(workoutPlan);
+        _mockRepository.Received(1).Delete(Arg.Is(workoutPlan));
         await _mockUnitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

@@ -28,8 +28,6 @@ public class UpdateWorkoutPlanCommandHandlerTests
 
     public UpdateWorkoutPlanCommandHandlerTests()
     {
-        TestCleaner.Clean();
-
         _mockUserContext = Substitute.For<IUserContextService>();
         _mockWorkoutPlanRepository = Substitute.For<IWorkoutPlanRepository>();
         _mockExerciseRepository = Substitute.For<IExerciseRepository>();
@@ -57,7 +55,7 @@ public class UpdateWorkoutPlanCommandHandlerTests
         var currentUser = WorkoutPlanTestDataFactory.GetCurrentUser(role: userRole);
         var command = WorkoutPlanTestDataFactory.GetUpdateWorkoutPlanCommand();
 
-        _mockWorkoutPlanRepository.GetByIdAsync(command.WorkoutPlanId, Arg.Any<CancellationToken>(), track: true).Returns((WorkoutPlan?)null);
+        _mockWorkoutPlanRepository.GetByIdAsync(Arg.Is(command.WorkoutPlanId), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns((WorkoutPlan?)null);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -81,10 +79,10 @@ public class UpdateWorkoutPlanCommandHandlerTests
         var command = WorkoutPlanTestDataFactory.GetUpdateWorkoutPlanCommand();
         var workoutPlan = new WorkoutPlan { Id = command.WorkoutPlanId, ClientId = Guid.NewGuid() };
 
-        _mockWorkoutPlanRepository.GetByIdAsync(command.WorkoutPlanId, Arg.Any<CancellationToken>(), track: true).Returns(workoutPlan);
+        _mockWorkoutPlanRepository.GetByIdAsync(Arg.Is(command.WorkoutPlanId), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns(workoutPlan);
 
         _mockUserContext.Current.Returns(currentUser);
-        _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(false);
+        _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>()).Returns(false);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -94,7 +92,7 @@ public class UpdateWorkoutPlanCommandHandlerTests
         Assert.Equal(DomainErrors.Forbidden, result.Errors!.FirstOrDefault());
         Assert.Equal(StatusCodes.Status403Forbidden, result.StatusCode);
 
-        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>());
+        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>());
         await _mockUnitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -107,11 +105,12 @@ public class UpdateWorkoutPlanCommandHandlerTests
         var command = WorkoutPlanTestDataFactory.GetUpdateWorkoutPlanCommand(dateTime: date);
         var workoutPlanWithDIfferWorkoutDate = new WorkoutPlan { Id = command.WorkoutPlanId, ClientId = Guid.NewGuid(), WorkoutDate = date.AddDays(1) };
 
-        _mockWorkoutPlanRepository.GetByIdAsync(command.WorkoutPlanId, Arg.Any<CancellationToken>(), track: true).Returns(workoutPlanWithDIfferWorkoutDate);
+        _mockWorkoutPlanRepository.GetByIdAsync(Arg.Is(command.WorkoutPlanId), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns(workoutPlanWithDIfferWorkoutDate);
         _mockUserContext.Current.Returns(currentUser);
-        _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, workoutPlanWithDIfferWorkoutDate.ClientId, Arg.Any<CancellationToken>()).Returns(true);
+        _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlanWithDIfferWorkoutDate.ClientId), Arg.Any<CancellationToken>()).Returns(true);
 
-        _mockWorkoutPlanRepository.ExistsByClientAndDateAsync(workoutPlanWithDIfferWorkoutDate.ClientId, command.Model.WorkoutDate, Arg.Any<CancellationToken>()).Returns(true);
+        _mockWorkoutPlanRepository.ExistsByClientAndDateAsync(workoutPlanWithDIfferWorkoutDate.ClientId, command.Model.WorkoutDate, Arg.Any<CancellationToken>())
+            .Returns(true);
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -121,7 +120,7 @@ public class UpdateWorkoutPlanCommandHandlerTests
         Assert.Equal(DomainErrors.AlreadyExists(nameof(WorkoutPlan)), result.Errors!.FirstOrDefault());
         Assert.Equal(StatusCodes.Status409Conflict, result.StatusCode);
 
-        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, workoutPlanWithDIfferWorkoutDate.ClientId, Arg.Any<CancellationToken>());
+        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlanWithDIfferWorkoutDate.ClientId), Arg.Any<CancellationToken>());
         await _mockUnitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -135,10 +134,10 @@ public class UpdateWorkoutPlanCommandHandlerTests
         var workoutPlan = new WorkoutPlan { Id = command.WorkoutPlanId, ClientId = Guid.NewGuid(), WorkoutDate = date};
         var emptyExercisesQuery = new List<Exercise>().BuildMock();
 
-        _mockWorkoutPlanRepository.GetByIdAsync(command.WorkoutPlanId, Arg.Any<CancellationToken>(), track: true).Returns(workoutPlan);
+        _mockWorkoutPlanRepository.GetByIdAsync(Arg.Is(command.WorkoutPlanId), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns(workoutPlan);
         _mockUserContext.Current.Returns(currentUser);
-        _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(true);
-        _mockWorkoutPlanRepository.ExistsByClientAndDateAsync(workoutPlan.ClientId, command.Model.WorkoutDate, Arg.Any<CancellationToken>()).Returns(true);
+        _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>()).Returns(true);
+        _mockWorkoutPlanRepository.ExistsByClientAndDateAsync(Arg.Is(workoutPlan.ClientId), Arg.Is(command.Model.WorkoutDate), Arg.Any<CancellationToken>()).Returns(true);
 
         _mockExerciseRepository.GetAllAsQuery().Returns(emptyExercisesQuery);
 
@@ -150,7 +149,7 @@ public class UpdateWorkoutPlanCommandHandlerTests
         Assert.Equal(DomainErrors.NotFound(nameof(Exercise)), result.Errors!.FirstOrDefault());
         Assert.Equal(StatusCodes.Status404NotFound, result.StatusCode);
 
-        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>());
+        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>());
         await _mockUnitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -165,13 +164,13 @@ public class UpdateWorkoutPlanCommandHandlerTests
         var exercisesQuery = new List<Exercise> { new() }.BuildMock();
         var exerciseIdSet = exercisesQuery.Select(x => x.Id).ToHashSet();
 
-        _mockWorkoutPlanRepository.GetByIdAsync(command.WorkoutPlanId, Arg.Any<CancellationToken>(), track: true).Returns(workoutPlan);
+        _mockWorkoutPlanRepository.GetByIdAsync(Arg.Is(command.WorkoutPlanId), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns(workoutPlan);
         _mockUserContext.Current.Returns(currentUser);
-        _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(true);
-        _mockWorkoutPlanRepository.ExistsByClientAndDateAsync(workoutPlan.ClientId, command.Model.WorkoutDate, Arg.Any<CancellationToken>()).Returns(true);
+        _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>()).Returns(true);
+        _mockWorkoutPlanRepository.ExistsByClientAndDateAsync(Arg.Is(workoutPlan.ClientId), Arg.Is(command.Model.WorkoutDate), Arg.Any<CancellationToken>()).Returns(true);
         _mockExerciseRepository.GetAllAsQuery().Returns(exercisesQuery);
 
-        _mockHelper.ValidateUpdateItems(Arg.Any<ICollection<WorkoutItem>>(), command.Model.WorkoutItems, Arg.Any<HashSet<Guid>>())
+        _mockHelper.ValidateUpdateItems(Arg.Any<ICollection<WorkoutItem>>(), Arg.Is(command.Model.WorkoutItems), Arg.Any<HashSet<Guid>>())
             .Returns((false, new Error("SomeErrorCode", "SomeErrorMessage")));
 
         //Act
@@ -182,7 +181,7 @@ public class UpdateWorkoutPlanCommandHandlerTests
         Assert.NotNull(result.Errors);
         Assert.Equal(StatusCodes.Status400BadRequest, result.StatusCode);
 
-        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>());
+        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>());
         await _mockUnitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -197,13 +196,13 @@ public class UpdateWorkoutPlanCommandHandlerTests
         var exercisesQuery = new List<Exercise> { new() }.BuildMock();
         var exerciseIdSet = exercisesQuery.Select(x => x.Id).ToHashSet();
 
-        _mockWorkoutPlanRepository.GetByIdAsync(command.WorkoutPlanId, Arg.Any<CancellationToken>(), track: true).Returns(workoutPlan);
+        _mockWorkoutPlanRepository.GetByIdAsync(Arg.Is(command.WorkoutPlanId), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns(workoutPlan);
         _mockUserContext.Current.Returns(currentUser);
-        _mockAccessService.HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>()).Returns(true);
-        _mockWorkoutPlanRepository.ExistsByClientAndDateAsync(workoutPlan.ClientId, command.Model.WorkoutDate, Arg.Any<CancellationToken>()).Returns(true);
+        _mockAccessService.HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>()).Returns(true);
+        _mockWorkoutPlanRepository.ExistsByClientAndDateAsync(Arg.Is(workoutPlan.ClientId), Arg.Is(command.Model.WorkoutDate), Arg.Any<CancellationToken>()).Returns(true);
         _mockExerciseRepository.GetAllAsQuery().Returns(exercisesQuery);
 
-        _mockHelper.ValidateUpdateItems(Arg.Any<ICollection<WorkoutItem>>(), command.Model.WorkoutItems, Arg.Any<HashSet<Guid>>()).Returns((true, null));
+        _mockHelper.ValidateUpdateItems(Arg.Any<ICollection<WorkoutItem>>(), Arg.Is(command.Model.WorkoutItems), Arg.Any<HashSet<Guid>>()).Returns((true, null));
 
         //Act
         var result = await _handler.ExecuteAsync(command, default);
@@ -212,8 +211,8 @@ public class UpdateWorkoutPlanCommandHandlerTests
         Assert.True(result.IsSuccess);
         Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(currentUser, workoutPlan.ClientId, Arg.Any<CancellationToken>());
-        _mockHelper.Received(1).SyncItems(Arg.Any<ICollection<WorkoutItem>>(), command.Model.WorkoutItems);
+        await _mockAccessService.Received(1).HasCoachAccessToWorkoutPlan(Arg.Is(currentUser), Arg.Is(workoutPlan.ClientId), Arg.Any<CancellationToken>());
+        _mockHelper.Received(1).SyncItems(Arg.Any<ICollection<WorkoutItem>>(), Arg.Is(command.Model.WorkoutItems));
         await _mockUnitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
