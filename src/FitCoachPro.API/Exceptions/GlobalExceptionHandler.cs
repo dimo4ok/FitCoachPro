@@ -2,13 +2,16 @@
 using FitCoachPro.Application.Common.Extensions;
 using FitCoachPro.Application.Common.Response;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace FitCoachPro.API.Exceptions;
 
-internal sealed class GlobalExceptionHandler(RequestDelegate next) : IExceptionHandler
+internal sealed class GlobalExceptionHandler(
+    RequestDelegate next, 
+    ILogger<GlobalExceptionHandler> logger
+    ) : IExceptionHandler
 {
     private readonly RequestDelegate _next = next;
+    private readonly ILogger<GlobalExceptionHandler> _logger = logger;
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -18,27 +21,21 @@ internal sealed class GlobalExceptionHandler(RequestDelegate next) : IExceptionH
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Unhandled Exception: {Message}", ex.Message);
             await HandleExceptionAsync(context, ex);
         }
     }
 
     private async Task HandleExceptionAsync(HttpContext context, Exception ex)
     {
-        Result result;
-
-        if (ex is DbUpdateConcurrencyException)
-            result = Result.Fail(SystemErrors.ConcurrencyConflict, 409);
-        else
-            result = Result.Fail(ex.ToError(), 500);
+        Result result = ex switch
+        {
+            DbUpdateConcurrencyException => Result.Fail(SystemErrors.ConcurrencyConflict, 409),
+            _ => Result.Fail(ex.ToError(), 500)
+        };
 
         context.Response.StatusCode = result.StatusCode;
 
-        var json = JsonSerializer.Serialize(result, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        });
-
-        await context.Response.WriteAsync(json);
+        await context.Response.WriteAsJsonAsync(result);
     }
 }

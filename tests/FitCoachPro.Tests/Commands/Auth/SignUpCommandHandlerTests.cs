@@ -7,6 +7,7 @@ using FitCoachPro.Domain.Entities.Identity;
 using FitCoachPro.Tests.TestDataFactories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace FitCoachPro.Tests.Commands.Auth;
@@ -18,7 +19,9 @@ public class SignUpCommandHandlerTests
     private readonly IUserRepository _mockRepository;
     private readonly IAuthHelper _mockAuthHelper;
     private readonly IUnitOfWork _mockUnitOfWork;
+    private readonly ILogger<SignUpCommandHandler> _mockLogger;
     private readonly SignUpCommandHandler _handler;
+
 
     public SignUpCommandHandlerTests()
     {
@@ -27,17 +30,17 @@ public class SignUpCommandHandlerTests
         _mockRepository = Substitute.For<IUserRepository>();
         _mockUnitOfWork = Substitute.For<IUnitOfWork>();
         _mockAuthHelper = Substitute.For<IAuthHelper>();
+        _mockLogger = Substitute.For<ILogger<SignUpCommandHandler>>();
 
         _handler = new SignUpCommandHandler(
             _mockUserManager,
             _mockRoleManager,
             _mockRepository,
             _mockUnitOfWork,
-            _mockAuthHelper
+            _mockAuthHelper,
+            _mockLogger
             );
     }
-
-
 
     [Fact]
     public async Task ExecuteAsync_IfEmailAlreadyExists_ReturnsFailResult()

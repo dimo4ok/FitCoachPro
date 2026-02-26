@@ -8,6 +8,7 @@ using FitCoachPro.Domain.Entities.Identity;
 using FitCoachPro.Tests.TestDataFactories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace FitCoachPro.Tests.Commands.Auth;
@@ -17,6 +18,7 @@ public class SignInCommandHandlerTests
     private readonly UserManager<User> _mockUserManager;
     private readonly IUserRepository _mockRepository;
     private readonly IAuthHelper _mockAuthHelper;
+    private readonly ILogger<SignInCommandHandler> _mockLogger;
     private readonly SignInCommandHandler _handler;
 
     public SignInCommandHandlerTests()
@@ -24,11 +26,13 @@ public class SignInCommandHandlerTests
         _mockUserManager = MockFactory.GetMockUserManager<User>();
         _mockRepository = Substitute.For<IUserRepository>();
         _mockAuthHelper = Substitute.For<IAuthHelper>();
+        _mockLogger = Substitute.For<ILogger<SignInCommandHandler>>();
 
         _handler = new SignInCommandHandler(
             _mockUserManager,
             _mockRepository,
-            _mockAuthHelper
+            _mockAuthHelper,
+            _mockLogger
             );
     }
 
