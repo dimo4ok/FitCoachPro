@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Common.Errors;
+using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
 using FitCoachPro.Application.Interfaces.Services.Access;
@@ -7,6 +7,7 @@ using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
 using FitCoachPro.Tests.TestDataFactories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 using MockQueryable;
 using NSubstitute;
 
@@ -28,7 +29,8 @@ public class GetClientWorkoutPlansQueryHandlerTests
         _handler = new GetClientWorkoutPlansQueryHandler(
             _mockUserContext,
             _mockRepository,
-            _mockAccessService
+            _mockAccessService,
+            NullLogger<GetClientWorkoutPlansQueryHandler>.Instance
             );
     }
 

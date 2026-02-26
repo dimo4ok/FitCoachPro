@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Commands.WorkoutPlans.CreateWorkoutPlan;
+using FitCoachPro.Application.Commands.WorkoutPlans.CreateWorkoutPlan;
 using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Common.Models.Workouts.WorkoutItem;
 using FitCoachPro.Application.Common.Response;
@@ -11,6 +11,7 @@ using FitCoachPro.Domain.Entities.Workouts;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
 using FitCoachPro.Tests.TestDataFactories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 using MockQueryable;
 using NSubstitute;
 
@@ -41,7 +42,8 @@ public class CreateWorkoutPlanCommandHandlerTests
             _mockExerciseRepository,
             _mockUnitOfWork,
             _mockHelper,
-            _mockAccessService
+            _mockAccessService,
+            NullLogger<CreateWorkoutPlanCommandHandler>.Instance
             );
     }
 

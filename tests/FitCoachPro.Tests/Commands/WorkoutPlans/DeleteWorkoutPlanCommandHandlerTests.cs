@@ -1,4 +1,4 @@
-﻿using FitCoachPro.Application.Commands.WorkoutPlans.DeleteWorkoutPlan;
+using FitCoachPro.Application.Commands.WorkoutPlans.DeleteWorkoutPlan;
 using FitCoachPro.Application.Common.Errors;
 using FitCoachPro.Application.Interfaces.Repositories;
 using FitCoachPro.Application.Interfaces.Services;
@@ -7,6 +7,7 @@ using FitCoachPro.Domain.Entities.Enums;
 using FitCoachPro.Domain.Entities.Workouts.Plans;
 using FitCoachPro.Tests.TestDataFactories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 
 namespace FitCoachPro.Tests.Commands.WorkoutPlans;
@@ -30,7 +31,8 @@ public class DeleteWorkoutPlanCommandHandlerTests
             _mockUserContext,
             _mockRepository,
             _mockUnitOfWork,
-            _mockAccessService
+            _mockAccessService,
+            NullLogger<DeleteWorkoutPlanCommandHandler>.Instance
             );
     }
 
@@ -44,6 +46,7 @@ public class DeleteWorkoutPlanCommandHandlerTests
         var currentUser = WorkoutPlanTestDataFactory.GetCurrentUser(role: userRole);
         var command = WorkoutPlanTestDataFactory.GetDeleteWorkoutPlanCommand();
 
+        _mockUserContext.Current.Returns(currentUser);
         _mockRepository.GetByIdAsync(Arg.Is(command.Id), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns((WorkoutPlan?)null);
 
         //Act

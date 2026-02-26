@@ -7,10 +7,14 @@ using FitCoachPro.Infrastructure.Persistence;
 using FitCoachPro.Infrastructure.Persistence.Seed.Users;
 using FitCoachPro.Infrastructure.Persistence.Seed.Wokrouts;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddSwaggerWithAuth();
 
@@ -50,6 +54,8 @@ else
 {
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
