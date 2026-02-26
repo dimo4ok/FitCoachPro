@@ -55,6 +55,8 @@ else
     app.UseSwaggerUI();
 }
 
+app.UseSerilogRequestLogging();
+
 app.UseHttpsRedirection();
 
 app.UseMiddleware<GlobalExceptionHandler>();
