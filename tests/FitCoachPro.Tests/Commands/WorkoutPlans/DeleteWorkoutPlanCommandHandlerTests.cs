@@ -46,6 +46,7 @@ public class DeleteWorkoutPlanCommandHandlerTests
         var currentUser = WorkoutPlanTestDataFactory.GetCurrentUser(role: userRole);
         var command = WorkoutPlanTestDataFactory.GetDeleteWorkoutPlanCommand();
 
+        _mockUserContext.Current.Returns(currentUser);
         _mockRepository.GetByIdAsync(Arg.Is(command.Id), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns((WorkoutPlan?)null);
 
         //Act

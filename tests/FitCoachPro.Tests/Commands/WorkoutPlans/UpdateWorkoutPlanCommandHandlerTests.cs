@@ -57,6 +57,7 @@ public class UpdateWorkoutPlanCommandHandlerTests
         var currentUser = WorkoutPlanTestDataFactory.GetCurrentUser(role: userRole);
         var command = WorkoutPlanTestDataFactory.GetUpdateWorkoutPlanCommand();
 
+        _mockUserContext.Current.Returns(currentUser);
         _mockWorkoutPlanRepository.GetByIdAsync(Arg.Is(command.WorkoutPlanId), Arg.Any<CancellationToken>(), Arg.Is(true)).Returns((WorkoutPlan?)null);
 
         //Act
