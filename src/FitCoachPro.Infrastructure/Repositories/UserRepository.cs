@@ -5,12 +5,17 @@ using FitCoachPro.Domain.Entities.Identity;
 using FitCoachPro.Domain.Entities.Users;
 using FitCoachPro.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FitCoachPro.Infrastructure.Repositories;
 
-public class UserRepository(AppDbContext dbContext) : IUserRepository
+public class UserRepository(
+    AppDbContext dbContext, 
+    ILogger<UserRepository> logger
+    ) : IUserRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
+    private readonly ILogger<UserRepository> _logger = logger;
 
     public async Task<Guid?> GetIdByAppUserIdAndRoleAsync(Guid userId, UserRole role, CancellationToken cancellationToken = default) =>
         role switch
@@ -138,6 +143,8 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
                 domainUserId = client.Id;
                 break;
             default:
+                _logger.LogError("CreateAsync failed: Unknown UserRole '{Role}' for UserId {UserId}",
+                    model.Role, model.UserId);
                 throw new ArgumentOutOfRangeException(nameof(model), "Unknown user role");
         }
 
